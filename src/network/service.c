@@ -30,10 +30,6 @@ void service_login_success(Service* service) {
         return;
     }
     
-    Session* session = service->session;
-    if (session == NULL) {
-        return;
-    }
+    log_message(INFO, "Logged in successfully");
     
-    log_message(INFO, "Client %d: Login success", session->id);
 }

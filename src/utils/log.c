@@ -3,7 +3,6 @@
 #include <time.h>
 #include <stdarg.h>
 #include "log.h"
-#include "config.h"
 
 void log_message(LogLevel level, const char* format, ...) {
     time_t current_time;
