@@ -34,6 +34,7 @@ Message *message_create(uint8_t command)
     return msg;
 }
 
+
 /**
  * Frees all resources associated with a message.
  * @param msg The message to destroy

@@ -20,7 +20,8 @@
         "session.h": "c",
         "utils.h": "c",
         "controller.h": "c",
-        "mysql.h": "c"
+        "mysql.h": "c",
+        "cstdlib": "c"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }

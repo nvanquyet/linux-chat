@@ -136,6 +136,9 @@ Session *createSession()
     session->service = createService(session);
     session->user = NULL;
 
+    private->sender->running = true;
+    pthread_create(&private->sender->thread, NULL, sender_thread, private->sender);
+
     private->collector->running = true;
     pthread_create(&private->collector->thread, NULL, collector_thread, private->collector);
     log_message(INFO, "oatdaphac");
@@ -229,13 +232,12 @@ void *session_init_network_ptr(void *arg)
 
 void session_init_network(Session *session)
 {
-    session_do_connect(session, session->ip, session->port);
     log_message(INFO, "Connecting to server");
+    session_do_connect(session, session->ip, session->port);
 }
 
 void session_do_connect(Session *session, char *ip, int port)
 {
-    log_message(INFO, "Connecting to server");
     SessionPrivate *private = (SessionPrivate *)session->_private;
     if (private->isClosed)
     {
@@ -442,6 +444,7 @@ void clean_network(Session *session)
 
 void *sender_thread(void *arg)
 {
+    log_message(INFO, "Sender thread started");
     Sender *sender = (Sender *)arg;
     Session *session = sender->session;
     MessageQueue *queue = sender->queue;
@@ -460,7 +463,7 @@ void *sender_thread(void *arg)
                     do_send_message(session, msg);
                 }
             }
-        }
+        } 
 
         usleep(10000);
     }
@@ -470,6 +473,7 @@ void *sender_thread(void *arg)
 
 void *collector_thread(void *arg)
 {
+    log_message(INFO, "Collector thread started");
     MessageCollector *collector = (MessageCollector *)arg;
     Session *session = collector->session;
     SessionPrivate *private = (SessionPrivate *)session->_private;
@@ -632,6 +636,7 @@ void process_message(Session *session, Message *msg)
 
 bool do_send_message(Session *session, Message *msg)
 {
+    log_message(INFO, "Sending message");
     SessionPrivate *private = (SessionPrivate *)session->_private;
     if (session == NULL || msg == NULL)
     {

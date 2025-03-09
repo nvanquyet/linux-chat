@@ -10,4 +10,6 @@
 #define REGISTER 0x04
 #define LOGOUT 0x05
 
+#define TEXT_MESSAGE 0x10
+
 #endif

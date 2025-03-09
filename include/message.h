@@ -15,7 +15,7 @@ struct Message {
     size_t position;
 };
 
-Message *message_create(unsigned char command);
+Message *message_create(uint8_t command);
 void message_destroy(Message *msg);
 bool message_write(Message *msg, const void *data, size_t length);
 bool message_read(Message *msg, void *out, size_t length);
