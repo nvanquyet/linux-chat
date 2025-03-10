@@ -9,9 +9,7 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
-
 #include <openssl/rand.h>
-
 
 #include "aes_utils.h"
 #include "cmd.h"
@@ -256,7 +254,6 @@ void *session_init_network_ptr(void *arg)
 
 void session_init_network(Session *session)
 {
-    log_message(INFO, "Connecting to server");
     session_do_connect(session, session->ip, session->port);
 }
 
@@ -285,7 +282,7 @@ void session_do_connect(Session *session, char *ip, int port)
         log_message(ERROR, "Failed to connect to server");
         return;
     }
-
+    log_message(INFO, "Connected to server");
     private->sendKeyComplete = false;
     private->isClosed = false;
 
@@ -317,7 +314,7 @@ void session_send_message(Session *session, Message *message)
     }
 
     SessionPrivate *private = (SessionPrivate *)session->_private;
-    if (session->connected && private->sender != NULL)
+    if (session->connected && private->sender != NULL && private->sender->running)
     {
         message_queue_add(private->sender->queue, message);
     }
@@ -420,7 +417,6 @@ void send_private_key(Session *session, Message *msg)
     SessionPrivate *private = (SessionPrivate *)session->_private;
     key->p = msg->buffer[0];
     key->g = msg->buffer[1];
-    log_message(INFO, "Received DH params, p: %d, g: %d", key->p, key->g);
     if (key->p == 0 || key->g == 0)
     {
         log_message(ERROR, "Invalid DH params, p: %d, g: %d", key->p, key->g);
@@ -518,13 +514,13 @@ void clean_network(Session *session)
     {
         return;
     }
-/* 
-    SessionPrivate *private = (SessionPrivate *)session->_private;
+    /*
+        SessionPrivate *private = (SessionPrivate *)session->_private;
 
-    if (session->user != NULL && !session->user->isCleaned)
-    {
-    }
- */
+        if (session->user != NULL && !session->user->isCleaned)
+        {
+        }
+     */
     session->connected = false;
 
     if (session->socket != -1)
@@ -540,7 +536,6 @@ void clean_network(Session *session)
 
 void *sender_thread(void *arg)
 {
-    log_message(INFO, "Sender thread started");
     Sender *sender = (Sender *)arg;
     Session *session = sender->session;
     MessageQueue *queue = sender->queue;
@@ -553,11 +548,17 @@ void *sender_thread(void *arg)
         {
             while (queue->size > 0)
             {
+                
                 Message *msg = message_queue_remove(queue, 0);
+                log_message(INFO, "Removed message from queue: command=%d, address=%p", 
+                    msg->command, (void*)msg);
+         
                 if (msg != NULL)
                 {
                     do_send_message(session, msg);
+                    message_destroy(msg);
                 }
+
             }
         }
 
@@ -569,7 +570,6 @@ void *sender_thread(void *arg)
 
 void *collector_thread(void *arg)
 {
-    log_message(INFO, "Collector thread started");
     MessageCollector *collector = (MessageCollector *)arg;
     Session *session = collector->session;
     SessionPrivate *private = (SessionPrivate *)session->_private;
@@ -581,12 +581,10 @@ void *collector_thread(void *arg)
         {
             if (!private->sendKeyComplete)
             {
-                log_message(INFO, "Getting key");
                 trade_key(session, message);
             }
             else
             {
-                log_message(INFO, "Processing message");
                 process_message(session, message);
             }
         }
@@ -610,7 +608,6 @@ Message *session_read_message(Session *session)
     {
         return NULL;
     }
-    log_message(INFO, "Reading message");
 
     SessionPrivate *private = (SessionPrivate *)session->_private;
 
@@ -624,7 +621,6 @@ Message *session_read_message(Session *session)
 
     if (command == GET_SESSION_ID || command == TRADE_KEY || command == TRADE_DH_PARAMS)
     {
-        log_message(INFO, "Reading unencrypted message");
 
         uint32_t size_network;
         if (recv(session->socket, &size_network, sizeof(size_network), 0) <= 0)
@@ -633,7 +629,6 @@ Message *session_read_message(Session *session)
             return NULL;
         }
         uint32_t size = ntohl(size_network);
-        log_message(INFO, "Unencrypted message size: %u", size);
 
         Message *msg = message_create(command);
         if (msg == NULL)
@@ -669,7 +664,6 @@ Message *session_read_message(Session *session)
                 total_read += bytes_read;
             }
             msg->position = size;
-            log_message(INFO, "Received %zu bytes of unencrypted data", total_read);
         }
 
         return msg;
@@ -760,7 +754,6 @@ Message *session_read_message(Session *session)
 
 void process_message(Session *session, Message *msg)
 {
-
     log_message(INFO, "Processing message");
     if (session == NULL || msg == NULL)
     {
@@ -773,7 +766,6 @@ void process_message(Session *session, Message *msg)
         Controller *handler = session->handler;
         if (handler != NULL)
         {
-            log_message(INFO, "Calling onMessage");
             handler->onMessage(handler, msg);
         }
         else
@@ -784,7 +776,7 @@ void process_message(Session *session, Message *msg)
 }
 
 bool do_send_message(Session *session, Message *msg)
-{
+{   
     log_message(INFO, "Sending message command: %d", msg->command);
 
     if (session == NULL || msg == NULL)
@@ -794,7 +786,6 @@ bool do_send_message(Session *session, Message *msg)
 
     if (msg->command == GET_SESSION_ID || msg->command == TRADE_KEY || msg->command == TRADE_DH_PARAMS)
     {
-
         if (send(session->socket, &msg->command, sizeof(uint8_t), 0) < 0)
         {
             log_message(ERROR, "Failed to send unencrypted message command");
@@ -816,9 +807,6 @@ bool do_send_message(Session *session, Message *msg)
                 return false;
             }
         }
-
-        log_message(INFO, "Sent unencrypted message with command %d, size %zu",
-                    msg->command, msg->position);
         return true;
     }
 
@@ -871,6 +859,8 @@ bool do_send_message(Session *session, Message *msg)
         return false;
     }
 
+
+
     return true;
 }
 MessageQueue *message_queue_create(int initial_capacity)
@@ -914,6 +904,7 @@ void message_queue_add(MessageQueue *queue, Message *message)
     queue->messages[queue->size++] = message;
 
     pthread_mutex_unlock(&queue->mutex);
+    log_message(INFO, "Added message to queue, command: %d, address: %s", message->command, (void*)message);
 }
 
 Message *message_queue_get(MessageQueue *queue, int index)
@@ -926,7 +917,6 @@ Message *message_queue_get(MessageQueue *queue, int index)
     pthread_mutex_lock(&queue->mutex);
     Message *msg = queue->messages[index];
     pthread_mutex_unlock(&queue->mutex);
-
     return msg;
 }
 

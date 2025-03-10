@@ -3,6 +3,9 @@
 #include "service.h"
 #include "log.h"
 #include <stdlib.h>
+#include <string.h>
+#include "cmd.h"
+#include "message.h"
 
 void login(User *self);
 void logout(User *self);
@@ -32,7 +35,6 @@ User *createUser(User *self, Session *client, char *username, char *password)
     self->logout = logout;
     self->userRegister = userRegister;
     self->isCleaned = NULL;
-
     return self;
 }
 
@@ -73,7 +75,22 @@ void user_set_service(User *user, Service *service)
 
 void login(User *self)
 {
-    self->isOnline = true;
+    if (self->isOnline)
+    {
+        log_message(INFO, "User is already online");
+        return;
+    }
+    Message *msg = message_create(LOGIN);
+    if (msg == NULL)
+    {
+        log_message(ERROR, "Failed to allocate memory for message");
+        return;
+    }
+
+    message_write(msg, self->username, sizeof(self->username));
+    message_write(msg, self->password, sizeof(self->password));
+    log_message(INFO, "Logging in with username: %s, password: %s", self->username, self->password);
+    session_send_message(self->session, msg);
 }
 
 void logout(User *self)

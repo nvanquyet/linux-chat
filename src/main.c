@@ -72,8 +72,22 @@ void *keyboard_input_handler(void *arg) {
         uint8_t command = 0x10;
         
         if (strncmp(input, "/login", 6) == 0) {
+            //extract username and password
+            char *username = strtok(input + 6, " ");
+            char *password = strtok(NULL, " ");
             //login
-            log_message(INFO, "Login command received");
+            if(session->service != NULL) {
+                User *user = createUser(NULL, session, username, password);
+                if(user == NULL) {
+                    log_message(ERROR, "Failed to create user");
+                    continue;
+                }
+                session->user = user;
+                user->session = session;
+                user->login(user);
+            } else {
+                log_message(ERROR, "Service is NULL");
+            }
         }
     }
     
@@ -100,7 +114,6 @@ int main(int argc, char *argv[])
         destroySession(session);
         return 1;
     }
-    log_message(INFO, "Connected to server, starting keyboard input handler");
 
     pthread_t keyboard_thread;
     if (pthread_create(&keyboard_thread, NULL, keyboard_input_handler, session) != 0) {
