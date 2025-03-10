@@ -27,6 +27,7 @@ struct Session
   char *ip;
   int port;
   int socket;
+  bool isRunning;
 
   // Function pointers
   bool (*isConnected)(Session *self);

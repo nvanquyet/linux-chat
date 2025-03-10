@@ -105,7 +105,7 @@ void controller_on_disconnected(Controller *self)
   {
     return;
   }
-  log_message(ERROR, "Client %d: disconnected");
+  log_message(WARN, "Disconnected");
 }
 
 void controller_on_connect_ok(Controller *self)
@@ -114,7 +114,6 @@ void controller_on_connect_ok(Controller *self)
   {
     return;
   }
-  log_message(INFO, "Client %d: connected");
 }
 
 void controller_message_in_chat(Controller *self, Message *ms)

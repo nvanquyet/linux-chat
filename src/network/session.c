@@ -166,7 +166,6 @@ Session *createSession()
     session->handler = createController(session);
     session->service = createService(session);
     session->user = NULL;
-
     return session;
 }
 
@@ -292,6 +291,7 @@ void session_do_connect(Session *session, char *ip, int port)
 
     session->connecting = false;
     session->connected = true;
+    session->isRunning = true;
 
     private->sender->running = true;
     pthread_create(&private->sender->thread, NULL, sender_thread, private->sender);
@@ -361,6 +361,7 @@ void session_close_message(Session *self)
     {
         log_message(ERROR, "Failed to call onDisconnected");
     }
+    session_close(self);
 }
 void session_close(Session *self)
 {
@@ -517,13 +518,13 @@ void clean_network(Session *session)
     {
         return;
     }
-
+/* 
     SessionPrivate *private = (SessionPrivate *)session->_private;
 
     if (session->user != NULL && !session->user->isCleaned)
     {
     }
-
+ */
     session->connected = false;
 
     if (session->socket != -1)
@@ -534,6 +535,7 @@ void clean_network(Session *session)
 
     session->handler = NULL;
     session->service = NULL;
+    session->isRunning = false;
 }
 
 void *sender_thread(void *arg)
@@ -593,7 +595,6 @@ void *collector_thread(void *arg)
             break;
         }
     }
-    log_message(INFO, "connected: %d, running: %d", session->connected, collector->running);
 
     if (!session->connecting)
     {

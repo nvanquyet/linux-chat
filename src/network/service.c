@@ -7,7 +7,6 @@ Service* createService(Session* session) {
     if (session == NULL) {
         return NULL;
     }
-    
     Service* service = (Service*)malloc(sizeof(Service));
     if (service == NULL) {
         return NULL;
