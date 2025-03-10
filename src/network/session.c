@@ -1,23 +1,27 @@
-#include "session.h"
-#include "controller.h"
-#include "service.h"
-#include "message.h"
-#include "log.h"
-#include "user.h"
-#include "cmd.h"
-#include "utils.h"
-#include <unistd.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdbool.h>
-#include <string.h>
-#include <pthread.h>
-#include "aes_utils.h"
-#include <openssl/rand.h>
-#include <sys/socket.h>
+// System includes first
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <pthread.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/socket.h>
+#include <unistd.h>
+
+
+#include <openssl/rand.h>
+
+
+#include "aes_utils.h"
+#include "cmd.h"
+#include "controller.h"
+#include "log.h"
+#include "m_utils.h"
+#include "message.h"
+#include "service.h"
+#include "session.h"
+#include "user.h"
 
 typedef struct
 {
@@ -48,16 +52,28 @@ typedef struct
     MessageCollector *collector;
     Sender *sender;
     bool sendKeyComplete;
+    bool tradingKey;
     bool isClosed;
 } SessionPrivate;
+
+typedef struct
+{
+    uint8_t p;
+    uint8_t g;
+    uint16_t bb;
+    uint16_t A;
+    uint16_t B;
+    uint16_t K;
+} Key;
 
 void *sender_thread(void *arg);
 void *collector_thread(void *arg);
 Message *read_message(Session *session);
 void process_message(Session *session, Message *msg);
 bool do_send_message(Session *session, Message *msg);
-void send_key(Session *session);
-void get_key(Session *session, Message *msg);
+void trade_key(Session *session, Message *msg);
+void send_private_key(Session *session, Message *msg);
+void compute_shared_key(Session *session, Message *msg);
 void clean_network(Session *session);
 void session_close_message(Session *session);
 
@@ -95,6 +111,13 @@ Session *createSession()
         free(session);
         return NULL;
     }
+
+    Key *key = (Key *)malloc(sizeof(Key));
+    if (key == NULL)
+    {
+        free(session);
+        return NULL;
+    }
     session->connected = false;
     session->connecting = true;
     session->clientOK = false;
@@ -120,6 +143,7 @@ Session *createSession()
     private->key = NULL;
     private->sendKeyComplete = false;
     private->isClosed = false;
+    private->tradingKey = false;
 
     private->sender = (Sender *)malloc(sizeof(Sender));
     private->sender->session = session;
@@ -130,18 +154,19 @@ Session *createSession()
     private->collector->session = session;
     private->collector->running = false;
 
+    key->A = 0;
+    key->B = 0;
+    key->K = 0;
+    key->g = 0;
+    key->p = 0;
+    key->bb = 0;
+    session->_key = key;
     session->_private = private;
 
     session->handler = createController(session);
     session->service = createService(session);
     session->user = NULL;
 
-    private->sender->running = true;
-    pthread_create(&private->sender->thread, NULL, sender_thread, private->sender);
-
-    private->collector->running = true;
-    pthread_create(&private->collector->thread, NULL, collector_thread, private->collector);
-    log_message(INFO, "oatdaphac");
     return session;
 }
 
@@ -212,7 +237,7 @@ void session_set_service(Session *session, Service *service)
 
 void session_connect(Session *session, char *ip, int port)
 {
-    // open new thread to connect to server
+
     SessionPrivate *private = (SessionPrivate *)session->_private;
     private->isClosed = false;
     private->sendKeyComplete = false;
@@ -265,11 +290,23 @@ void session_do_connect(Session *session, char *ip, int port)
     private->sendKeyComplete = false;
     private->isClosed = false;
 
-    private->sender->running = true;
-    pthread_create(&private->sender->thread, NULL, sender_thread, private->sender);
     session->connecting = false;
     session->connected = true;
-    log_message(INFO, "Connected to server");
+
+    private->sender->running = true;
+    pthread_create(&private->sender->thread, NULL, sender_thread, private->sender);
+
+    private->collector->running = true;
+    pthread_create(&private->collector->thread, NULL, collector_thread, private->collector);
+
+    Message *msg = message_create(GET_SESSION_ID);
+    if (msg == NULL)
+    {
+        log_message(ERROR, "Failed to create message");
+        return;
+    }
+    session->doSendMessage(session, msg);
+    message_destroy(msg);
 }
 
 void session_send_message(Session *session, Message *message)
@@ -346,7 +383,7 @@ void session_disconnect(Session *self)
     self->connected = false;
 }
 
-void send_key(Session *session)
+void trade_key(Session *session, Message *msg)
 {
     if (session == NULL)
     {
@@ -359,14 +396,71 @@ void send_key(Session *session)
         return;
     }
 
-    Message *msg = message_create(GET_SESSION_ID);
-    // create 2 numbers for aes key
-    uint8_t a = 2;
-    uint8_t b = 3;
-    send(session->socket, &a, sizeof(uint8_t), 0);
-    send(session->socket, &b, sizeof(uint8_t), 0);
+    if (private->tradingKey)
+    {
+    }
+
+    switch (msg->command)
+    {
+    case TRADE_DH_PARAMS:
+        send_private_key(session, msg);
+        break;
+    case TRADE_KEY:
+        compute_shared_key(session, msg);
+        break;
+    default:
+        break;
+    }
+}
+
+void send_private_key(Session *session, Message *msg)
+{
+    Key *key = (Key *)session->_key;
+    SessionPrivate *private = (SessionPrivate *)session->_private;
+    key->p = msg->buffer[0];
+    key->g = msg->buffer[1];
+    log_message(INFO, "Received DH params, p: %d, g: %d", key->p, key->g);
+    if (key->p == 0 || key->g == 0)
+    {
+        log_message(ERROR, "Invalid DH params, p: %d, g: %d", key->p, key->g);
+        return;
+    }
+
+    key->bb = utils_next_int(65535);
+    key->B = utils_mod_exp(key->g, key->bb, key->p);
+    if (key->B == 0)
+    {
+        log_message(ERROR, "Invalid public key");
+        return;
+    }
+
+    Message *message = message_create(TRADE_DH_PARAMS);
+    message_write(message, &key->B, sizeof(key->B));
+    session->doSendMessage(session, message);
+    message_destroy(message);
+    private->sendKeyComplete = false;
+}
+
+void compute_shared_key(Session *session, Message *msg)
+{
+    SessionPrivate *private = (SessionPrivate *)session->_private;
+    Key *key = (Key *)session->_key;
+    key->A = msg->buffer[0];
+    if (key->A == 0)
+    {
+        log_message(ERROR, "Invalid public key A: %d", key->A);
+        return;
+    }
+
+    key->K = utils_mod_exp(key->A, key->bb, key->p);
+    if (key->K == 0)
+    {
+        log_message(ERROR, "Invalid shared key");
+        return;
+    }
+    private->key = (unsigned char *)malloc(32);
+    generate_aes_key_from_K(key->K, private->key);
     private->sendKeyComplete = true;
-    log_message(INFO, "Send key complete: %d", private->sendKeyComplete);
 }
 
 void session_client_ok(Session *self)
@@ -463,7 +557,7 @@ void *sender_thread(void *arg)
                     do_send_message(session, msg);
                 }
             }
-        } 
+        }
 
         usleep(10000);
     }
@@ -483,13 +577,14 @@ void *collector_thread(void *arg)
         Message *message = session_read_message(session);
         if (message != NULL)
         {
-
             if (!private->sendKeyComplete)
             {
-                send_key(session);
+                log_message(INFO, "Getting key");
+                trade_key(session, message);
             }
             else
             {
+                log_message(INFO, "Processing message");
                 process_message(session, message);
             }
         }
@@ -498,6 +593,8 @@ void *collector_thread(void *arg)
             break;
         }
     }
+    log_message(INFO, "connected: %d, running: %d", session->connected, collector->running);
+
     if (!session->connecting)
     {
         session_close_message(session);
@@ -517,10 +614,6 @@ Message *session_read_message(Session *session)
     SessionPrivate *private = (SessionPrivate *)session->_private;
 
     uint8_t command;
-    unsigned char iv[16];
-    uint32_t original_size, encrypted_size;
-
-    // Read command
     if (recv(session->socket, &command, sizeof(command), 0) <= 0)
     {
         log_message(ERROR, "Failed to receive command, closing session");
@@ -528,14 +621,69 @@ Message *session_read_message(Session *session)
     }
     log_message(INFO, "Received command: %d", command);
 
-    // Read IV
+    if (command == GET_SESSION_ID || command == TRADE_KEY || command == TRADE_DH_PARAMS)
+    {
+        log_message(INFO, "Reading unencrypted message");
+
+        uint32_t size_network;
+        if (recv(session->socket, &size_network, sizeof(size_network), 0) <= 0)
+        {
+            log_message(ERROR, "Failed to receive unencrypted message size");
+            return NULL;
+        }
+        uint32_t size = ntohl(size_network);
+        log_message(INFO, "Unencrypted message size: %u", size);
+
+        Message *msg = message_create(command);
+        if (msg == NULL)
+        {
+            log_message(ERROR, "Failed to create message");
+            return NULL;
+        }
+
+        if (size > 0)
+        {
+
+            free(msg->buffer);
+            msg->buffer = (unsigned char *)malloc(size);
+            if (msg->buffer == NULL)
+            {
+                log_message(ERROR, "Failed to allocate buffer for unencrypted message");
+                message_destroy(msg);
+                return NULL;
+            }
+            msg->size = size;
+
+            size_t total_read = 0;
+            while (total_read < size)
+            {
+                ssize_t bytes_read = recv(session->socket, msg->buffer + total_read,
+                                          size - total_read, 0);
+                if (bytes_read <= 0)
+                {
+                    log_message(ERROR, "Failed to receive unencrypted data");
+                    message_destroy(msg);
+                    return NULL;
+                }
+                total_read += bytes_read;
+            }
+            msg->position = size;
+            log_message(INFO, "Received %zu bytes of unencrypted data", total_read);
+        }
+
+        return msg;
+    }
+
+    log_message(INFO, "Reading encrypted message");
+
+    unsigned char iv[16];
     if (recv(session->socket, iv, sizeof(iv), 0) <= 0)
     {
         log_message(ERROR, "Failed to receive IV");
         return NULL;
     }
 
-    // Read original size
+    uint32_t original_size;
     if (recv(session->socket, &original_size, sizeof(original_size), 0) <= 0)
     {
         log_message(ERROR, "Failed to receive original size");
@@ -544,7 +692,7 @@ Message *session_read_message(Session *session)
     original_size = ntohl(original_size);
     log_message(INFO, "Original size: %u", original_size);
 
-    // Read encrypted size
+    uint32_t encrypted_size;
     if (recv(session->socket, &encrypted_size, sizeof(encrypted_size), 0) <= 0)
     {
         log_message(ERROR, "Failed to receive encrypted size");
@@ -636,14 +784,45 @@ void process_message(Session *session, Message *msg)
 
 bool do_send_message(Session *session, Message *msg)
 {
-    log_message(INFO, "Sending message");
-    SessionPrivate *private = (SessionPrivate *)session->_private;
+    log_message(INFO, "Sending message command: %d", msg->command);
+
     if (session == NULL || msg == NULL)
     {
         return false;
     }
 
-    // Generate a random IV
+    if (msg->command == GET_SESSION_ID || msg->command == TRADE_KEY || msg->command == TRADE_DH_PARAMS)
+    {
+
+        if (send(session->socket, &msg->command, sizeof(uint8_t), 0) < 0)
+        {
+            log_message(ERROR, "Failed to send unencrypted message command");
+            return false;
+        }
+
+        uint32_t net_size = htonl((uint32_t)msg->position);
+        if (send(session->socket, &net_size, sizeof(net_size), 0) < 0)
+        {
+            log_message(ERROR, "Failed to send unencrypted message size");
+            return false;
+        }
+
+        if (msg->position > 0)
+        {
+            if (send(session->socket, msg->buffer, msg->position, 0) < 0)
+            {
+                log_message(ERROR, "Failed to send unencrypted message data");
+                return false;
+            }
+        }
+
+        log_message(INFO, "Sent unencrypted message with command %d, size %zu",
+                    msg->command, msg->position);
+        return true;
+    }
+
+    SessionPrivate *private = (SessionPrivate *)session->_private;
+
     unsigned char iv[16];
     if (RAND_bytes(iv, sizeof(iv)) != 1)
     {
@@ -651,31 +830,26 @@ bool do_send_message(Session *session, Message *msg)
         return false;
     }
 
-    // Make a copy of the original message before encryption
     size_t original_size = msg->position;
 
-    // Encrypt the message with the IV
     if (!message_encrypt(msg, private->key, iv))
     {
         log_message(ERROR, "Failed to encrypt message");
         return false;
     }
 
-    // Send the command byte
     if (send(session->socket, &msg->command, sizeof(uint8_t), 0) < 0)
     {
         log_message(ERROR, "Failed to send message command");
         return false;
     }
 
-    // Send the IV (receiver needs this for decryption)
     if (send(session->socket, iv, sizeof(iv), 0) < 0)
     {
         log_message(ERROR, "Failed to send message IV");
         return false;
     }
 
-    // Send the original size (useful for allocation on receiver side)
     uint32_t net_original_size = htonl((uint32_t)original_size);
     if (send(session->socket, &net_original_size, sizeof(net_original_size), 0) < 0)
     {
@@ -683,7 +857,6 @@ bool do_send_message(Session *session, Message *msg)
         return false;
     }
 
-    // Send the encrypted data size
     uint32_t net_encrypted_size = htonl((uint32_t)msg->position);
     if (send(session->socket, &net_encrypted_size, sizeof(net_encrypted_size), 0) < 0)
     {
@@ -691,7 +864,6 @@ bool do_send_message(Session *session, Message *msg)
         return false;
     }
 
-    // Send the encrypted data
     if (send(session->socket, msg->buffer, msg->position, 0) < 0)
     {
         log_message(ERROR, "Failed to send encrypted data");
@@ -700,7 +872,6 @@ bool do_send_message(Session *session, Message *msg)
 
     return true;
 }
-
 MessageQueue *message_queue_create(int initial_capacity)
 {
     MessageQueue *queue = (MessageQueue *)malloc(sizeof(MessageQueue));

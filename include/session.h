@@ -15,7 +15,8 @@ typedef struct Message Message;
 
 typedef unsigned char byte;
 
-struct Session {
+struct Session
+{
   User *user;
   Controller *handler;
   Service *service;
@@ -46,6 +47,7 @@ struct Session {
 
   // Opaque pointer for private implementation details
   void *_private;
+  void *_key;
 };
 
 Session *createSession();

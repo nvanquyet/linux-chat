@@ -1,3 +1,0 @@
-connect -> new server (open socket client)
--- new controller (collect, sender thread)
--- new service xxx

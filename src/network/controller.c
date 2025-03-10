@@ -80,7 +80,9 @@ void controller_on_message(Controller *self, Message *message)
   case GET_SESSION_ID:
     log_message(INFO, "Client %d: get session id");
     break;
-
+  case TRADE_KEY:
+    log_message(INFO, "Client %d: trade key");
+    break;
   default:
     log_message(ERROR, "Client %d: unknown command %d",
                 command);
