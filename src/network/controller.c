@@ -5,6 +5,7 @@
 #include "service.h"
 #include "session.h"
 #include "user.h"
+#include <stdlib.h>
 
 void controller_on_message(Controller *self, Message *message);
 void controller_on_connection_fail(Controller *self);

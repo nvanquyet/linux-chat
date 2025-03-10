@@ -550,8 +550,6 @@ void *sender_thread(void *arg)
             {
                 
                 Message *msg = message_queue_remove(queue, 0);
-                log_message(INFO, "Removed message from queue: command=%d, address=%p", 
-                    msg->command, (void*)msg);
          
                 if (msg != NULL)
                 {
@@ -904,7 +902,6 @@ void message_queue_add(MessageQueue *queue, Message *message)
     queue->messages[queue->size++] = message;
 
     pthread_mutex_unlock(&queue->mutex);
-    log_message(INFO, "Added message to queue, command: %d, address: %s", message->command, (void*)message);
 }
 
 Message *message_queue_get(MessageQueue *queue, int index)
