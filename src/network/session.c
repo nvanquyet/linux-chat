@@ -133,6 +133,7 @@ Session *createSession()
     session->readMessage = session_read_message;
     session->closeMessage = session_close_message;
     session->socket = -1;
+    session->isLogin = false;
 
     session->doConnect = session_do_connect;
     session->connect = session_connect;
@@ -142,6 +143,7 @@ Session *createSession()
     private->sendKeyComplete = false;
     private->isClosed = false;
     private->tradingKey = false;
+    
 
     private->sender = (Sender *)malloc(sizeof(Sender));
     private->sender->session = session;
@@ -852,8 +854,6 @@ bool do_send_message(Session *session, Message *msg)
         log_message(ERROR, "Failed to send encrypted data");
         return false;
     }
-
-
 
     return true;
 }

@@ -72,22 +72,44 @@ void *keyboard_input_handler(void *arg) {
         uint8_t command = 0x10;
         
         if (strncmp(input, "/login", 6) == 0) {
-            //extract username and password
             char *username = strtok(input + 6, " ");
             char *password = strtok(NULL, " ");
-            //login
-            if(session->service != NULL) {
-                User *user = createUser(NULL, session, username, password);
-                if(user == NULL) {
-                    log_message(ERROR, "Failed to create user");
-                    continue;
-                }
-                session->user = user;
-                user->session = session;
-                user->login(user);
-            } else {
-                log_message(ERROR, "Service is NULL");
+            
+            if (session->isLogin) {
+                log_message(ERROR, "Already logged in. Use /logout first");
+                continue;
             }
+            
+            if (session->service == NULL) {
+                log_message(ERROR, "Service unavailable");
+                continue;
+            }
+            
+            if (session->user != NULL) {
+                destroyUser(session->user);
+                session->user = NULL;
+            }
+            
+            User *user = createUser(NULL, session, username, password);
+            if (user == NULL) {
+                log_message(ERROR, "Failed to create user");
+                continue;
+            }
+            
+            session->user = user;
+            user->session = session;
+            
+            user->login(user);
+            log_message(INFO, "Login attempt sent to server");
+        }
+
+        if(strncmp(input, "/users", 6) == 0) {
+            if(session->service != NULL && session->user != NULL) {
+                session->service->get_online_users(session->service);
+            } else {
+                log_message(ERROR, "Login first");
+            }
+            
         }
 
         if(strncmp(input, "/register", 9) == 0) {
@@ -113,7 +135,6 @@ void *keyboard_input_handler(void *arg) {
     return NULL;
 }
 
-// First, modify your main function to check connection status
 int main(int argc, char *argv[])
 {
     Session *session = createSession();

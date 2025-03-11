@@ -32,4 +32,7 @@ void controller_set_service(Controller* controller, Service* service);
 void controller_set_user(Controller* controller, User* user);
 void controller_on_message(Controller* controller, Message* msg);
 
+
+char **get_online_users(Controller* controller, Message* message);
+
 #endif

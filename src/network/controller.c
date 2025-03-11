@@ -15,6 +15,9 @@ void controller_message_in_chat(Controller *self, Message *ms);
 void controller_message_not_in_chat(Controller *self, Message *ms);
 void controller_new_message(Controller *self, Message *ms);
 
+char **get_online_users(Controller *controller, Message *message);
+
+
 Controller *createController(Session *client)
 {
   Controller *controller = (Controller *)malloc(sizeof(Controller));
@@ -75,6 +78,16 @@ void controller_on_message(Controller *self, Message *message)
       log_message(ERROR, "Service is NULL");
     }
     break;
+  case GET_ONLINE_USERS:
+    if(self->service != NULL) {
+      get_online_users(self, message);
+    } else {
+      log_message(ERROR, "Service is NULL");
+    }
+    break;
+  case LOGIN_SUCCESS:
+    self->client->isLogin = true;
+    break;
   default:
     log_message(ERROR, "Unknown command %d",
                 command);
@@ -129,4 +142,35 @@ void controller_new_message(Controller *self, Message *ms)
   {
     return;
   }
+}
+
+char **get_online_users(Controller *controller, Message *message)
+{
+  if (controller == NULL || message == NULL)
+  {
+    return NULL;
+  }
+  
+  uint8_t count = message_read_int(message);
+  char **users = (char **)malloc(sizeof(char *) * count);
+  if (users == NULL)
+  {
+    return NULL;
+  }
+
+  for (int i = 0; i < count; i++)
+  {
+    char *username = (char *)malloc(sizeof(char) * 32);
+    if (username == NULL)
+    {
+      return NULL;
+    }
+    message_read_string(message, username, 32);
+    users[i] = username;
+  }
+
+  for(int i = 0; i < count; i++) {
+    log_message(INFO, "User %d: %s", i, users[i]);
+  }
+  return users;
 }
