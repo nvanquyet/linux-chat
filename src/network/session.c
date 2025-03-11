@@ -163,6 +163,7 @@ Session *createSession()
 
     session->handler = createController(session);
     session->service = createService(session);
+    session->handler->service = session->service;
     session->user = NULL;
     return session;
 }
@@ -667,7 +668,6 @@ Message *session_read_message(Session *session)
         return msg;
     }
 
-    log_message(INFO, "Reading encrypted message");
 
     unsigned char iv[16];
     if (recv(session->socket, iv, sizeof(iv), 0) <= 0)
@@ -683,7 +683,6 @@ Message *session_read_message(Session *session)
         return NULL;
     }
     original_size = ntohl(original_size);
-    log_message(INFO, "Original size: %u", original_size);
 
     uint32_t encrypted_size;
     if (recv(session->socket, &encrypted_size, sizeof(encrypted_size), 0) <= 0)
@@ -692,7 +691,6 @@ Message *session_read_message(Session *session)
         return NULL;
     }
     encrypted_size = ntohl(encrypted_size);
-    log_message(INFO, "Encrypted size: %u", encrypted_size);
 
     Message *msg = message_create(command);
     if (msg == NULL)
@@ -725,7 +723,6 @@ Message *session_read_message(Session *session)
         total_read += bytes_read;
     }
     msg->position = encrypted_size;
-    log_message(INFO, "Received %zu bytes of encrypted data", total_read);
 
     if (private->key == NULL)
     {
@@ -752,7 +749,6 @@ Message *session_read_message(Session *session)
 
 void process_message(Session *session, Message *msg)
 {
-    log_message(INFO, "Processing message");
     if (session == NULL || msg == NULL)
     {
         return;

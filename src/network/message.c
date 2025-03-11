@@ -418,9 +418,9 @@ uint32_t message_read_int(Message *msg)
  */
 bool message_write_long(Message *msg, uint64_t value)
 {
-    // Write high 4 bytes
+
     bool success = message_write_int(msg, (uint32_t)(value >> 32));
-    // Write low 4 bytes
+
     success = success && message_write_int(msg, (uint32_t)(value & 0xFFFFFFFF));
     return success;
 }
@@ -432,9 +432,9 @@ bool message_write_long(Message *msg, uint64_t value)
  */
 uint64_t message_read_long(Message *msg)
 {
-    // Read high 4 bytes
+
     uint64_t high = message_read_int(msg);
-    // Read low 4 bytes
+
     uint64_t low = message_read_int(msg);
     return (high << 32) | low;
 }
@@ -505,19 +505,17 @@ bool message_write_utf(Message *msg, const char *str)
     }
 
     size_t str_len = strlen(str);
-    if (str_len > 65535) // Max size representable in 2 bytes
+    if (str_len > 65535)
     {
         log_message(ERROR, "UTF string too long: %zu bytes", str_len);
         return false;
     }
 
-    // Write 2-byte length prefix
     if (!message_write_short(msg, (uint16_t)str_len))
     {
         return false;
     }
 
-    // Write string bytes (without null terminator)
     if (str_len > 0 && !message_write(msg, str, str_len))
     {
         return false;
@@ -538,16 +536,14 @@ char *message_read_utf(Message *msg)
         return NULL;
     }
 
-    // Read 2-byte length prefix
     uint16_t str_len = message_read_short(msg);
 
     if (str_len == 0)
     {
-        // Empty string
+
         return strdup("");
     }
 
-    // Check if there's enough data
     size_t orig_pos = msg->position;
     if (orig_pos + str_len > msg->size)
     {
@@ -555,7 +551,6 @@ char *message_read_utf(Message *msg)
         return NULL;
     }
 
-    // Allocate space for string plus null terminator
     char *str = malloc(str_len + 1);
     if (str == NULL)
     {
@@ -563,14 +558,12 @@ char *message_read_utf(Message *msg)
         return NULL;
     }
 
-    // Read string bytes
     if (!message_read(msg, str, str_len))
     {
         free(str);
         return NULL;
     }
 
-    // Add null terminator
     str[str_len] = '\0';
     return str;
 }

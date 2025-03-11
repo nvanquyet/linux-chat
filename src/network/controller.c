@@ -54,7 +54,6 @@ void controller_set_user(Controller *controller, User *user)
   if (controller != NULL)
   {
     controller->user = user;
-    log_message(INFO, "Client %d: logged in successfully");
   }
 }
 
@@ -69,23 +68,15 @@ void controller_on_message(Controller *self, Message *message)
   uint8_t command = message->command;
   switch (command)
   {
-  case LOGIN:
-    log_message(INFO, "Client %d: login");
-    break;
-  case REGISTER:
-    log_message(INFO, "Client %d: register");
-    break;
-  case LOGOUT:
-    log_message(INFO, "Client %d: logout");
-    break;
-  case GET_SESSION_ID:
-    log_message(INFO, "Client %d: get session id");
-    break;
-  case TRADE_KEY:
-    log_message(INFO, "Client %d: trade key");
+  case SERVER_MESSAGE:
+    if(self->service != NULL) {
+      self->service->server_message(self->service, message);
+    } else {
+      log_message(ERROR, "Service is NULL");
+    }
     break;
   default:
-    log_message(ERROR, "Client %d: unknown command %d",
+    log_message(ERROR, "Unknown command %d",
                 command);
     break;
   }
@@ -97,7 +88,6 @@ void controller_on_connection_fail(Controller *self)
   {
     return;
   }
-  log_message(ERROR, "Client %d: connection fail");
 }
 
 void controller_on_disconnected(Controller *self)
@@ -123,7 +113,6 @@ void controller_message_in_chat(Controller *self, Message *ms)
   {
     return;
   }
-  log_message(INFO, "Client %d: message in chat");
 }
 
 void controller_message_not_in_chat(Controller *self, Message *ms)
@@ -132,7 +121,6 @@ void controller_message_not_in_chat(Controller *self, Message *ms)
   {
     return;
   }
-  log_message(INFO, "Client %d: message not in chat");
 }
 
 void controller_new_message(Controller *self, Message *ms)
@@ -141,5 +129,4 @@ void controller_new_message(Controller *self, Message *ms)
   {
     return;
   }
-  log_message(INFO, "Client %d: new message");
 }

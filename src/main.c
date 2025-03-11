@@ -89,6 +89,24 @@ void *keyboard_input_handler(void *arg) {
                 log_message(ERROR, "Service is NULL");
             }
         }
+
+        if(strncmp(input, "/register", 9) == 0) {
+            char *username = strtok(input + 9, " ");
+            char *password = strtok(NULL, " ");
+            
+            if(session->service != NULL) {
+                User *user = createUser(NULL, session, username, password);
+                if(user == NULL) {
+                    log_message(ERROR, "Failed to create user");
+                    continue;
+                }
+                session->user = user;
+                user->session = session;
+                user->userRegister(user);
+            } else {
+                log_message(ERROR, "Service is NULL");
+            }
+        }
     }
     
     log_message(INFO, "Keyboard input handler exiting");

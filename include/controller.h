@@ -10,6 +10,7 @@ typedef struct Controller Controller;
 typedef struct Message Message;
 typedef struct Session Session;
 typedef struct User User;
+typedef struct Service Service;
 
 struct Controller {
     void (*onMessage)(Controller* self, Message* message);

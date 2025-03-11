@@ -100,4 +100,20 @@ void logout(User *self)
 void userRegister(User *self)
 {
     self->isOnline = false;
+    if(self->username == NULL || self->password == NULL) {
+        log_message(ERROR, "Username or password is NULL");
+        return;
+    }
+
+    Message *msg = message_create(REGISTER);
+    if (msg == NULL)
+    {
+        log_message(ERROR, "Failed to allocate memory for message");
+        return;
+    }
+
+    message_write_string(msg, self->username);
+    message_write_string(msg, self->password);
+    log_message(INFO, "Registering with username: %s, password: %s", self->username, self->password);
+    session_send_message(self->session, msg);
 }
