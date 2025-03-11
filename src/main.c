@@ -100,7 +100,6 @@ void *keyboard_input_handler(void *arg) {
             user->session = session;
             
             user->login(user);
-            log_message(INFO, "Login attempt sent to server");
         }
 
         if(strncmp(input, "/users", 6) == 0) {

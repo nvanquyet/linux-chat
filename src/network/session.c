@@ -618,7 +618,6 @@ Message *session_read_message(Session *session)
         log_message(ERROR, "Failed to receive command, closing session");
         return NULL;
     }
-    log_message(INFO, "Received command: %d", command);
 
     if (command == GET_SESSION_ID || command == TRADE_KEY || command == TRADE_DH_PARAMS)
     {
@@ -773,8 +772,6 @@ void process_message(Session *session, Message *msg)
 
 bool do_send_message(Session *session, Message *msg)
 {   
-    log_message(INFO, "Sending message command: %d", msg->command);
-
     if (session == NULL || msg == NULL)
     {
         return false;

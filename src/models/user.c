@@ -89,7 +89,6 @@ void login(User *self)
 
     message_write_string(msg, self->username);
     message_write_string(msg, self->password);
-    log_message(INFO, "Logging in with username: %s, password: %s", self->username, self->password);
     session_send_message(self->session, msg);
 }
 
