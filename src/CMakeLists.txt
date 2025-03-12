@@ -1,15 +1,30 @@
 # src/CMakeLists.txt
-# Danh sách source files
+
+# Collect all source files
 file(GLOB_RECURSE SOURCES "*.c")
 
-# Tạo executable
+# Create executable
 add_executable(chat_app ${SOURCES})
 
-# Liên kết thư viện
+# Link libraries
 target_link_libraries(chat_app 
     ${OPENSSL_LIBRARIES}
-    ${MYSQL_LIBRARIES}
-    pthread
+    Threads::Threads  # Use the proper CMake target for threads
+)
 
+# Set output directory
+set_target_properties(chat_app PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+)
 
+# Add architecture suffix for cross-compiled binaries
+if(BUILD_ARM64)
+    set_target_properties(chat_app PROPERTIES
+        OUTPUT_NAME "chat_app_arm64"
+    )
+endif()
+
+# Install rules
+install(TARGETS chat_app
+    RUNTIME DESTINATION bin
 )

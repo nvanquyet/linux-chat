@@ -102,14 +102,6 @@ void *keyboard_input_handler(void *arg) {
             user->login(user);
         }
 
-        if(strncmp(input, "/users", 6) == 0) {
-            if(session->service != NULL && session->user != NULL) {
-                session->service->get_online_users(session->service);
-            } else {
-                log_message(ERROR, "Login first");
-            }
-            
-        }
 
         if(strncmp(input, "/register", 9) == 0) {
             char *username = strtok(input + 9, " ");
@@ -128,9 +120,17 @@ void *keyboard_input_handler(void *arg) {
                 log_message(ERROR, "Service is NULL");
             }
         }
+
+        if(strncmp(input, "/users", 6) == 0) {
+            if(session->service != NULL && session->user != NULL) {
+                session->service->get_online_users(session->service);
+
+            } else {
+                log_message(ERROR, "Login first");
+            }
+        }
+
     }
-    
-    log_message(INFO, "Keyboard input handler exiting");
     return NULL;
 }
 
@@ -145,7 +145,7 @@ int main(int argc, char *argv[])
     signal(SIGPIPE, SIG_IGN);
 
 
-    session->connect(session, "127.0.0.1", 1609);
+    session->connect(session, "20.243.124.24", 1609);
  
     if (!session->connected) {
         log_message(ERROR, "Connection failed, exiting");

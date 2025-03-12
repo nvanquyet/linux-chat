@@ -339,7 +339,6 @@ bool session_do_send_message(Session *session, Message *msg)
 
 void session_close_message(Session *self)
 {
-    log_message(INFO, "Closing message");
     if (self == NULL)
     {
         return;
@@ -615,7 +614,6 @@ Message *session_read_message(Session *session)
     uint8_t command;
     if (recv(session->socket, &command, sizeof(command), 0) <= 0)
     {
-        log_message(ERROR, "Failed to receive command, closing session");
         return NULL;
     }
 
