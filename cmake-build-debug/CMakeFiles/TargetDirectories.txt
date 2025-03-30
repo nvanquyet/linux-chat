@@ -1,0 +1,3 @@
+/home/vawnwuyest/Documents/LinuxKernel/LinuxExam/linux-chat-client/cmake-build-debug/CMakeFiles/MyChatProject.dir
+/home/vawnwuyest/Documents/LinuxKernel/LinuxExam/linux-chat-client/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/vawnwuyest/Documents/LinuxKernel/LinuxExam/linux-chat-client/cmake-build-debug/CMakeFiles/rebuild_cache.dir

@@ -1,0 +1,15 @@
+# ninja log v6
+1	212	1743376035606639077	src/CMakeFiles/chat_app.dir/models/user.c.o	d1ded352e4af7457
+1	261	1743376035606836238	src/CMakeFiles/chat_app.dir/network/controller.c.o	352ac13734879199
+2	98	1743377758315715204	/home/vawnwuyest/Documents/LinuxKernel/LinuxExam/linux-chat-client/cmake-build-debug/src/cmake_install.cmake	da072262fe51a4d9
+2	98	1743377796666819158	build.ninja	da072262fe51a4d9
+261	315	1743376035865175511	src/CMakeFiles/chat_app.dir/utils/log.c.o	2296e2a7c52b7966
+370	446	1743376035974176034	bin/chat_app	5fb3b83406ce3eef
+2	315	1743376035607224285	src/CMakeFiles/chat_app.dir/network/session.c.o	b7f0f1f33238ccc5
+270	370	1743376035874175555	src/CMakeFiles/chat_app.dir/utils/utils.c.o	660aa8402a3b2c8c
+2	98	1743377796665819155	/home/vawnwuyest/Documents/LinuxKernel/LinuxExam/linux-chat-client/cmake-build-debug/cmake_install.cmake	da072262fe51a4d9
+212	289	1743376035817509495	src/CMakeFiles/chat_app.dir/utils/aes_utils.c.o	80eef8179e8bcfea
+1	284	1743376035605174265	src/CMakeFiles/chat_app.dir/main.c.o	bd9ab1f33b3f48f3
+1	299	1743376035606955669	src/CMakeFiles/chat_app.dir/network/message.c.o	2aa4f01fc376a7d7
+2	270	1743376035607098776	src/CMakeFiles/chat_app.dir/network/service.c.o	7dc8770502be8b1c
+1	834	1743377818845878694	CMakeFiles/MyChatProject.dir/src/main.c.o	6971de4004b001ed
