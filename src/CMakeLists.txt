@@ -8,7 +8,7 @@ add_executable(chat_app ${SOURCES}
         ../include/chat_common.h)
 
 # Link libraries
-target_link_libraries(chat_app 
+target_link_libraries(chat_app
     ${OPENSSL_LIBRARIES}
     Threads::Threads  # Use the proper CMake target for threads
 )

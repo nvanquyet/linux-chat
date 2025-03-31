@@ -93,12 +93,4 @@ void show_login_window(void) {
     gtk_widget_show_all(window);
 }
 
-int main(int argc, char *argv[]) {
-    gtk_init(&argc, &argv);
 
-    // Hiển thị form đăng nhập (sẽ được căn giữa màn hình nhờ gtk_window_set_position)
-    show_login_window();
-
-    gtk_main();
-    return 0;
-}

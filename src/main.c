@@ -3,21 +3,12 @@
 #include <string.h>
 #include <pthread.h>
 #include "session.h"
-#include "log.h"
-#include <signal.h>
-#include <unistd.h>
-#include "message.h"
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <pthread.h>
+#include "user.h"
 #include "session.h"
 #include "log.h"
 #include <signal.h>
 #include <unistd.h>
 #include "message.h"
-#include "cmd.h"
 
 void *keyboard_input_handler(void *arg) {
     Session *session = (Session *)arg;

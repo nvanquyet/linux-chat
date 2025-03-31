@@ -34,6 +34,9 @@ if(BUILD_ARM64)
     message(STATUS "Using compiler: ${CMAKE_C_COMPILER}")
 endif()
 
+# Tự động tìm tất cả file .c trong src/
+file(GLOB_RECURSE SOURCE_FILES src/*.c)
+
 # Required libraries
 if(BUILD_ARM64)
     set(OPENSSL_LIBRARIES ${OPENSSL_SSL_LIBRARY} ${OPENSSL_CRYPTO_LIBRARY})
@@ -53,10 +56,10 @@ include_directories(
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(GTK3 REQUIRED gtk+-3.0)
 
-# Add executable
-add_executable(MyChatProject src/main.c)  # Đảm bảo `src/main.c` tồn tại
+# Tạo executable từ tất cả các file .c
+add_executable(MyChatProject ${SOURCE_FILES})
 
-# Link GTK3
+# Link GTK3 và các thư viện cần thiết
 target_include_directories(MyChatProject PRIVATE ${GTK3_INCLUDE_DIRS})
 target_link_libraries(MyChatProject PRIVATE ${GTK3_LIBRARIES} Threads::Threads OpenSSL::SSL OpenSSL::Crypto)
 target_compile_options(MyChatProject PRIVATE ${GTK3_CFLAGS_OTHER})
