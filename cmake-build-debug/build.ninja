@@ -57,6 +57,22 @@ build CMakeFiles/MyChatProject.dir/src/main.c.o: C_COMPILER__MyChatProject_unsca
   OBJECT_DIR = CMakeFiles/MyChatProject.dir
   OBJECT_FILE_DIR = CMakeFiles/MyChatProject.dir/src
 
+build CMakeFiles/MyChatProject.dir/src/manager/request_manager.c.o: C_COMPILER__MyChatProject_unscanned_Release /home/vawnwuyest/Documents/LinuxKernel/LinuxExam/linux-chat-client/src/manager/request_manager.c || cmake_object_order_depends_target_MyChatProject
+  CONFIG = Release
+  DEP_FILE = CMakeFiles/MyChatProject.dir/src/manager/request_manager.c.o.d
+  FLAGS = -O3 -DNDEBUG -std=gnu11 -fdiagnostics-color=always -pthread
+  INCLUDES = -I/home/vawnwuyest/Documents/LinuxKernel/LinuxExam/linux-chat-client/include -I/usr/include/gtk-3.0 -I/usr/include/pango-1.0 -I/usr/include/cloudproviders -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/at-spi2-atk/2.0 -I/usr/include/at-spi-2.0 -I/usr/include/atk-1.0 -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/fribidi -I/usr/include/pixman-1 -I/usr/include/harfbuzz -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/gio-unix-2.0 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/sysprof-6
+  OBJECT_DIR = CMakeFiles/MyChatProject.dir
+  OBJECT_FILE_DIR = CMakeFiles/MyChatProject.dir/src/manager
+
+build CMakeFiles/MyChatProject.dir/src/models/group.c.o: C_COMPILER__MyChatProject_unscanned_Release /home/vawnwuyest/Documents/LinuxKernel/LinuxExam/linux-chat-client/src/models/group.c || cmake_object_order_depends_target_MyChatProject
+  CONFIG = Release
+  DEP_FILE = CMakeFiles/MyChatProject.dir/src/models/group.c.o.d
+  FLAGS = -O3 -DNDEBUG -std=gnu11 -fdiagnostics-color=always -pthread
+  INCLUDES = -I/home/vawnwuyest/Documents/LinuxKernel/LinuxExam/linux-chat-client/include -I/usr/include/gtk-3.0 -I/usr/include/pango-1.0 -I/usr/include/cloudproviders -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/at-spi2-atk/2.0 -I/usr/include/at-spi-2.0 -I/usr/include/atk-1.0 -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/fribidi -I/usr/include/pixman-1 -I/usr/include/harfbuzz -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/gio-unix-2.0 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/sysprof-6
+  OBJECT_DIR = CMakeFiles/MyChatProject.dir
+  OBJECT_FILE_DIR = CMakeFiles/MyChatProject.dir/src/models
+
 build CMakeFiles/MyChatProject.dir/src/models/user.c.o: C_COMPILER__MyChatProject_unscanned_Release /home/vawnwuyest/Documents/LinuxKernel/LinuxExam/linux-chat-client/src/models/user.c || cmake_object_order_depends_target_MyChatProject
   CONFIG = Release
   DEP_FILE = CMakeFiles/MyChatProject.dir/src/models/user.c.o.d
@@ -137,6 +153,14 @@ build CMakeFiles/MyChatProject.dir/src/utils/aes_utils.c.o: C_COMPILER__MyChatPr
   OBJECT_DIR = CMakeFiles/MyChatProject.dir
   OBJECT_FILE_DIR = CMakeFiles/MyChatProject.dir/src/utils
 
+build CMakeFiles/MyChatProject.dir/src/utils/json_utils.c.o: C_COMPILER__MyChatProject_unscanned_Release /home/vawnwuyest/Documents/LinuxKernel/LinuxExam/linux-chat-client/src/utils/json_utils.c || cmake_object_order_depends_target_MyChatProject
+  CONFIG = Release
+  DEP_FILE = CMakeFiles/MyChatProject.dir/src/utils/json_utils.c.o.d
+  FLAGS = -O3 -DNDEBUG -std=gnu11 -fdiagnostics-color=always -pthread
+  INCLUDES = -I/home/vawnwuyest/Documents/LinuxKernel/LinuxExam/linux-chat-client/include -I/usr/include/gtk-3.0 -I/usr/include/pango-1.0 -I/usr/include/cloudproviders -I/usr/include/cairo -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/at-spi2-atk/2.0 -I/usr/include/at-spi-2.0 -I/usr/include/atk-1.0 -I/usr/include/dbus-1.0 -I/usr/lib/dbus-1.0/include -I/usr/include/fribidi -I/usr/include/pixman-1 -I/usr/include/harfbuzz -I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/gio-unix-2.0 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/sysprof-6
+  OBJECT_DIR = CMakeFiles/MyChatProject.dir
+  OBJECT_FILE_DIR = CMakeFiles/MyChatProject.dir/src/utils
+
 build CMakeFiles/MyChatProject.dir/src/utils/log.c.o: C_COMPILER__MyChatProject_unscanned_Release /home/vawnwuyest/Documents/LinuxKernel/LinuxExam/linux-chat-client/src/utils/log.c || cmake_object_order_depends_target_MyChatProject
   CONFIG = Release
   DEP_FILE = CMakeFiles/MyChatProject.dir/src/utils/log.c.o.d
@@ -161,7 +185,7 @@ build CMakeFiles/MyChatProject.dir/src/utils/utils.c.o: C_COMPILER__MyChatProjec
 #############################################
 # Link the executable MyChatProject
 
-build MyChatProject: C_EXECUTABLE_LINKER__MyChatProject_Release CMakeFiles/MyChatProject.dir/src/main.c.o CMakeFiles/MyChatProject.dir/src/models/user.c.o CMakeFiles/MyChatProject.dir/src/network/controller.c.o CMakeFiles/MyChatProject.dir/src/network/message.c.o CMakeFiles/MyChatProject.dir/src/network/service.c.o CMakeFiles/MyChatProject.dir/src/network/session.c.o CMakeFiles/MyChatProject.dir/src/ui/Login.c.o CMakeFiles/MyChatProject.dir/src/ui/Register.c.o CMakeFiles/MyChatProject.dir/src/ui/chat_app.c.o CMakeFiles/MyChatProject.dir/src/ui/create_group.c.o CMakeFiles/MyChatProject.dir/src/utils/aes_utils.c.o CMakeFiles/MyChatProject.dir/src/utils/log.c.o CMakeFiles/MyChatProject.dir/src/utils/utils.c.o | /usr/lib/libssl.so /usr/lib/libcrypto.so
+build MyChatProject: C_EXECUTABLE_LINKER__MyChatProject_Release CMakeFiles/MyChatProject.dir/src/main.c.o CMakeFiles/MyChatProject.dir/src/manager/request_manager.c.o CMakeFiles/MyChatProject.dir/src/models/group.c.o CMakeFiles/MyChatProject.dir/src/models/user.c.o CMakeFiles/MyChatProject.dir/src/network/controller.c.o CMakeFiles/MyChatProject.dir/src/network/message.c.o CMakeFiles/MyChatProject.dir/src/network/service.c.o CMakeFiles/MyChatProject.dir/src/network/session.c.o CMakeFiles/MyChatProject.dir/src/ui/Login.c.o CMakeFiles/MyChatProject.dir/src/ui/Register.c.o CMakeFiles/MyChatProject.dir/src/ui/chat_app.c.o CMakeFiles/MyChatProject.dir/src/ui/create_group.c.o CMakeFiles/MyChatProject.dir/src/utils/aes_utils.c.o CMakeFiles/MyChatProject.dir/src/utils/json_utils.c.o CMakeFiles/MyChatProject.dir/src/utils/log.c.o CMakeFiles/MyChatProject.dir/src/utils/utils.c.o | /usr/lib/libssl.so /usr/lib/libcrypto.so
   CONFIG = Release
   DEP_FILE = CMakeFiles/MyChatProject.dir/link.d
   FLAGS = -O3 -DNDEBUG

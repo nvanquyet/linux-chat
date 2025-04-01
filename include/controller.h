@@ -3,7 +3,6 @@
 
 #include "session.h"
 #include "user.h"
-#include "service.h"
 #include "message.h"
 
 typedef struct Controller Controller;
@@ -34,5 +33,6 @@ void controller_on_message(Controller* controller, Message* msg);
 
 
 char **get_online_users(Controller* controller, Message* message);
+void get_joined_groups(Controller *controller, Message *message);
 
 #endif

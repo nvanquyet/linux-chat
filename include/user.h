@@ -30,6 +30,8 @@ void destroyUser(User *user);
 void user_set_session(User *user, Session *session);
 void user_set_service(User *user, Service *service);
 
+User *findUser(const char *id);
+
 #endif
 
 

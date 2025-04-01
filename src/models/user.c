@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "cmd.h"
+#include "group.h"
 #include "message.h"
 
 void login(User *self);
@@ -95,6 +96,7 @@ void login(User *self)
 void logout(User *self)
 {
     self->isOnline = false;
+    groupRefresh();
 }
 void userRegister(User *self)
 {

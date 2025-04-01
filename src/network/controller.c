@@ -6,6 +6,9 @@
 #include "session.h"
 #include "user.h"
 #include <stdlib.h>
+#include <string.h>
+
+#include "group.h"
 
 void controller_on_message(Controller *self, Message *message);
 void controller_on_connection_fail(Controller *self);
@@ -88,6 +91,9 @@ void controller_on_message(Controller *self, Message *message)
   case LOGIN_SUCCESS:
     self->client->isLogin = true;
     break;
+    case GET_JOINED_GROUPS:
+      get_joined_groups(self, message);
+      break;
   default:
     log_message(ERROR, "Unknown command %d",
                 command);
@@ -173,4 +179,57 @@ char **get_online_users(Controller *controller, Message *message)
     log_message(INFO, "User %d: %s", i, users[i]);
   }
   return users;
+}
+
+void get_joined_groups(Controller *controller, Message *message) {
+  if (!controller || !message) {
+    log_message(ERROR, "Invalid controller or message");
+    return;
+  }
+
+  bool has_groups = message_read_bool(message);
+  if (!has_groups) {
+    log_message(INFO, "User không tham gia nhóm nào");
+    //todo: update ui
+    //update_ui_no_groups();  // Cập nhật UI nếu không có nhóm
+    return;
+  }
+
+  int group_count = (int) message_read_int(message);
+  log_message(INFO, "User tham gia %d nhóm", group_count);
+
+  Group *groups = (Group *)malloc(sizeof(Group) * group_count);
+  if (!groups) {
+    log_message(ERROR, "Không thể cấp phát bộ nhớ cho danh sách nhóm");
+    return;
+  }
+
+  for (int i = 0; i < group_count; i++) {
+    groups[i].id = (int)message_read_int(message);
+    message_read_string(message, groups[i].name, sizeof(groups[i].name));
+    groups[i].created_at = (long)message_read_long(message);
+    int owner_id = (int) message_read_int(message);
+    char owner_name[256];  // Giả sử có giới hạn độ dài tên
+    if (!message_read_string(message, owner_name, sizeof(owner_name))) {
+      log_message(ERROR, "Invalid owner");
+    }
+    if (owner_id != -1) {
+      groups[i].created_by = (User *)malloc(sizeof(User));
+      if (groups[i].created_by) {
+        groups[i].created_by->id = owner_id;
+        strncpy(groups[i].created_by->username, owner_name, sizeof(groups[i].created_by->username) - 1);
+        groups[i].created_by->username[sizeof(groups[i].created_by->username) - 1] = '\0';
+      }
+    } else {
+      groups[i].created_by = NULL;
+    }
+    log_message(INFO, "Nhóm %d: %s, Created by %s (%d) at %ld",
+                    groups[i].id, groups[i].name, groups[i].created_by ? groups[i].created_by->username : "Unknown",
+                    owner_id, groups[i].created_at);
+  }
+
+  //todo: update ui
+  //update_ui_with_groups(groups, group_count);
+
+  free(groups);
 }

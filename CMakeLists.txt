@@ -57,7 +57,14 @@ find_package(PkgConfig REQUIRED)
 pkg_check_modules(GTK3 REQUIRED gtk+-3.0)
 
 # Tạo executable từ tất cả các file .c
-add_executable(MyChatProject ${SOURCE_FILES})
+add_executable(MyChatProject ${SOURCE_FILES}
+        include/group.h
+        src/models/group.c
+        include/request_manager.h
+        src/manager/request_manager.c
+        include/json_utils.h
+        src/utils/json_utils.c
+)
 
 # Link GTK3 và các thư viện cần thiết
 target_include_directories(MyChatProject PRIVATE ${GTK3_INCLUDE_DIRS})
