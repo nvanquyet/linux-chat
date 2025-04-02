@@ -333,11 +333,10 @@ void *keyboard_input_handler(void *arg) {
 
         // Handle create group command
         else if (strncmp(input, CMD_CREATE_GROUP, strlen(CMD_CREATE_GROUP)) == 0) {
-            char *cmd_ptr = input + strlen(CMD_CREATE_GROUP);
-
             // Skip whitespace
-            while (*cmd_ptr == ' ') cmd_ptr++;
-
+            char *cmd_ptr = input + strlen(CMD_CREATE_GROUP) + 1;
+            //while (*cmd_ptr == ' ') cmd_ptr++;
+            //
             if (*cmd_ptr == '\0') {
                 log_message(ERROR, "Usage: /create <group_name>");
                 continue;

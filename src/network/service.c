@@ -105,48 +105,77 @@ void service_create_group(Service* service, User* user, const char* group_name) 
     }
     message_write_string(message, group_name);
     message_write_int(message, user->id);
-
     //Send to server
     session_send_message(service->session, message);
-    log_message(INFO, "Creating group %s with %s", group_name, user->id);
 }
-void service_join_group(Service* service,User* user, int group_id) {
-    if (service == NULL) return;
-    //Send to server
+void service_join_group(Service* service, User* user, int group_id) {
+    if (service == NULL) {
+        log_message(ERROR, "Service is NULL");
+        return;
+    }
 
+    if (user == NULL) {
+        log_message(ERROR, "User is NULL");
+        return;
+    }
+
+    // Tạo message để gửi tới server
     Message* message = message_create(JOIN_GROUP);
     if (message == NULL) {
         log_message(ERROR, "Failed to create message");
         return;
     }
-    //write anything for passing the encryption
+
+    // Ghi dữ liệu vào message
     message_write_int(message, group_id);
     message_write_int(message, user->id);
-    if(!service->session) {
+
+    // Kiểm tra nếu session là NULL
+    if (service->session == NULL) {
         log_message(ERROR, "Session is NULL");
+        free(message);  // Giải phóng bộ nhớ message để tránh rò rỉ
         return;
     }
+
+    // Gửi message đến server
     session_send_message(service->session, message);
-    log_message(INFO, "Joining group %s", group_id);
+
+    // Log thông tin tham gia nhóm
+    log_message(INFO, "User %d is joining group %d", user->id, group_id);
+
 }
 
 void service_leave_group(Service* service, User* user, int group_id) {
-    if (service == NULL) return;
+    if (service == NULL) {
+        log_message(ERROR, "Service is NULL");
+        return;
+    }
+
+    if (user == NULL) {
+        log_message(ERROR, "User is NULL");
+        return;
+    }
+
     Message* message = message_create(LEAVE_GROUP);
     if (message == NULL) {
         log_message(ERROR, "Failed to create message");
         return;
     }
-    //write anything for passing the encryption
+
+    // Write anything for passing the encryption
     message_write_int(message, group_id);
     message_write_int(message, user->id);
-    if(!service->session) {
+
+    if (!service->session) {
         log_message(ERROR, "Session is NULL");
+        free(message);  // Don't forget to free the message to avoid memory leak
         return;
     }
+
+    log_message(INFO, "Leaving group %d", group_id);
     session_send_message(service->session, message);
-    log_message(INFO, "Leaving group %s", group_id);
 }
+
 void service_delete_group(Service* service, User* user, int group_id) {
     if (service == NULL) return;
 
