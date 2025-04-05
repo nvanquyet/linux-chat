@@ -29,6 +29,8 @@ Service* createService(Session* session) {
     service->leave_group = service_leave_group;
     service->delete_group = service_delete_group;
 
+    service->get_history = service_get_history;
+
     service->send_group_message = service_send_group_message;
     service->send_user_message = service_send_user_message;
     return service;
@@ -204,7 +206,7 @@ void service_delete_group(Service* service, User* user, int group_id) {
 void service_send_group_message(Service* service,  User* user, int group_id, const char* message) {
     if (service == NULL) return;
 
-    Message* m = message_create(SEND_GROUP_MESSAGE);
+    Message* m = message_create(GROUP_MESSAGE);
     if (m == NULL) {
         log_message(ERROR, "Failed to create message");
         return;
@@ -226,7 +228,7 @@ void service_send_group_message(Service* service,  User* user, int group_id, con
 void service_send_user_message(Service* service,  User* user, int user_id, const char* message) {
     if (service == NULL) return;
 
-    Message* m = message_create(SEND_MESSAGE);
+    Message* m = message_create(USER_MESSAGE);
     if (m == NULL) {
         log_message(ERROR, "Failed to create message");
         return;
@@ -241,4 +243,19 @@ void service_send_user_message(Service* service,  User* user, int user_id, const
     }
     session_send_message(service->session, m);
     log_message(INFO, "Sending message %s", message);
+}
+
+void service_get_history(Service* service, User* user) {
+    if (service == NULL) return;
+    if (user == NULL) {
+        log_message(ERROR, "User is NULL");
+        return;
+    }
+    Message* message = message_create(GET_CHAT_HISTORY);
+    if (message == NULL) {
+        log_message(ERROR, "Failed to create message");
+        return;
+    }
+    message_write_int(message, user->id);
+    session_send_message(service->session, message);
 }

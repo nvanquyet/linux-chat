@@ -96,7 +96,6 @@ void login(User *self)
 void logout(User *self)
 {
     self->isOnline = false;
-    groupRefresh();
 }
 void userRegister(User *self)
 {

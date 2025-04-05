@@ -22,7 +22,4 @@ void deleteGroup(Group *group);
 void listGroupMembers(int index);
 void showJoinedGroups();
 Group *findGroup(int index);
-
-void handle_joined_groups();
-
 #endif //GROUP_H

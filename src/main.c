@@ -25,6 +25,7 @@
 #define CMD_USER_MSG    "/u-msg"
 #define CMD_CREATE_GROUP "/create"
 #define CMD_DELETE_GROUP "/delete"
+#define CMD_HISTORY     "/history"
 #define CMD_HELP        "/help"
 #define CMD_PROFILE     "/profile"
 #define CMD_STATUS      "/status"
@@ -124,7 +125,6 @@ void *keyboard_input_handler(void *arg) {
         // Check for exit command
         if (strcmp(input, CMD_EXIT) == 0 || strcmp(input, CMD_QUIT) == 0) {
             log_message(INFO, "Exit command received");
-            groupRefresh();
             break;
         }
 
@@ -384,10 +384,10 @@ void *keyboard_input_handler(void *arg) {
 
         // Handle group message command
         else if (strncmp(input, CMD_MESSAGE, strlen(CMD_MESSAGE)) == 0) {
-            char *cmd_ptr = input + strlen(CMD_MESSAGE);
+            char *cmd_ptr = input + strlen(CMD_MESSAGE) + 1;
 
             // Skip whitespace
-            while (*cmd_ptr == ' ') cmd_ptr++;
+            //while (*cmd_ptr == ' ') cmd_ptr++;
 
             if (*cmd_ptr == '\0') {
                 log_message(ERROR, "Usage: /msg <group_id> <message>");
@@ -427,10 +427,9 @@ void *keyboard_input_handler(void *arg) {
 
         // Handle direct user message command
         else if (strncmp(input, CMD_USER_MSG, strlen(CMD_USER_MSG)) == 0) {
-            char *cmd_ptr = input + strlen(CMD_USER_MSG);
-
+            char *cmd_ptr = input + strlen(CMD_USER_MSG) + 1;
             // Skip whitespace
-            while (*cmd_ptr == ' ') cmd_ptr++;
+            //while (*cmd_ptr == ' ') cmd_ptr++;
 
             if (*cmd_ptr == '\0') {
                 log_message(ERROR, "Usage: /u-msg <user_id> <message>");
@@ -496,6 +495,10 @@ void *keyboard_input_handler(void *arg) {
                 printf("Username: %s\n", session->user->username);
             }
             printf("-----------------------------\n\n");
+        } else if (strcmp(input, CMD_HISTORY) == 0) {
+            if (check_session_valid(session, "history command")) {
+                session->service->get_history(session->service, session->user);
+            }
         }
 
         // Handle unknown command
@@ -566,7 +569,7 @@ int main(int argc, char *argv[]) {
     // Clean up and exit
     session->close(session);
     destroySession(session);
-    
+
     log_message(INFO, "Application exiting");
     return 0;
 }

@@ -34,5 +34,12 @@ void controller_on_message(Controller* controller, Message* msg);
 
 char **get_online_users(Controller* controller, Message* message);
 void get_joined_groups(Controller *controller, Message *message);
+void get_chat_history(Controller *controller, Message *message);
 
+void delete_group(Controller *controller, Message *message);
+void create_group(Controller *controller, Message *message);
+void leave_group(Controller *controller, Message *message);
+
+void receive_user_message(Controller *controller, Message *message);
+void receive_group_message(Controller *controller, Message *message);
 #endif

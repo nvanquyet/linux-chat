@@ -20,6 +20,7 @@ struct Service {
     void (*join_group)(Service* self, User* user, int group_id);
     void (*leave_group)(Service* self, User* user, int group_id);
     void (*delete_group)(Service* self, User* user, int group_id);
+    void (*get_history)(Service* self, User* user);
 
     // Messaging
     void (*send_group_message)(Service* self, User* user, int group_id, const char* message);
@@ -46,4 +47,5 @@ void service_delete_group(Service* service,  User* user, int group_id);
 void service_send_group_message(Service* service,  User* user, int group_id, const char* message);
 void service_send_user_message(Service* service, User* user, int user_id, const char* message);
 
+void service_get_history(Service* service,  User* user);
 #endif

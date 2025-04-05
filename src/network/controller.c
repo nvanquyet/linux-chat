@@ -94,6 +94,24 @@ void controller_on_message(Controller *self, Message *message)
   case GET_JOINED_GROUPS:
     get_joined_groups(self, message);
     break;
+  case CREATE_GROUP:
+    create_group(self, message);
+    break;
+  case LEAVE_GROUP:
+    leave_group(self, message);
+    break;
+  case DELETE_GROUP:
+    delete_group(self, message);
+    break;
+  case USER_MESSAGE:
+    receive_user_message(self, message);
+    break;
+  case GROUP_MESSAGE:
+    receive_group_message(self, message);
+    break;
+  case GET_CHAT_HISTORY:
+    get_chat_history(self,message);
+    break;
   default:
     log_message(ERROR, "Unknown command %d",
                 command);
@@ -180,6 +198,7 @@ char **get_online_users(Controller *controller, Message *message)
   }
   return users;
 }
+
 void get_joined_groups(Controller *controller, Message *message) {
   if (!controller || !message) {
     log_message(ERROR, "Invalid controller or message");
@@ -250,4 +269,69 @@ void get_joined_groups(Controller *controller, Message *message) {
     free(groups[i]);
   }
   free(groups);
+}
+
+void get_chat_history(Controller *controller, Message *message) {
+  if (!controller || !message) {
+    log_message(ERROR, "Invalid controller or message");
+    return;
+  }
+  message->position = 0;
+  bool success = message_read_bool(message);
+
+  if (!success) {
+    printf("Không có lịch sử chat nào\n");
+    return;
+  }
+
+  int count = (int) message_read_int(message);
+  printf("Tìm thấy %d lịch sử chat:\n", count);
+
+  for (int i = 0; i < count; i++) {
+    int id = (int) message_read_int(message);
+
+    char* chat_with = (char*)malloc(1024);
+    char* last_message = (char*)malloc(1024);
+    char* sender_name = (char*)malloc(1024);
+
+    if (!message_read_string(message, chat_with, 1024)) {
+      log_message(WARN, "NULL Message");
+    }
+    long last_time = (long) message_read_long(message);
+    if (!message_read_string(message, last_message, 1024)) {
+      log_message(WARN, "NULL Message");
+    }
+    int sender_id = (int) message_read_int(message);  // Thêm trường sender_id
+    if (!message_read_string(message, sender_name, 1024)) {
+      log_message(WARN, "NULL sender_name");
+    }
+    // Hiển thị
+    printf("===================\n");
+    printf("Chat #%d:\n", id);
+    printf("Sender: %s (ID: %d)\n", sender_name, sender_id);
+    printf("Name: %s\n", chat_with);
+    printf("Thời gian cuối: %ld\n", last_time);
+    printf("Tin nhắn cuối: %s\n", last_message);
+    printf("===================\n");
+
+    free(chat_with);
+    free(last_message);
+  }
+}
+
+void delete_group(Controller *controller, Message *message) {
+    log_message(INFO, "Delete Group");
+}
+void create_group(Controller *controller, Message *message) {
+  log_message(INFO, "Create Group");
+}
+void leave_group(Controller *controller, Message *message) {
+  log_message(INFO, "Leave Group");
+}
+
+void receive_user_message(Controller *controller, Message *message) {
+  log_message(INFO, "receive_user_message");
+}
+void receive_group_message(Controller *controller, Message *message) {
+ log_message(INFO, "receive_group_message");
 }
