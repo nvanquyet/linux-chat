@@ -178,6 +178,10 @@ void service_leave_group(Service* service, User* user, int group_id) {
 
 void service_delete_group(Service* service, User* user, int group_id) {
     if (service == NULL) return;
+    if (user == NULL) {
+        log_message(ERROR, "User is NULL");
+        return;
+    }
 
     Message* message = message_create(DELETE_GROUP);
     if (message == NULL) {
@@ -189,10 +193,11 @@ void service_delete_group(Service* service, User* user, int group_id) {
     message_write_int(message, user->id);
     if(!service->session) {
         log_message(ERROR, "Session is NULL");
+        free(message);
         return;
     }
+
     session_send_message(service->session, message);
-    log_message(INFO, "Deleting group %s", group_id);
 }
 
 // Messaging

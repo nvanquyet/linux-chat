@@ -24,6 +24,7 @@
 #define CMD_MESSAGE     "/msg"
 #define CMD_USER_MSG    "/u-msg"
 #define CMD_CREATE_GROUP "/create"
+#define CMD_DELETE_GROUP "/delete"
 #define CMD_HELP        "/help"
 #define CMD_PROFILE     "/profile"
 #define CMD_STATUS      "/status"
@@ -42,6 +43,7 @@ void display_help() {
     printf("%s <group_id> <message> - Send message to a group\n", CMD_MESSAGE);
     printf("%s <user_id> <message> - Send direct message to a user\n", CMD_USER_MSG);
     printf("%s <group_name> - Create a new group\n", CMD_CREATE_GROUP);
+    printf("%s <group_id> - Delete a group\n", CMD_DELETE_GROUP);
     printf("%s - Show your profile information\n", CMD_PROFILE);
     printf("%s - Show connection status\n", CMD_STATUS);
     printf("%s - Display this help message\n", CMD_HELP);
@@ -355,6 +357,30 @@ void *keyboard_input_handler(void *arg) {
                 }
             }
         }
+        else if (strncmp(input, CMD_DELETE_GROUP, strlen(CMD_DELETE_GROUP)) == 0) {
+            // Skip whitespace
+            char *cmd_ptr = input + strlen(CMD_DELETE_GROUP) + 1;
+
+            if (*cmd_ptr == '\0') {
+                log_message(ERROR, "Usage: /delete <group_id>");
+                continue;
+            }
+            int group_id = atoi(cmd_ptr);
+            if (group_id <= 0) {
+                log_message(ERROR, "Invalid group ID: %s", cmd_ptr);
+                continue;
+            }
+            if (check_session_valid(session, "delete command")) {
+                // Kiểm tra xem service có hỗ trợ hàm delete_group không
+                if (session->service->delete_group) {
+                    session->service->delete_group(session->service, session->user, group_id);
+                    log_message(INFO, "Group delete request sent for ID %d", group_id);
+                } else {
+                    log_message(ERROR, "Service does not support group deletion");
+                }
+            }
+        } // Handle delete group command
+
 
         // Handle group message command
         else if (strncmp(input, CMD_MESSAGE, strlen(CMD_MESSAGE)) == 0) {
