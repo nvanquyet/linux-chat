@@ -1,0 +1,41 @@
+file(REMOVE_RECURSE
+  "CMakeFiles/MyChatProject.dir/src/main.c.o"
+  "CMakeFiles/MyChatProject.dir/src/main.c.o.d"
+  "CMakeFiles/MyChatProject.dir/src/manager/request_manager.c.o"
+  "CMakeFiles/MyChatProject.dir/src/manager/request_manager.c.o.d"
+  "CMakeFiles/MyChatProject.dir/src/models/group.c.o"
+  "CMakeFiles/MyChatProject.dir/src/models/group.c.o.d"
+  "CMakeFiles/MyChatProject.dir/src/models/user.c.o"
+  "CMakeFiles/MyChatProject.dir/src/models/user.c.o.d"
+  "CMakeFiles/MyChatProject.dir/src/network/controller.c.o"
+  "CMakeFiles/MyChatProject.dir/src/network/controller.c.o.d"
+  "CMakeFiles/MyChatProject.dir/src/network/message.c.o"
+  "CMakeFiles/MyChatProject.dir/src/network/message.c.o.d"
+  "CMakeFiles/MyChatProject.dir/src/network/service.c.o"
+  "CMakeFiles/MyChatProject.dir/src/network/service.c.o.d"
+  "CMakeFiles/MyChatProject.dir/src/network/session.c.o"
+  "CMakeFiles/MyChatProject.dir/src/network/session.c.o.d"
+  "CMakeFiles/MyChatProject.dir/src/ui/Login.c.o"
+  "CMakeFiles/MyChatProject.dir/src/ui/Login.c.o.d"
+  "CMakeFiles/MyChatProject.dir/src/ui/Register.c.o"
+  "CMakeFiles/MyChatProject.dir/src/ui/Register.c.o.d"
+  "CMakeFiles/MyChatProject.dir/src/ui/chat_app.c.o"
+  "CMakeFiles/MyChatProject.dir/src/ui/chat_app.c.o.d"
+  "CMakeFiles/MyChatProject.dir/src/ui/create_group.c.o"
+  "CMakeFiles/MyChatProject.dir/src/ui/create_group.c.o.d"
+  "CMakeFiles/MyChatProject.dir/src/utils/aes_utils.c.o"
+  "CMakeFiles/MyChatProject.dir/src/utils/aes_utils.c.o.d"
+  "CMakeFiles/MyChatProject.dir/src/utils/json_utils.c.o"
+  "CMakeFiles/MyChatProject.dir/src/utils/json_utils.c.o.d"
+  "CMakeFiles/MyChatProject.dir/src/utils/log.c.o"
+  "CMakeFiles/MyChatProject.dir/src/utils/log.c.o.d"
+  "CMakeFiles/MyChatProject.dir/src/utils/utils.c.o"
+  "CMakeFiles/MyChatProject.dir/src/utils/utils.c.o.d"
+  "MyChatProject"
+  "MyChatProject.pdb"
+)
+
+# Per-language clean rules from dependency scanning.
+foreach(lang C)
+  include(CMakeFiles/MyChatProject.dir/cmake_clean_${lang}.cmake OPTIONAL)
+endforeach()
