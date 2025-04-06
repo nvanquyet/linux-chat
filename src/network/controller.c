@@ -81,9 +81,10 @@ void controller_on_message(Controller *self, Message *message)
       log_message(ERROR, "Service is NULL");
     }
     break;
-  case GET_ONLINE_USERS:
+  case GET_USERS:
     if(self->service != NULL) {
-      get_online_users(self, message);
+      get_all_users(self, message);
+      //get_online_users(self, message);
     } else {
       log_message(ERROR, "Service is NULL");
     }
@@ -111,6 +112,12 @@ void controller_on_message(Controller *self, Message *message)
     break;
   case GET_CHAT_HISTORY:
     get_chat_history(self,message);
+    break;
+  case GET_USERS_MESSAGE:
+    get_user_message(self,message);
+    break;
+  case GET_GROUPS_MESSAGE:
+    get_group_message(self,message);
     break;
   default:
     log_message(ERROR, "Unknown command %d",
@@ -197,6 +204,22 @@ char **get_online_users(Controller *controller, Message *message)
     log_message(INFO, "User %d: %s", i, users[i]);
   }
   return users;
+}
+
+void get_all_users(Controller *controller, Message *message) {
+    if (!controller || !message) return;
+
+    message->position = 0;
+    int count = message_read_int(message);
+
+    printf("Danh sách tất cả người dùng:\n");
+    for (int i = 0; i < count; i++) {
+      char username[1024];
+      if (!message_read_string(message, username, 1024)) continue;
+      bool isOnline = message_read_bool(message);
+
+      printf("Username: %s - Trạng thái: %s\n", username, isOnline ? "Online" : "Offline");
+    }
 }
 
 void get_joined_groups(Controller *controller, Message *message) {
@@ -320,18 +343,181 @@ void get_chat_history(Controller *controller, Message *message) {
 }
 
 void delete_group(Controller *controller, Message *message) {
-    log_message(INFO, "Delete Group");
+  if (message == NULL) {
+    log_message(ERROR, "Invalid message received");
+    return;
+  }
+
+  // Đọc kết quả thành công hay thất bại từ server
+  bool result = message_read_bool(message);
+
+  if (result) {
+    // Nếu thành công, hiển thị thông báo thành công
+    log_message(INFO, "Group deleted successfully.");
+    printf("Group deleted successfully.\n");
+  } else {
+    // Nếu thất bại, đọc thông báo lỗi từ server
+    char* error_message = (char*)malloc(1024);
+    if (!message_read_string(message, error_message, 1024)) {
+      log_message(WARN, "NULL Message");
+    }
+    log_message(INFO, "Failed to delete group: %s", error_message);
+    printf("Failed to delete group: %s\n", error_message);
+  }
 }
-void create_group(Controller *controller, Message *message) {
-  log_message(INFO, "Create Group");
+void create_group(Controller *controller, Message *msg) {
+  if (msg == NULL) {
+    log_message(ERROR, "Invalid message received");
+    return;
+  }
+
+  bool result = message_read_bool(msg);
+  if (result) {
+    int group_id = (int) message_read_int(msg);
+    log_message(INFO, "Group created successfully with ID: %d", group_id);
+    printf("Group created successfully. Group ID: %d\n", group_id);
+  } else {
+    log_message(INFO, "Failed to create group");
+    printf("Failed to create group.\n");
+  }
+  free(msg);
 }
 void leave_group(Controller *controller, Message *message) {
-  log_message(INFO, "Leave Group");
+  if (message == NULL) {
+    log_message(ERROR, "Invalid message received");
+    return;
+  }
+
+  // Đọc kết quả từ server (bool: thành công hay thất bại)
+  bool result = message_read_bool(message);
+  if (!result) {
+    // Nếu không thành công, đọc thông báo lỗi
+    char* error_message = (char*)malloc(1024);
+    if (!message_read_string(message, error_message, 1024)) {
+      log_message(WARN, "NULL Message");
+    }
+    printf("Error: %s\n", error_message);
+    free(error_message);
+  } else {
+    log_message(INFO, "Successfully left the group");
+    printf("You have successfully left the group.\n");
+  }
+  free(message);
 }
 
 void receive_user_message(Controller *controller, Message *message) {
-  log_message(INFO, "receive_user_message");
+  message->position = 0;
+  int sender_id = (int) message_read_int(message);
+  int user_id = (int) message_read_int(message);
+  char content[1024];
+  if (!message_read_string(message, content, sizeof(content))) {
+    log_message(ERROR, "Failed to read data");
+    return;
+  }
+  log_message(INFO, "Received User ID: %d, Content: %s", user_id, content);
+  free(message);
 }
 void receive_group_message(Controller *controller, Message *message) {
- log_message(INFO, "receive_group_message");
+  log_message(INFO, "receive_group_message");
+  message->position = 0;
+  int sender_id = (int) message_read_int(message);
+  int group_id = (int) message_read_int(message);
+  char content[1024];
+  if (!message_read_string(message, content, sizeof(content))) {
+    log_message(ERROR, "Failed to read data");
+    return;
+  }
+  log_message(INFO, "Received Group ID: %d, Content: %s", group_id, content);
+  free(message);
+}
+
+void get_user_message(Controller *controller, Message* msg) {
+  log_message(INFO, "Get history user message");
+  if (msg == NULL) {
+    log_message(ERROR, "Invalid message received from server");
+    return;
+  }
+
+  msg->position = 0;
+
+  bool has_messages = message_read_bool(msg);
+  if (!has_messages) {
+    log_message(INFO, "No messages found");
+    return;
+  }
+
+  // Đọc số lượng tin nhắn
+  int count = (int) message_read_int(msg);
+  log_message(INFO, "Received %d messages", count);
+
+  // Đọc và xử lý từng tin nhắn
+  for (int i = 0; i < count; i++) {
+    int sender_id = (int) message_read_int(msg);  // ID người gửi
+    char* sender_name = (char*)malloc(1024);
+    char* content = (char*)malloc(1024);
+    if (!message_read_string(msg, sender_name, 1024)) {
+      log_message(WARN, "NULL Message");
+    }
+    if (!message_read_string(msg, content, 1024)) {
+      log_message(WARN, "NULL Message");
+    }  // Nội dung tin nhắn
+    long timestamp = (long) message_read_long(msg); // Thời gian gửi
+
+    // Hiển thị thông tin tin nhắn
+    printf("Message #%d\n", i + 1);
+    printf("Sender ID: %d\n", sender_id);
+    printf("Sender Name: %s\n", sender_name);
+    printf("Content: %s\n", content);
+    printf("Timestamp: %ld\n", timestamp);
+
+    // Giải phóng bộ nhớ cho tên người gửi và nội dung tin nhắn nếu cần
+    free(sender_name);
+    free(content);
+  }
+  free(msg);
+}
+void get_group_message(Controller *controller, Message* msg) {
+  if (msg == NULL) {
+    log_message(ERROR, "Invalid message received from server");
+    return;
+  }
+
+  msg->position = 0;
+
+  // Kiểm tra xem có tin nhắn hay không
+  bool has_messages = message_read_bool(msg);
+  if (!has_messages) {
+    log_message(INFO, "No messages found");
+    return;
+  }
+
+  // Đọc số lượng tin nhắn
+  int count = (int) message_read_int(msg);
+  log_message(INFO, "Received %d group messages", count);
+
+  // Đọc và xử lý từng tin nhắn
+  for (int i = 0; i < count; i++) {
+    int sender_id = (int) message_read_int(msg);  // ID người gửi
+    char* sender_name = (char*)malloc(1024);
+    char* content = (char*)malloc(1024);
+    if (!message_read_string(msg, sender_name, 1024)) {
+      log_message(WARN, "NULL Message");
+    }
+    if (!message_read_string(msg, content, 1024)) {
+      log_message(WARN, "NULL Message");
+    }  // Nội dung tin nhắn
+    long timestamp = (long) message_read_long(msg); // Thời gian gửi
+
+    // Hiển thị thông tin tin nhắn
+    printf("Group Message #%d\n", i + 1);
+    printf("Sender ID: %d\n", sender_id);
+    printf("Sender Name: %s\n", sender_name);
+    printf("Content: %s\n", content);
+    printf("Timestamp: %ld\n", timestamp);
+
+    // Giải phóng bộ nhớ cho tên người gửi và nội dung tin nhắn nếu cần
+    free(sender_name);
+    free(content);
+  }
+  free(msg);
 }

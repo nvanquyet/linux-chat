@@ -279,14 +279,12 @@ void *keyboard_input_handler(void *arg) {
                 session->service->get_online_users(session->service);
             }
         }
-
         // Handle groups command
         else if (strcmp(input, CMD_GROUPS) == 0) {
             if (check_session_valid(session, "groups command")) {
                 session->service->get_group_list(session->service, session->user);
             }
         }
-
         // Handle join group command
         else if (strncmp(input, CMD_JOIN_GROUP, strlen(CMD_JOIN_GROUP)) == 0) {
             char *cmd_ptr = input + strlen(CMD_JOIN_GROUP);
@@ -309,7 +307,6 @@ void *keyboard_input_handler(void *arg) {
                 session->service->join_group(session->service, session->user, group_id);
             }
         }
-
         // Handle leave group command
         else if (strncmp(input, CMD_LEAVE_GROUP, strlen(CMD_LEAVE_GROUP)) == 0) {
             char *cmd_ptr = input + strlen(CMD_LEAVE_GROUP);
@@ -332,7 +329,6 @@ void *keyboard_input_handler(void *arg) {
                 session->service->leave_group(session->service, session->user, group_id);
             }
         }
-
         // Handle create group command
         else if (strncmp(input, CMD_CREATE_GROUP, strlen(CMD_CREATE_GROUP)) == 0) {
             // Skip whitespace
