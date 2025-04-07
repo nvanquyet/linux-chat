@@ -102,6 +102,7 @@ void logout(User *self)
         log_message(ERROR, "Failed to allocate memory for message");
         return;
     }
+    message_write_int(msg, 0);
     session_send_message(self->session, msg);
 }
 void userRegister(User *self)

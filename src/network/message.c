@@ -234,7 +234,6 @@ bool message_encrypt(Message *msg, const unsigned char *key, const unsigned char
     {
         return false;
     }
-
     size_t max_ciphertext_len = msg->position + EVP_MAX_BLOCK_LENGTH;
     unsigned char *ciphertext = (unsigned char *)malloc(max_ciphertext_len);
     if (ciphertext == NULL)
@@ -242,8 +241,8 @@ bool message_encrypt(Message *msg, const unsigned char *key, const unsigned char
         return false;
     }
 
-    size_t ciphertext_len = 0;
 
+    size_t ciphertext_len = 0;
     aes_encrypt(msg->buffer, msg->position, (unsigned char *)key, (unsigned char *)iv,
                 ciphertext, &ciphertext_len);
 
@@ -251,7 +250,6 @@ bool message_encrypt(Message *msg, const unsigned char *key, const unsigned char
     msg->buffer = ciphertext;
     msg->size = max_ciphertext_len;
     msg->position = ciphertext_len;
-
     return true;
 }
 

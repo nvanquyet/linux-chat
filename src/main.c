@@ -212,7 +212,7 @@ void *keyboard_input_handler(void *arg) {
         else if (strcmp(input, CMD_LOGOUT) == 0) {
             if (session->user != NULL && session->isLogin) {
                 session->user->logout(session->user);
-                log_message(INFO, "Logged out successfully");
+                session->isLogin = false;
             } else {
                 log_message(ERROR, "Not logged in");
             }

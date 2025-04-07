@@ -17,7 +17,8 @@ void controller_on_connect_ok(Controller *self);
 void controller_message_in_chat(Controller *self, Message *ms);
 void controller_message_not_in_chat(Controller *self, Message *ms);
 void controller_new_message(Controller *self, Message *ms);
-
+void handle_login(Controller *self, Message *msg);
+void handle_register(Controller *self, Message *msg);
 char **get_online_users(Controller *controller, Message *message);
 
 
@@ -89,8 +90,12 @@ void controller_on_message(Controller *self, Message *message)
       log_message(ERROR, "Service is NULL");
     }
     break;
-  case LOGIN_SUCCESS:
+  case LOGIN:
     self->client->isLogin = true;
+    handle_login(self, message);
+    break;
+  case REGISTER:
+    handle_register(self, message);
     break;
   case GET_JOINED_GROUPS:
     get_joined_groups(self, message);
@@ -173,6 +178,33 @@ void controller_new_message(Controller *self, Message *ms)
   {
     return;
   }
+}
+
+void handle_login(Controller *self, Message *msg) {
+  if (msg == NULL) {
+    log_message(ERROR, "Login is NULL");
+    return;
+  }
+  msg->position = 0;
+  bool loginOk = message_read_bool(msg);
+  if (loginOk) {
+    log_message(INFO, "Đăng nhập thành công!\n");
+    // Có thể gọi các hàm tiếp theo, như chuyển sang màn hình chính
+
+  } else {
+    char error[256] = {0};
+    if (!message_read_string(msg, error, sizeof(error))) {
+      log_message(ERROR, "Failed to read error message");
+      return;
+    }
+    log_message(INFO, "Đăng nhập thất bại: %s\n", error);
+
+    // Gửi thông báo hoặc hiển thị dialog tùy game/app
+    //client_show_error_popup(error);
+  }
+}
+void handle_register(Controller *self, Message *msg) {
+  log_message(INFO, "Logout success");
 }
 
 char **get_online_users(Controller *controller, Message *message)
