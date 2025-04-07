@@ -20,7 +20,7 @@ void *socket_thread(void *arg) {
             log_message(INFO, "Server disconnected, keyboard handler exiting");
             break;
         }
-        usleep(1000);
+
     }
     return NULL;
 }

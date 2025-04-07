@@ -57,7 +57,7 @@ void service_get_online_users(Service* service) {
         return;
     }
     
-    Message* message = message_create(GET_ONLINE_USERS);
+    Message* message = message_create(GET_USERS);
     if (message == NULL) {
         log_message(ERROR, "Failed to create message");
         return;

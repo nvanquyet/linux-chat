@@ -96,6 +96,13 @@ void login(User *self)
 void logout(User *self)
 {
     self->isOnline = false;
+    //send to server logout message
+    Message *msg = message_create(LOGOUT);
+    if (msg == NULL) {
+        log_message(ERROR, "Failed to allocate memory for message");
+        return;
+    }
+    session_send_message(self->session, msg);
 }
 void userRegister(User *self)
 {
