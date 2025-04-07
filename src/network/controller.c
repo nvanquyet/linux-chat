@@ -18,6 +18,7 @@ void controller_message_in_chat(Controller *self, Message *ms);
 void controller_message_not_in_chat(Controller *self, Message *ms);
 void controller_new_message(Controller *self, Message *ms);
 void handle_login(Controller *self, Message *msg);
+void handle_logout(Controller *self, Message *msg);
 void handle_register(Controller *self, Message *msg);
 char **get_online_users(Controller *controller, Message *message);
 
@@ -91,8 +92,10 @@ void controller_on_message(Controller *self, Message *message)
     }
     break;
   case LOGIN:
-    self->client->isLogin = true;
     handle_login(self, message);
+    break;
+  case LOGOUT:
+    handle_logout(self, message);
     break;
   case REGISTER:
     handle_register(self, message);
@@ -179,7 +182,14 @@ void controller_new_message(Controller *self, Message *ms)
     return;
   }
 }
-
+void handle_logout(Controller *self, Message *ms) {
+  if (self == NULL || ms == NULL) {
+    log_message(ERROR, "Logout");
+    return;
+  }
+  self->client->isLogin = false;
+  log_message(INFO, "Logout success");
+}
 void handle_login(Controller *self, Message *msg) {
   if (msg == NULL) {
     log_message(ERROR, "Login is NULL");
@@ -188,9 +198,23 @@ void handle_login(Controller *self, Message *msg) {
   msg->position = 0;
   bool loginOk = message_read_bool(msg);
   if (loginOk) {
-    log_message(INFO, "Đăng nhập thành công!\n");
-    // Có thể gọi các hàm tiếp theo, như chuyển sang màn hình chính
+    int user_id = (int) message_read_int(msg);
+    char username[256];
+    if (!message_read_string(msg, username, sizeof(username))) {
+        log_message(WARN, "Invalid username");
+    }
 
+    User *user = createUser(NULL, self->client, username, "");
+    if (user == NULL) {
+      log_message(ERROR, "Failed to create user");
+      return;
+    }
+    user->id = user_id;
+    user->isOnline = true;
+    self->client->user = user;
+    user->session = self->client;
+    self->client->isLogin = true;
+    log_message(INFO, "Login success");
   } else {
     char error[256] = {0};
     if (!message_read_string(msg, error, sizeof(error))) {
@@ -198,13 +222,30 @@ void handle_login(Controller *self, Message *msg) {
       return;
     }
     log_message(INFO, "Đăng nhập thất bại: %s\n", error);
-
     // Gửi thông báo hoặc hiển thị dialog tùy game/app
     //client_show_error_popup(error);
   }
 }
 void handle_register(Controller *self, Message *msg) {
-  log_message(INFO, "Logout success");
+  if (msg == NULL) {
+    log_message(ERROR, "Register response message is NULL");
+    return;
+  }
+
+  msg->position = 0;
+
+  bool isSuccess = message_read_bool(msg);
+
+  if (isSuccess) {
+    printf("Register successful! You can now log in.\n");
+  } else {
+    char errorMsg[256] = {0};
+    if (message_read_string(msg, errorMsg, sizeof(errorMsg))) {
+      printf("Register failed: %s\n", errorMsg);
+    } else {
+      printf("Register failed: Unknown error\n");
+    }
+  }
 }
 
 char **get_online_users(Controller *controller, Message *message)

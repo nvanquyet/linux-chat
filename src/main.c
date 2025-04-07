@@ -202,8 +202,8 @@ void *keyboard_input_handler(void *arg) {
                 continue;
             }
 
-            session->user = user;
-            user->session = session;
+            // session->user = user;
+            // user->session = session;
 
             user->login(user);
         }
@@ -212,7 +212,6 @@ void *keyboard_input_handler(void *arg) {
         else if (strcmp(input, CMD_LOGOUT) == 0) {
             if (session->user != NULL && session->isLogin) {
                 session->user->logout(session->user);
-                session->isLogin = false;
             } else {
                 log_message(ERROR, "Not logged in");
             }
