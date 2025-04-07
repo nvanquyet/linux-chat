@@ -2247,6 +2247,12 @@ CMakeFiles/MyChatProject.dir/src/ui/Login.c.o: /home/thuy/Desktop/linux-chat/src
 
 CMakeFiles/MyChatProject.dir/src/ui/Register.c.o: /home/thuy/Desktop/linux-chat/src/ui/Register.c \
   /home/thuy/Desktop/linux-chat/include/chat_common.h \
+  /home/thuy/Desktop/linux-chat/include/controller.h \
+  /home/thuy/Desktop/linux-chat/include/log.h \
+  /home/thuy/Desktop/linux-chat/include/message.h \
+  /home/thuy/Desktop/linux-chat/include/service.h \
+  /home/thuy/Desktop/linux-chat/include/session.h \
+  /home/thuy/Desktop/linux-chat/include/user.h \
   /usr/include/alloca.h \
   /usr/include/asm-generic/errno-base.h \
   /usr/include/asm-generic/errno.h \
@@ -3034,6 +3040,7 @@ CMakeFiles/MyChatProject.dir/src/ui/Register.c.o: /home/thuy/Desktop/linux-chat/
   /usr/lib/gcc/x86_64-linux-gnu/13/include/float.h \
   /usr/lib/gcc/x86_64-linux-gnu/13/include/limits.h \
   /usr/lib/gcc/x86_64-linux-gnu/13/include/stdarg.h \
+  /usr/lib/gcc/x86_64-linux-gnu/13/include/stdbool.h \
   /usr/lib/gcc/x86_64-linux-gnu/13/include/stddef.h \
   /usr/lib/gcc/x86_64-linux-gnu/13/include/stdint.h \
   /usr/lib/gcc/x86_64-linux-gnu/13/include/syslimits.h \
@@ -3041,6 +3048,11 @@ CMakeFiles/MyChatProject.dir/src/ui/Register.c.o: /home/thuy/Desktop/linux-chat/
 
 CMakeFiles/MyChatProject.dir/src/ui/chat_app.c.o: /home/thuy/Desktop/linux-chat/src/ui/chat_app.c \
   /home/thuy/Desktop/linux-chat/include/chat_common.h \
+  /home/thuy/Desktop/linux-chat/include/controller.h \
+  /home/thuy/Desktop/linux-chat/include/message.h \
+  /home/thuy/Desktop/linux-chat/include/service.h \
+  /home/thuy/Desktop/linux-chat/include/session.h \
+  /home/thuy/Desktop/linux-chat/include/user.h \
   /usr/include/alloca.h \
   /usr/include/asm-generic/errno-base.h \
   /usr/include/asm-generic/errno.h \
@@ -3828,6 +3840,7 @@ CMakeFiles/MyChatProject.dir/src/ui/chat_app.c.o: /home/thuy/Desktop/linux-chat/
   /usr/lib/gcc/x86_64-linux-gnu/13/include/float.h \
   /usr/lib/gcc/x86_64-linux-gnu/13/include/limits.h \
   /usr/lib/gcc/x86_64-linux-gnu/13/include/stdarg.h \
+  /usr/lib/gcc/x86_64-linux-gnu/13/include/stdbool.h \
   /usr/lib/gcc/x86_64-linux-gnu/13/include/stddef.h \
   /usr/lib/gcc/x86_64-linux-gnu/13/include/stdint.h \
   /usr/lib/gcc/x86_64-linux-gnu/13/include/syslimits.h \
@@ -3835,6 +3848,11 @@ CMakeFiles/MyChatProject.dir/src/ui/chat_app.c.o: /home/thuy/Desktop/linux-chat/
 
 CMakeFiles/MyChatProject.dir/src/ui/create_group.c.o: /home/thuy/Desktop/linux-chat/src/ui/create_group.c \
   /home/thuy/Desktop/linux-chat/include/chat_common.h \
+  /home/thuy/Desktop/linux-chat/include/controller.h \
+  /home/thuy/Desktop/linux-chat/include/message.h \
+  /home/thuy/Desktop/linux-chat/include/service.h \
+  /home/thuy/Desktop/linux-chat/include/session.h \
+  /home/thuy/Desktop/linux-chat/include/user.h \
   /usr/include/alloca.h \
   /usr/include/asm-generic/errno-base.h \
   /usr/include/asm-generic/errno.h \
@@ -4622,6 +4640,7 @@ CMakeFiles/MyChatProject.dir/src/ui/create_group.c.o: /home/thuy/Desktop/linux-c
   /usr/lib/gcc/x86_64-linux-gnu/13/include/float.h \
   /usr/lib/gcc/x86_64-linux-gnu/13/include/limits.h \
   /usr/lib/gcc/x86_64-linux-gnu/13/include/stdarg.h \
+  /usr/lib/gcc/x86_64-linux-gnu/13/include/stdbool.h \
   /usr/lib/gcc/x86_64-linux-gnu/13/include/stddef.h \
   /usr/lib/gcc/x86_64-linux-gnu/13/include/stdint.h \
   /usr/lib/gcc/x86_64-linux-gnu/13/include/syslimits.h \

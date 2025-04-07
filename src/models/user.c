@@ -12,7 +12,7 @@ void login(User *self);
 void logout(User *self);
 void userRegister(User *self);
 
-User *createUser(User *self, Session *client, char *username, char *password)
+User *createUser(User *self, Session *client,const char *username, const char *password)
 {
     if (self == NULL)
     {
@@ -104,7 +104,7 @@ void userRegister(User *self)
         log_message(ERROR, "Username or password is NULL");
         return;
     }
-
+    log_message(INFO, "User registered");
     Message *msg = message_create(REGISTER);
     if (msg == NULL)
     {
@@ -115,5 +115,6 @@ void userRegister(User *self)
     message_write_string(msg, self->username);
     message_write_string(msg, self->password);
     log_message(INFO, "Registering with username: %s, password: %s", self->username, self->password);
+    log_message(INFO, "SESSION IS  %s",self->session->connected ? "connected" : "disconnected");
     session_send_message(self->session, msg);
 }

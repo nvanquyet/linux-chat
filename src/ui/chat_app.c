@@ -10,14 +10,14 @@ static void on_create_group_clicked(GtkWidget *widget, gpointer data) {
     // Ẩn cửa sổ chính
     gtk_widget_hide(main_window);
     // Hiển thị cửa sổ tạo nhóm (hàm này được định nghĩa trong create_group.c)
-    show_create_group_window();
+    // show_create_group_window();
 }
 
 // Callback cho nút "Log Out"
 static void on_log_out_clicked(GtkWidget *widget, gpointer data) {
     // Ẩn cửa sổ chính
     gtk_widget_hide(main_window);
-    show_login_window();  // Gọi hàm hiển thị cửa sổ đăng nhập
+   // show_login_window();  // Gọi hàm hiển thị cửa sổ đăng nhập
     // show_login_window();
     // Hoặc bạn có thể thoát ứng dụng:
     // gtk_main_quit();

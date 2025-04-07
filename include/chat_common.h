@@ -1,15 +1,11 @@
 #ifndef CHAT_COMMON_H
 #define CHAT_COMMON_H
 
-// Hàm hiển thị giao diện chat (được định nghĩa trong chat_app.c)
-void show_main_window(void);
+#include "session.h"
 
-// Hàm hiển thị giao diện đăng ký (được định nghĩa trong register.c)
-void show_register_window(void);
-
-// Hàm hiển thị giao diện đăng nhập (được định nghĩa trong login.c)
-void show_login_window(void);
-
-void show_create_group_window();
+// Function declarations
+void show_login_window(Session *session);
+void show_register_window(Session *session);
+void show_chat_window(Session *session); // If you have this function
 
 #endif // CHAT_COMMON_H

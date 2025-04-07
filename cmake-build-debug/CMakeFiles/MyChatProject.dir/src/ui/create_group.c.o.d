@@ -737,4 +737,10 @@ CMakeFiles/MyChatProject.dir/src/ui/create_group.c.o: \
  /usr/include/gtk-3.0/gtk/deprecated/gtkvscrollbar.h \
  /usr/include/gtk-3.0/gtk/deprecated/gtkvseparator.h \
  /usr/include/gtk-3.0/gtk/gtk-autocleanups.h \
- /home/thuy/Desktop/linux-chat/include/chat_common.h
+ /home/thuy/Desktop/linux-chat/include/chat_common.h \
+ /home/thuy/Desktop/linux-chat/include/session.h \
+ /home/thuy/Desktop/linux-chat/include/controller.h \
+ /home/thuy/Desktop/linux-chat/include/user.h \
+ /usr/lib/gcc/x86_64-linux-gnu/13/include/stdbool.h \
+ /home/thuy/Desktop/linux-chat/include/service.h \
+ /home/thuy/Desktop/linux-chat/include/message.h

@@ -1,96 +1,118 @@
 #include <gtk/gtk.h>
-#include "chat_common.h"  // Chứa khai báo: void show_main_window(void); và void show_register_window(void); và void show_login_window(void);
+#include <session.h>
+#include "chat_common.h"
+#include "log.h"
+#include "user.h"
 
-// Callback xử lý khi nhấn vào link "Đăng ký ngay"
-static void on_register_button_clicked(GtkWidget *button, gpointer user_data) {
-    // Gọi giao diện đăng ký tích hợp trong cùng chương trình
-    show_register_window();
-    
-    // Ẩn cửa sổ đăng nhập hiện tại
-    gtk_widget_hide(GTK_WIDGET(user_data));
-}
-
-// Callback xử lý khi nhấn nút "Đăng nhập"
-static void on_login_button_clicked(GtkWidget *button, gpointer user_data) {
-    g_print("🟢 Đăng nhập thành công!\n");
-    
-    // Gọi giao diện Chat Friend (form chat_app)
-    show_main_window();
-    
-    // Ẩn cửa sổ đăng nhập hiện tại
-    gtk_widget_hide(GTK_WIDGET(user_data));
-}
-
-// Tạo giao diện đăng nhập
-static GtkWidget* create_login_window(void) {
+// Cấu trúc dữ liệu cho giao diện đăng nhập
+typedef struct {
     GtkWidget *window;
-    GtkWidget *main_vbox;       // Container chính dạng box dọc
-    GtkWidget *label_title;     // Tiêu đề đăng nhập
-    GtkWidget *grid;            // Grid chứa thông tin Tài khoản / Mật khẩu
-    GtkWidget *label_user, *label_pass;
-    GtkWidget *entry_user, *entry_pass;
-    GtkWidget *btn_login;
-    GtkWidget *btn_register;
+    GtkEntry *entry_username;
+    GtkEntry *entry_password;
+    Session *session;  // Session được truyền từ main
+} LoginData;
 
-    // Tạo cửa sổ đăng nhập
-    window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-    gtk_window_set_title(GTK_WINDOW(window), "Đăng nhập");
-    gtk_window_set_default_size(GTK_WINDOW(window), 400, 250);
-    gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
-    gtk_container_set_border_width(GTK_CONTAINER(window), 20);
+// Prototype các hàm
+static void show_message_dialog(GtkWindow *parent, const gchar *message, gboolean success);
+static void on_login_button_clicked(GtkWidget *button, gpointer user_data);
+static void on_register_button_clicked(GtkWidget *button, gpointer user_data);
+static void on_login_window_destroy(GtkWidget *widget, gpointer user_data);
 
-    // Tạo box dọc làm container chính
-    main_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 20);
-    gtk_container_add(GTK_CONTAINER(window), main_vbox);
-
-    // Tạo tiêu đề với font chữ to và đậm
-    label_title = gtk_label_new(NULL);
-    gtk_label_set_markup(GTK_LABEL(label_title),
-                         "<span font='18' weight='bold'>ĐĂNG NHẬP</span>");
-    gtk_widget_set_halign(label_title, GTK_ALIGN_CENTER);
-    gtk_box_pack_start(GTK_BOX(main_vbox), label_title, FALSE, FALSE, 0);
-
-    // Tạo lưới chứa ô nhập Tài khoản và Mật khẩu
-    grid = gtk_grid_new();
-    gtk_grid_set_row_spacing(GTK_GRID(grid), 12);
-    gtk_grid_set_column_spacing(GTK_GRID(grid), 12);
-    gtk_widget_set_halign(grid, GTK_ALIGN_CENTER);
-    gtk_box_pack_start(GTK_BOX(main_vbox), grid, FALSE, FALSE, 0);
-
-    // Nhãn và ô nhập Tài khoản
-    label_user = gtk_label_new("Tài khoản:");
-    entry_user = gtk_entry_new();
-    gtk_grid_attach(GTK_GRID(grid), label_user, 0, 0, 1, 1);
-    gtk_grid_attach(GTK_GRID(grid), entry_user, 1, 0, 1, 1);
-
-    // Nhãn và ô nhập Mật khẩu
-    label_pass = gtk_label_new("Mật khẩu:");
-    entry_pass = gtk_entry_new();
-    gtk_entry_set_visibility(GTK_ENTRY(entry_pass), FALSE);
-    gtk_entry_set_invisible_char(GTK_ENTRY(entry_pass), '*');
-    gtk_grid_attach(GTK_GRID(grid), label_pass, 0, 1, 1, 1);
-    gtk_grid_attach(GTK_GRID(grid), entry_pass, 1, 1, 1, 1);
-
-    // Nút Đăng nhập
-    btn_login = gtk_button_new_with_label("Đăng nhập");
-    gtk_widget_set_size_request(btn_login, 120, 40);
-    gtk_widget_set_halign(btn_login, GTK_ALIGN_CENTER);
-    g_signal_connect(btn_login, "clicked", G_CALLBACK(on_login_button_clicked), window);
-    gtk_box_pack_start(GTK_BOX(main_vbox), btn_login, FALSE, FALSE, 0);
-
-    // Nút Đăng ký dạng link (sử dụng GtkLinkButton với URI "about:blank" để tránh lỗi URI rỗng)
-    btn_register = gtk_link_button_new_with_label("about:blank", "Chưa có tài khoản? Đăng ký ngay");
-    g_signal_connect(btn_register, "clicked", G_CALLBACK(on_register_button_clicked), window);
-    gtk_widget_set_halign(btn_register, GTK_ALIGN_CENTER);
-    gtk_box_pack_start(GTK_BOX(main_vbox), btn_register, FALSE, FALSE, 0);
-
-    return window;
+// Hiển thị hộp thoại thông báo
+static void show_message_dialog(GtkWindow *parent, const gchar *message, gboolean success) {
+    GtkWidget *dialog = gtk_message_dialog_new(
+        parent,
+        GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+        success ? GTK_MESSAGE_INFO : GTK_MESSAGE_ERROR,
+        GTK_BUTTONS_OK,
+        "%s", message
+    );
+    gtk_dialog_run(GTK_DIALOG(dialog));
+    gtk_widget_destroy(dialog);
 }
 
-// Hàm hiển thị giao diện đăng nhập
-void show_login_window(void) {
-    GtkWidget *window = create_login_window();
+// Xử lý nút "Đăng nhập"
+static void on_login_button_clicked(GtkWidget *button, gpointer user_data) {
+    LoginData *login_data = (LoginData *)user_data;
+    const gchar *username = gtk_entry_get_text(login_data->entry_username);
+    const gchar *password = gtk_entry_get_text(login_data->entry_password);
+    GtkWindow *parent_window = GTK_WINDOW(login_data->window);
+    Session *session = login_data->session;
+
+    if (g_strcmp0(username, "") == 0 || g_strcmp0(password, "") == 0) {
+        show_message_dialog(parent_window, "Vui lòng nhập đầy đủ thông tin!", FALSE);
+        return;
+    }
+
+    // Kiểm tra kết nối
+    if (session == NULL || !session->connected) {
+        show_message_dialog(parent_window, "Lỗi kết nối máy chủ!", FALSE);
+        return;
+    }
+
+    User *user = createUser(NULL, session, username, password);
+    if (user != NULL) {
+        session->user = user;
+        user->login(user);
+        // Xử lý đăng nhập thành công sẽ được thực hiện trong callback từ phản hồi của server
+    } else {
+        show_message_dialog(parent_window, "Lỗi tạo người dùng!", FALSE);
+    }
+}
+
+// Xử lý nút "Đăng ký"
+static void on_register_button_clicked(GtkWidget *button, gpointer user_data) {
+    LoginData *login_data = (LoginData *)user_data;
+    Session *session = login_data->session;
+
+    gtk_widget_hide(login_data->window);
+    show_register_window(session);  // Truyền session sang màn hình đăng ký
+}
+
+// Giải phóng bộ nhớ khi đóng cửa sổ
+static void on_login_window_destroy(GtkWidget *widget, gpointer user_data) {
+    LoginData *login_data = (LoginData *)user_data;
+    g_free(login_data);
+    gtk_main_quit();  // Thoát khỏi vòng lặp chính khi cửa sổ đăng nhập bị đóng
+}
+
+// Tạo và hiển thị cửa sổ đăng nhập
+void show_login_window(Session *session) {
+    GtkWidget *window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    gtk_window_set_title(GTK_WINDOW(window), "Đăng nhập");
+    gtk_window_set_default_size(GTK_WINDOW(window), 300, 200);
+
+    LoginData *login_data = g_malloc(sizeof(LoginData));
+    login_data->window = window;
+    login_data->entry_username = GTK_ENTRY(gtk_entry_new());
+    login_data->entry_password = GTK_ENTRY(gtk_entry_new());
+    login_data->session = session;  // Lưu lại session được truyền vào
+
+    // Ẩn mật khẩu
+    gtk_entry_set_visibility(login_data->entry_password, FALSE);
+
+    // Layout
+    GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+    gtk_container_add(GTK_CONTAINER(window), vbox);
+
+    gtk_box_pack_start(GTK_BOX(vbox), gtk_label_new("Username:"), FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox), GTK_WIDGET(login_data->entry_username), FALSE, FALSE, 0);
+
+    gtk_box_pack_start(GTK_BOX(vbox), gtk_label_new("Password:"), FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(vbox), GTK_WIDGET(login_data->entry_password), FALSE, FALSE, 0);
+
+    // Nút Login
+    GtkWidget *btn_login = gtk_button_new_with_label("Login");
+    g_signal_connect(btn_login, "clicked", G_CALLBACK(on_login_button_clicked), login_data);
+    gtk_box_pack_start(GTK_BOX(vbox), btn_login, FALSE, FALSE, 0);
+
+    // Nút Register
+    GtkWidget *btn_register = gtk_button_new_with_label("Đăng ký tài khoản mới");
+    g_signal_connect(btn_register, "clicked", G_CALLBACK(on_register_button_clicked), login_data);
+    gtk_box_pack_start(GTK_BOX(vbox), btn_register, FALSE, FALSE, 0);
+
+    // Đóng cửa sổ
+    g_signal_connect(window, "destroy", G_CALLBACK(on_login_window_destroy), login_data);
+
     gtk_widget_show_all(window);
 }
-
-

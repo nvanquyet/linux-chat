@@ -316,7 +316,9 @@ void session_send_message(Session *session, Message *message)
         return;
     }
 
+
     SessionPrivate *private = (SessionPrivate *)session->_private;
+
     if (session->connected && private->sender != NULL && private->sender->running)
     {
         message_queue_add(private->sender->queue, message);
@@ -874,7 +876,6 @@ void message_queue_add(MessageQueue *queue, Message *message)
     {
         return;
     }
-
     pthread_mutex_lock(&queue->mutex);
 
     if (queue->size >= queue->capacity)
@@ -893,6 +894,7 @@ void message_queue_add(MessageQueue *queue, Message *message)
     queue->messages[queue->size++] = message;
 
     pthread_mutex_unlock(&queue->mutex);
+
 }
 
 Message *message_queue_get(MessageQueue *queue, int index)
@@ -960,6 +962,5 @@ void session_process_message(Session *self, Message *msg)
     {
         return;
     }
-
     self->onMessage(self, msg);
 }
