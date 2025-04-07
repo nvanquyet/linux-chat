@@ -3,11 +3,16 @@
 
 // Biến toàn cục cho cửa sổ tạo nhóm
 GtkWidget *create_group_window = NULL;
-
+typedef struct {
+    GtkWidget *window;
+    GtkEntry *entry_username;
+    GtkEntry *entry_password;
+    Session *session;  // Session được truyền từ main
+} GroupData;
 // Callback xử lý khi nhấn nút "Create"
 static void create_group_action(GtkWidget *widget, gpointer data) {
-    // Ví dụ: Lấy thông tin từ các entry (nếu cần) và tạo nhóm
-    // Hiện tại chỉ hiển thị hộp thoại thông báo thành công
+    GroupData *login_data = (GroupData *)data;
+    Session *session = login_data->session;
     GtkWidget *message_dialog = gtk_message_dialog_new(
         GTK_WINDOW(create_group_window),
         GTK_DIALOG_MODAL,
@@ -23,16 +28,18 @@ static void create_group_action(GtkWidget *widget, gpointer data) {
     create_group_window = NULL;
     
     // Hiển thị lại cửa sổ chính (Chat Friend)
-    show_main_window();
+    show_chat_window(session);
 }
 
 // Callback xử lý khi nhấn nút "Cancel" hoặc khi cửa sổ bị đóng
 static void on_cancel_clicked(GtkWidget *widget, gpointer data) {
+    GroupData *login_data = (GroupData *)data;
+    Session *session = login_data->session;
     gtk_widget_destroy(create_group_window);
     create_group_window = NULL;
     
     // Hiển thị lại cửa sổ chính
-    show_main_window();
+    show_chat_window(session);
 }
 
 // Hàm tạo và hiển thị cửa sổ "Create Group"

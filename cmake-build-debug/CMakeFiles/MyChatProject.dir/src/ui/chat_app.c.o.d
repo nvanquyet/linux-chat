@@ -743,4 +743,7 @@ CMakeFiles/MyChatProject.dir/src/ui/chat_app.c.o: \
  /home/thuy/Desktop/linux-chat/include/user.h \
  /usr/lib/gcc/x86_64-linux-gnu/13/include/stdbool.h \
  /home/thuy/Desktop/linux-chat/include/service.h \
- /home/thuy/Desktop/linux-chat/include/message.h
+ /home/thuy/Desktop/linux-chat/include/message.h \
+ /home/thuy/Desktop/linux-chat/include/cmd.h \
+ /home/thuy/Desktop/linux-chat/include/user.h \
+ /home/thuy/Desktop/linux-chat/include/log.h

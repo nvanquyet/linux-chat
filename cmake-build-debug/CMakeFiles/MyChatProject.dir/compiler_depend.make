@@ -3048,7 +3048,9 @@ CMakeFiles/MyChatProject.dir/src/ui/Register.c.o: /home/thuy/Desktop/linux-chat/
 
 CMakeFiles/MyChatProject.dir/src/ui/chat_app.c.o: /home/thuy/Desktop/linux-chat/src/ui/chat_app.c \
   /home/thuy/Desktop/linux-chat/include/chat_common.h \
+  /home/thuy/Desktop/linux-chat/include/cmd.h \
   /home/thuy/Desktop/linux-chat/include/controller.h \
+  /home/thuy/Desktop/linux-chat/include/log.h \
   /home/thuy/Desktop/linux-chat/include/message.h \
   /home/thuy/Desktop/linux-chat/include/service.h \
   /home/thuy/Desktop/linux-chat/include/session.h \

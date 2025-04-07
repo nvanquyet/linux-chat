@@ -78,7 +78,7 @@ int main(int argc, char *argv[]) {
     log_message(INFO, "Connected to server successfully");
 
     // Pass the session to the login window
-    show_register_window(session);
+    show_login_window(session);
 
     // Set up a timer to check connection periodically
     g_timeout_add(1000, check_connection, session);

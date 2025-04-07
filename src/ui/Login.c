@@ -54,7 +54,7 @@ static void on_login_button_clicked(GtkWidget *button, gpointer user_data) {
     if (user != NULL) {
         session->user = user;
         user->login(user);
-        // Xử lý đăng nhập thành công sẽ được thực hiện trong callback từ phản hồi của server
+
     } else {
         show_message_dialog(parent_window, "Lỗi tạo người dùng!", FALSE);
     }
@@ -110,7 +110,6 @@ void show_login_window(Session *session) {
     GtkWidget *btn_register = gtk_button_new_with_label("Đăng ký tài khoản mới");
     g_signal_connect(btn_register, "clicked", G_CALLBACK(on_register_button_clicked), login_data);
     gtk_box_pack_start(GTK_BOX(vbox), btn_register, FALSE, FALSE, 0);
-
     // Đóng cửa sổ
     g_signal_connect(window, "destroy", G_CALLBACK(on_login_window_destroy), login_data);
 
