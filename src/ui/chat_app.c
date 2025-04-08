@@ -52,8 +52,6 @@ static void on_create_group_clicked(GtkWidget *widget, gpointer data) {
     show_create_group_window(session);
 }
 
-
-// "Log Out" button callback
 static void on_log_out_clicked(GtkWidget *widget, gpointer data) {
     Session *session = (Session *)data;
 
@@ -79,7 +77,6 @@ static void on_log_out_clicked(GtkWidget *widget, gpointer data) {
     // Don't need to add this here as the server response will trigger handle_logout
     // which will show the login window
 }
-
 
 // Main window close callback
 static void on_main_window_destroy(GtkWidget *widget, gpointer data) {
@@ -569,6 +566,7 @@ void show_chat_window(Session *session) {
     gtk_box_pack_start(GTK_BOX(func_box), join_group_button, FALSE, FALSE, 0);
 
     GtkWidget *logout_button = gtk_button_new_with_label("Log Out");
+    g_signal_connect(logout_button, "clicked", G_CALLBACK(on_log_out_clicked), session);
     gtk_box_pack_start(GTK_BOX(func_box), logout_button, FALSE, FALSE, 0);
 
     GtkWidget *send_file_button = gtk_button_new_with_label("Send File");

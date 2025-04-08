@@ -320,9 +320,8 @@ void handle_logout(Controller *self, Message *msg) {
   }
 
   // Giải phóng message nếu cần (sử dụng hàm message_free nếu có)
- // message_free(msg);
+  // message_free(msg);
 }
-
 
 
 
