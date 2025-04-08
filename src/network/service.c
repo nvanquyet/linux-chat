@@ -87,10 +87,9 @@ void service_get_group_list(Service* service,  User* user) {
         return;
     }
     session_send_message(service->session, message);
-    log_message(INFO, "Request get joined groups");
 }
 
-void service_create_group(Service* service, User* user, const char* group_name) {
+void service_create_group(Service* service, User* user, const char* group_name, const char *group_password) {
     if (service == NULL || group_name == NULL) {
         return;
     }
@@ -105,12 +104,13 @@ void service_create_group(Service* service, User* user, const char* group_name) 
         log_message(ERROR, "Session is NULL");
         return;
     }
-    message_write_string(message, group_name);
     message_write_int(message, user->id);
+    message_write_string(message, group_name);
+    message_write_string(message, group_password);
     //Send to server
     session_send_message(service->session, message);
 }
-void service_join_group(Service* service, User* user, int group_id) {
+void service_join_group(Service* service, User* user, const char* group_name, const char * group_password) {
     if (service == NULL) {
         log_message(ERROR, "Service is NULL");
         return;
@@ -129,8 +129,9 @@ void service_join_group(Service* service, User* user, int group_id) {
     }
 
     // Ghi dữ liệu vào message
-    message_write_int(message, group_id);
     message_write_int(message, user->id);
+    message_write_string(message, group_name);
+    message_write_string(message, group_password);
 
     // Kiểm tra nếu session là NULL
     if (service->session == NULL) {
@@ -141,10 +142,6 @@ void service_join_group(Service* service, User* user, int group_id) {
 
     // Gửi message đến server
     session_send_message(service->session, message);
-
-    // Log thông tin tham gia nhóm
-    log_message(INFO, "User %d is joining group %d", user->id, group_id);
-
 }
 
 void service_leave_group(Service* service, User* user, int group_id) {
