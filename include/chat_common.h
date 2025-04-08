@@ -58,6 +58,8 @@ void on_contact_clicked(GtkWidget *widget, gpointer data);
 void show_create_group_window(Session *session);
 void create_group_action(GtkWidget *widget, gpointer data) ;
 void show_join_group_window(Session *session) ;
+void show_register_window(Session *session);
+gboolean add_message_to_chat(gpointer data) ;
 
 
 

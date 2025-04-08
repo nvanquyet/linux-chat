@@ -4,6 +4,7 @@
 #include "log.h"
 #include "user.h"
 
+
 // Cấu trúc dữ liệu cho giao diện đăng nhập
 typedef struct {
     GtkWidget *window;

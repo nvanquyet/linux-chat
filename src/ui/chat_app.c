@@ -1,5 +1,5 @@
 #include <gtk/gtk.h>
-#include <pango/pango.h>
+
 #include "chat_common.h"
 #include "cmd.h"
 #include "user.h"
@@ -9,6 +9,10 @@
 GtkWidget *main_window = NULL;
 
 // Handle contact selection
+// Add this global variable to track the selected user ID
+int selected_user_id = -1;  // -1 means no user selected
+
+// Modified contact selection handler
 void on_contact_clicked(GtkWidget *widget, gpointer data) {
     Session *session = (Session *)data;
 
@@ -16,18 +20,44 @@ void on_contact_clicked(GtkWidget *widget, gpointer data) {
     const gchar *name = gtk_button_get_label(GTK_BUTTON(widget));
 
     if (g_strcmp0(type, "user") == 0) {
-        int user_id = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(widget), "user_id"));
-        log_message(INFO, "User selected: %s (ID: %d)", name, user_id);
+        // Store the selected user ID in the global variable
+        selected_user_id = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(widget), "user_id"));
+        log_message(INFO, "User selected: %s (ID: %d)", name, selected_user_id);
 
-        // Xử lý chat với user ở đây
-        // session->selected_user_id = user_id;
+        // Update the chat header to indicate who you're chatting with
+        if (main_window != NULL) {
+            GtkWidget *grid = gtk_bin_get_child(GTK_BIN(main_window));
+            GtkWidget *chat_header = gtk_grid_get_child_at(GTK_GRID(grid), 1, 0);
+
+            if (chat_header == NULL) {
+                // Create chat header if it doesn't exist
+                chat_header = gtk_label_new("");
+                gtk_grid_attach(GTK_GRID(grid), chat_header, 1, 0, 1, 1);
+                gtk_widget_show(chat_header);
+            }
+
+            gchar *header_text = g_strdup_printf("Chatting with: %s", name);
+            gtk_label_set_text(GTK_LABEL(chat_header), header_text);
+            g_free(header_text);
+        }
+
+        Message *msg = message_create(GET_CHAT_HISTORY);
+        if (msg != NULL) {
+            char user_id_str[20];
+            sprintf(user_id_str, "%d", selected_user_id);
+            message_write_string(msg, user_id_str);
+            session_send_message(session, msg);
+            log_message(INFO, "Sent GET_CHAT_HISTORY request to server for user ID: %d", selected_user_id);
+        } else {
+            log_message(ERROR, "Could not create GET_CHAT_HISTORY message");
+        }
 
     } else if (g_strcmp0(type, "group") == 0) {
         log_message(INFO, "Group selected: %s", name);
+        // Reset the selected user ID since we're in a group
+        selected_user_id = -1;
 
-        // Xử lý chat nhóm ở đây
-        // session->selected_group_name = name; (nếu có)
-
+        // Group chat handling code here
     } else {
         log_message(WARN, "Unknown contact type clicked: %s", type);
     }
@@ -47,11 +77,72 @@ void on_contact_clicked(GtkWidget *widget, gpointer data) {
     // Gọi hàm hiển thị form tạo nhóm
     show_join_group_window(session);
 }
+gboolean add_message_to_chat(gpointer data) {
+    gchar *formatted_msg = (gchar *)data;
+
+    if (formatted_msg == NULL) {
+        log_message(ERROR, "Received NULL message in add_message_to_chat");
+        return G_SOURCE_REMOVE;
+    }
+
+    log_message(INFO, "Adding message to chat: '%s'", formatted_msg);
+
+    if (main_window != NULL) {
+        GtkWidget *grid = gtk_bin_get_child(GTK_BIN(main_window));
+        if (grid == NULL) {
+            log_message(ERROR, "Grid not found in main window");
+            g_free(formatted_msg);
+            return G_SOURCE_REMOVE;
+        }
+
+        GtkWidget *scrolled_window = gtk_grid_get_child_at(GTK_GRID(grid), 1, 1);
+        if (scrolled_window == NULL) {
+            log_message(ERROR, "Scrolled window not found in grid");
+            g_free(formatted_msg);
+            return G_SOURCE_REMOVE;
+        }
+
+        GtkWidget *chat_area = gtk_bin_get_child(GTK_BIN(scrolled_window));
+        if (!GTK_IS_TEXT_VIEW(chat_area)) {
+            log_message(ERROR, "Chat area is not a GtkTextView");
+            g_free(formatted_msg);
+            return G_SOURCE_REMOVE;
+        }
+
+        GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(chat_area));
+        if (buffer == NULL) {
+            log_message(ERROR, "Could not get text buffer from chat view");
+            g_free(formatted_msg);
+            return G_SOURCE_REMOVE;
+        }
+
+        // Insert at end of buffer
+        GtkTextIter iter;
+        gtk_text_buffer_get_end_iter(buffer, &iter);
+        gtk_text_buffer_insert(buffer, &iter, formatted_msg, -1);
+        log_message(INFO, "Message inserted into chat buffer");
+
+        // Scroll to the new position
+        gtk_text_buffer_get_end_iter(buffer, &iter);
+        gtk_text_view_scroll_to_iter(GTK_TEXT_VIEW(chat_area), &iter, 0.0, TRUE, 0.0, 1.0);
+        log_message(INFO, "Scrolled to bottom of chat view");
+    } else {
+        log_message(ERROR, "Main window is NULL in add_message_to_chat");
+    }
+
+    g_free(formatted_msg);
+    return G_SOURCE_REMOVE;
+}
+// Update friend list in the UI
 // Update friend list in the UI
 gboolean update_friend_list(gpointer data) {
     FriendListData *fl_data = (FriendListData *)data;
     gchar *friend_list = fl_data->friend_list;
     Session *session = fl_data->session;
+
+    // Get current user ID for filtering
+    int current_user_id = session->current_user_id;
+    log_message(INFO, "Current user ID for filtering: %d", current_user_id);
 
     // Check if main_window is initialized
     if (main_window == NULL) {
@@ -112,6 +203,13 @@ gboolean update_friend_list(gpointer data) {
             gchar *username = parts[0];
             int user_id = atoi(parts[1]);
 
+            // Skip current user - Don't add them to the contact list
+            if (user_id == current_user_id) {
+                log_message(INFO, "Skipping current user in UI: %s (ID: %d)", username, user_id);
+                g_strfreev(parts);
+                continue;
+            }
+
             // Tạo button với label là username
             GtkWidget *btn = gtk_button_new_with_label(username);
             gtk_widget_set_size_request(btn, -1, 40);
@@ -128,15 +226,6 @@ gboolean update_friend_list(gpointer data) {
 
         g_strfreev(parts);
     }
-    // g_strfreev(entries);
-    //
-    // for (int i = 0; friends[i] != NULL; i++) {
-    //     GtkWidget *contact = gtk_button_new_with_label(g_strstrip(friends[i]));
-    //     gtk_widget_set_size_request(contact, -1, 40);
-    //     g_signal_connect(contact, "clicked", G_CALLBACK(on_contact_clicked), session);
-    //     gtk_box_pack_start(GTK_BOX(contacts_box), contact, FALSE, FALSE, 0);
-    //     gtk_widget_show(contact);
-    // }
     g_strfreev(friends);
 
     // Free memory
@@ -189,7 +278,7 @@ static void on_main_window_destroy(GtkWidget *widget, gpointer data) {
     // Exit application
     gtk_main_quit();
 }
-
+// Send button callback
 // Send button callback
 static void on_send_button_clicked(GtkWidget *widget, gpointer data) {
     Session *session = (Session *)data;
@@ -199,38 +288,120 @@ static void on_send_button_clicked(GtkWidget *widget, gpointer data) {
         return;
     }
 
-    GtkWidget *grid = gtk_bin_get_child(GTK_BIN(main_window));
-    GtkWidget *message_box = gtk_grid_get_child_at(GTK_GRID(grid), 0, 2);
-
-    if (message_box != NULL) {
-        GList *children = gtk_container_get_children(GTK_CONTAINER(message_box));
-        if (children != NULL) {
-            GtkWidget *message_entry = GTK_WIDGET(children->data);
-            const gchar *text = gtk_entry_get_text(GTK_ENTRY(message_entry));
-
-            if (text != NULL && *text != '\0') {
-                // Create message structure - implementation depends on your exact needs
-                Message *msg = message_create(USER_MESSAGE);
-                if (msg != NULL) {
-                    // Set message content - implementation may need to be adjusted
-                    message_write_string(msg, (char*)text);
-
-                    // Send the message
-                    session_send_message(session, msg);
-                    log_message(INFO, "Sent message: %s", text);
-
-                    // Clear input
-                    gtk_entry_set_text(GTK_ENTRY(message_entry), "");
-
-                    // Display sent message in chat area
-                    gchar *formatted_msg = g_strdup_printf("You: %s\n", text);
-                    g_idle_add(add_message_to_chat, formatted_msg);
-                }
-            }
-            g_list_free(children);
-        }
+    // Kiểm tra xem đã chọn người dùng chưa
+    if (selected_user_id == -1) {
+        // Hiển thị thông báo cảnh báo
+        GtkWidget *dialog = gtk_message_dialog_new(GTK_WINDOW(main_window),
+                                                  GTK_DIALOG_MODAL,
+                                                  GTK_MESSAGE_WARNING,
+                                                  GTK_BUTTONS_OK,
+                                                  "Vui lòng chọn liên hệ trước!");
+        gtk_dialog_run(GTK_DIALOG(dialog));
+        gtk_widget_destroy(dialog);
+        return;
     }
+
+    GtkWidget *grid = gtk_bin_get_child(GTK_BIN(main_window));
+    if (grid == NULL) {
+        log_message(ERROR, "Grid not found in main window");
+        return;
+    }
+
+    // Lấy widget nhập tin nhắn
+    GtkWidget *message_box = gtk_grid_get_child_at(GTK_GRID(grid), 0, 2);
+    if (message_box == NULL) {
+        log_message(ERROR, "Message box not found");
+        return;
+    }
+
+    GList *children = gtk_container_get_children(GTK_CONTAINER(message_box));
+    if (children == NULL) {
+        log_message(ERROR, "Message entry not found");
+        return;
+    }
+
+    GtkWidget *message_entry = GTK_WIDGET(children->data);
+    const gchar *text = gtk_entry_get_text(GTK_ENTRY(message_entry));
+
+    // Debug nội dung tin nhắn
+    log_message(INFO, "Message text content: '%s', length: %lu", text, (unsigned long)strlen(text));
+
+    if (text != NULL && *text != '\0') {
+        // Tạo một bản sao của text để giữ lại giá trị
+        gchar *message_content = g_strdup(text);
+
+        if (message_content != NULL) {
+            // Tạo tin nhắn riêng tư với ID người dùng và nội dung tin nhắn
+            Message *msg = message_create(USER_MESSAGE);
+            if (msg != NULL) {
+                // Viết ID người dùng đích trước
+                char user_id_str[20];
+                sprintf(user_id_str, "%d", selected_user_id);
+                message_write_string(msg, user_id_str);
+                log_message(INFO,"Current user id: %s", session->current_user_id);
+                // Sau đó viết nội dung tin nhắn
+                message_write_string(msg, message_content);
+                session_send_message(session, msg);
+                log_message(INFO, "Sent message to user ID %d: %s", selected_user_id, message_content);
+
+                // Xóa trường nhập liệu
+                gtk_entry_set_text(GTK_ENTRY(message_entry), "");
+
+                // Định dạng tin nhắn để hiển thị
+                log_message(INFO, "Formatting message with text: '%s'", message_content);
+                gchar *formatted_msg = g_strdup_printf("You: %s\n", message_content);
+                log_message(INFO, "Formatted message: '%s'", formatted_msg);
+
+                // Hiển thị tin nhắn đã gửi trong khu vực chat
+                GtkWidget *scrolled_window = gtk_grid_get_child_at(GTK_GRID(grid), 1, 1);
+                if (!GTK_IS_SCROLLED_WINDOW(scrolled_window)) {
+                    log_message(ERROR, "Scrolled window not found or not a GtkScrolledWindow");
+                    g_free(message_content);
+                    g_list_free(children);
+                    return;
+                }
+
+                GtkWidget *chat_view = gtk_bin_get_child(GTK_BIN(scrolled_window));
+                if (!GTK_IS_TEXT_VIEW(chat_view)) {
+                    log_message(ERROR, "Chat view is invalid or not a GtkTextView");
+                    g_free(message_content);
+                    g_list_free(children);
+                    return;
+                }
+
+                GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(chat_view));
+                if (buffer == NULL) {
+                    log_message(ERROR, "Could not get text buffer from chat view");
+                    g_free(message_content);
+                    g_list_free(children);
+                    return;
+                }
+
+                // Chèn ở cuối buffer
+                GtkTextIter end;
+                gtk_text_buffer_get_end_iter(buffer, &end);
+                log_message(INFO, "End iterator position: %d", gtk_text_iter_get_offset(&end));
+
+                // Chèn tin nhắn đã định dạng
+                gtk_text_buffer_insert(buffer, &end, formatted_msg, -1);
+                log_message(INFO, "Inserted message into buffer: %s", formatted_msg);
+                g_free(formatted_msg);
+
+                // Lấy vị trí cuối mới và cuộn đến đó
+                gtk_text_buffer_get_end_iter(buffer, &end);
+                gtk_text_view_scroll_to_iter(GTK_TEXT_VIEW(chat_view), &end, 0.0, TRUE, 0.0, 1.0);
+                log_message(INFO, "Scrolled to bottom of chat view");
+            }
+            g_free(message_content);
+        }
+    } else {
+        log_message(WARN, "Attempted to send empty message");
+    }
+
+    g_list_free(children);
 }
+
+
 
 // File send button callback
 static void on_send_file_clicked(GtkWidget *widget, gpointer data) {
@@ -399,27 +570,4 @@ gboolean show_chat_window_callback(gpointer data) {
     show_chat_window(session);
     return G_SOURCE_REMOVE; // Only execute once
 }
-
-// Add message to chat area (called from GTK main thread)
-gboolean add_message_to_chat(gpointer data) {
-    gchar *formatted_msg = (gchar *)data;
-
-    if (main_window != NULL) {
-        GtkWidget *scrolled_window = gtk_grid_get_child_at(GTK_GRID(
-            gtk_bin_get_child(GTK_BIN(main_window))), 1, 1);
-
-        if (scrolled_window != NULL) {
-            GtkWidget *chat_area = gtk_bin_get_child(GTK_BIN(scrolled_window));
-            if (GTK_IS_TEXT_VIEW(chat_area)) {
-                GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(chat_area));
-                GtkTextIter iter;
-                gtk_text_buffer_get_end_iter(buffer, &iter);
-                gtk_text_buffer_insert(buffer, &iter, formatted_msg, -1);
-            }
-        }
-    }
-    g_free(formatted_msg);
-    return G_SOURCE_REMOVE;
-}
-
 

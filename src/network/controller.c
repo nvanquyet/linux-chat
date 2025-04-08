@@ -187,8 +187,9 @@ void controller_new_message(Controller *self, Message *ms)
   }
 }
 
-
+int  current_user_id;
 void handle_login(Controller *self, Message *msg) {
+  Session *session = (Session *)self->client;  // Make sure we're getting the right pointer
   if (msg == NULL) {
     // Nếu message rỗng, hiển thị thông báo lỗi
     show_message_form("Login Null", FALSE);
@@ -199,7 +200,7 @@ void handle_login(Controller *self, Message *msg) {
   bool loginOk = message_read_bool(msg);
 
   if (loginOk) {
-    int user_id = (int) message_read_int(msg);
+    int user_id = (int)message_read_int(msg);
     char username[256];
 
     if (!message_read_string(msg, username, sizeof(username))) {
@@ -219,9 +220,16 @@ void handle_login(Controller *self, Message *msg) {
     user->session = self->client;
     self->client->isLogin = true;
 
+    // Explicitly set the current_user_id in the session
+    self->client->current_user_id = user_id;
+    session->current_user_id = user_id;  // Make sure it's set in both places
+
+    // Log the user ID for debugging
+    log_message(INFO, "User logged in with ID: %d", user_id);
+    log_message(INFO, "Session current_user_id set to: %d", session->current_user_id);
+
     // Hiển thị thông báo login thành công
     show_message_form("Login success", TRUE);
-
 
     // Dùng g_idle_add để hiển thị cửa sổ chat trong luồng chính của GTK
     g_idle_add((GSourceFunc)show_chat_window_callback, self->client);
@@ -338,10 +346,15 @@ void get_all_users(Controller *controller, Message *message) {
 
   // Create a dynamic string to store user list
   GString *user_list = g_string_new(NULL);
+
+  // Get current user ID for comparison
+  int current_user_id = controller->client->current_user_id;
+  log_message(INFO, "Current user ID: %d", current_user_id);
+
   // Process list of users
+  int friends_added = 0;
   for (int i = 0; i < count; i++) {
     int user_id = (int) message_read_int(message);
-    //if (user_id == controller->client->user->id) continue;
     char username[2024];
     if (!message_read_string(message, username, sizeof(username))) {
       log_message(WARN, "Failed to read username at index %d", i);
@@ -349,13 +362,20 @@ void get_all_users(Controller *controller, Message *message) {
     }
 
     bool isOnline = message_read_bool(message);
-    if (i > 0) {
+
+    // Skip the current user - don't add them to the friend list
+    if (user_id == current_user_id) {
+      log_message(INFO, "Skipping current user: %s (ID: %d)", username, user_id);
+      continue;
+    }
+
+    if (friends_added > 0) {
       g_string_append(user_list, ", ");
     }
 
     g_string_append_printf(user_list, "%s/%d", username, user_id);
+    friends_added++;
   }
-
 
   // Prepare data for UI update
   FriendListData *fl_data = g_malloc(sizeof(FriendListData));
