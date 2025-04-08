@@ -4,7 +4,6 @@
 CMakeFiles/MyChatProject.dir/src/main.c.o: /home/vawnwuyest/Documents/linux/linux-chat/src/main.c \
   /home/vawnwuyest/Documents/linux/linux-chat/include/chat_common.h \
   /home/vawnwuyest/Documents/linux/linux-chat/include/controller.h \
-  /home/vawnwuyest/Documents/linux/linux-chat/include/group.h \
   /home/vawnwuyest/Documents/linux/linux-chat/include/log.h \
   /home/vawnwuyest/Documents/linux/linux-chat/include/message.h \
   /home/vawnwuyest/Documents/linux/linux-chat/include/service.h \
@@ -10118,8 +10117,6 @@ CMakeFiles/MyChatProject.dir/src/utils/utils.c.o: /home/vawnwuyest/Documents/lin
 
 /usr/include/x86_64-linux-gnu/bits/sigevent-consts.h:
 
-/usr/include/x86_64-linux-gnu/bits/sigcontext.h:
-
 /usr/include/gtk-3.0/gdk/gdkdevicetool.h:
 
 /usr/include/gtk-3.0/gdk/gdkcursor.h:
@@ -10402,12 +10399,6 @@ CMakeFiles/MyChatProject.dir/src/utils/utils.c.o: /home/vawnwuyest/Documents/lin
 
 /usr/include/pango-1.0/pango/pango-context.h:
 
-/usr/include/glib-2.0/gobject/gsignal.h:
-
-/usr/include/gtk-3.0/gtk/gtktestutils.h:
-
-/usr/include/glib-2.0/gio/gpowerprofilemonitor.h:
-
 /usr/include/glib-2.0/gio/gapplicationcommandline.h:
 
 /usr/include/glib-2.0/gio/gappinfo.h:
@@ -10528,6 +10519,30 @@ CMakeFiles/MyChatProject.dir/src/utils/utils.c.o: /home/vawnwuyest/Documents/lin
 
 /usr/include/gtk-3.0/gtk/gtkcellrenderer.h:
 
+/usr/include/openssl/asn1.h:
+
+/usr/include/glib-2.0/glib/ghmac.h:
+
+/usr/include/gtk-3.0/gtk/gtkorientable.h:
+
+/usr/include/atk-1.0/atk/atkstateset.h:
+
+/usr/include/glib-2.0/gobject/gsignalgroup.h:
+
+/usr/include/atk-1.0/atk/atkdocument.h:
+
+/usr/include/x86_64-linux-gnu/bits/socket.h:
+
+/usr/include/dirent.h:
+
+/usr/include/gtk-3.0/gtk/gtkplacessidebar.h:
+
+/usr/include/x86_64-linux-gnu/bits/signum-arch.h:
+
+/usr/include/gtk-3.0/gdk/gdkdisplay.h:
+
+/usr/include/glib-2.0/gio/gfilemonitor.h:
+
 /usr/include/glib-2.0/gio/gvolumemonitor.h:
 
 /usr/include/glib-2.0/glib/galloca.h:
@@ -10570,12 +10585,6 @@ CMakeFiles/MyChatProject.dir/src/utils/utils.c.o: /home/vawnwuyest/Documents/lin
 
 /usr/include/gtk-3.0/gtk/gtkcellareacontext.h:
 
-/home/vawnwuyest/Documents/linux/linux-chat/include/service.h:
-
-/usr/include/glib-2.0/gio/ginetaddressmask.h:
-
-/usr/include/glib-2.0/gio/gmount.h:
-
 /usr/include/gtk-3.0/gtk/gtktoolitemgroup.h:
 
 /usr/include/glib-2.0/gio/ginputstream.h:
@@ -10585,6 +10594,12 @@ CMakeFiles/MyChatProject.dir/src/utils/utils.c.o: /home/vawnwuyest/Documents/lin
 /usr/include/gtk-3.0/gtk/gtkfilechooserbutton.h:
 
 /usr/include/gtk-3.0/gtk/gtkmessagedialog.h:
+
+/usr/include/glib-2.0/glib/gstrvbuilder.h:
+
+/usr/include/glib-2.0/gio/gdtlsserverconnection.h:
+
+/usr/include/atk-1.0/atk/atkregistry.h:
 
 /usr/include/glib-2.0/glib/gatomic.h:
 
@@ -10642,6 +10657,10 @@ CMakeFiles/MyChatProject.dir/src/utils/utils.c.o: /home/vawnwuyest/Documents/lin
 
 /usr/include/gdk-pixbuf-2.0/gdk-pixbuf/gdk-pixbuf-core.h:
 
+/usr/include/gtk-3.0/gdk/gdkenumtypes.h:
+
+/usr/include/glib-2.0/gio/gmemoryinputstream.h:
+
 /usr/include/glib-2.0/gio/gioerror.h:
 
 /usr/include/gtk-3.0/gtk/gtkbuilder.h:
@@ -10660,39 +10679,15 @@ CMakeFiles/MyChatProject.dir/src/utils/utils.c.o: /home/vawnwuyest/Documents/lin
 
 /usr/include/glib-2.0/gio/gioscheduler.h:
 
-/usr/include/gtk-3.0/gtk/gtkplacessidebar.h:
-
-/usr/include/glib-2.0/glib/gstrvbuilder.h:
-
-/usr/include/atk-1.0/atk/atkregistry.h:
-
-/usr/include/glib-2.0/gio/gdtlsserverconnection.h:
-
-/usr/include/x86_64-linux-gnu/bits/signum-arch.h:
-
-/usr/include/gtk-3.0/gdk/gdkdisplay.h:
-
-/usr/include/glib-2.0/gio/gfilemonitor.h:
-
-/usr/include/openssl/asn1.h:
-
-/usr/include/glib-2.0/glib/ghmac.h:
-
-/usr/include/gtk-3.0/gtk/gtkorientable.h:
-
-/usr/include/atk-1.0/atk/atkstateset.h:
-
-/usr/include/glib-2.0/gobject/gsignalgroup.h:
-
-/usr/include/atk-1.0/atk/atkdocument.h:
-
-/usr/include/x86_64-linux-gnu/bits/socket.h:
-
-/usr/include/dirent.h:
-
 /usr/include/glib-2.0/gio/gtcpwrapperconnection.h:
 
 /usr/include/glib-2.0/gio/gdbusactiongroup.h:
+
+/home/vawnwuyest/Documents/linux/linux-chat/include/service.h:
+
+/usr/include/glib-2.0/gio/gtestdbus.h:
+
+/usr/include/glib-2.0/gio/gcancellable.h:
 
 /usr/include/atk-1.0/atk/atkobjectfactory.h:
 
@@ -10770,10 +10765,6 @@ CMakeFiles/MyChatProject.dir/src/utils/utils.c.o: /home/vawnwuyest/Documents/lin
 
 /usr/include/gtk-3.0/gtk/gtktypes.h:
 
-/usr/include/glib-2.0/gio/gdbusintrospection.h:
-
-/usr/include/atk-1.0/atk/atksocket.h:
-
 /usr/include/atk-1.0/atk/atkrelationset.h:
 
 /usr/include/x86_64-linux-gnu/bits/environments.h:
@@ -10815,10 +10806,6 @@ CMakeFiles/MyChatProject.dir/src/utils/utils.c.o: /home/vawnwuyest/Documents/lin
 /usr/include/glib-2.0/gio/giotypes.h:
 
 /usr/include/gdk-pixbuf-2.0/gdk-pixbuf/gdk-pixbuf-features.h:
-
-/usr/include/glib-2.0/gio/gtestdbus.h:
-
-/usr/include/glib-2.0/gio/gcancellable.h:
 
 /usr/include/openssl/objectserr.h:
 
@@ -10889,6 +10876,14 @@ CMakeFiles/MyChatProject.dir/src/utils/utils.c.o: /home/vawnwuyest/Documents/lin
 /usr/include/features.h:
 
 /usr/include/gtk-3.0/gdk/gdkseat.h:
+
+/usr/include/atk-1.0/atk/atksocket.h:
+
+/usr/include/glib-2.0/gio/gdbusintrospection.h:
+
+/usr/include/gtk-3.0/gtk/gtktestutils.h:
+
+/usr/include/glib-2.0/gio/gpowerprofilemonitor.h:
 
 /usr/include/glib-2.0/gio/gsocketclient.h:
 
@@ -10964,6 +10959,8 @@ CMakeFiles/MyChatProject.dir/src/utils/utils.c.o: /home/vawnwuyest/Documents/lin
 
 /usr/include/glib-2.0/gio/gemblem.h:
 
+/usr/include/glib-2.0/gio/ginetaddressmask.h:
+
 /usr/include/gdk-pixbuf-2.0/gdk-pixbuf/gdk-pixbuf-enum-types.h:
 
 /usr/include/gtk-3.0/gtk/deprecated/gtkstatusicon.h:
@@ -11020,6 +11017,8 @@ CMakeFiles/MyChatProject.dir/src/utils/utils.c.o: /home/vawnwuyest/Documents/lin
 
 /usr/include/gtk-3.0/gtk/gtkseparator.h:
 
+/usr/include/glib-2.0/gio/gmount.h:
+
 /usr/include/glib-2.0/gio/gdbusinterfaceskeleton.h:
 
 /usr/include/gtk-3.0/gtk/gtkbox.h:
@@ -11042,9 +11041,7 @@ CMakeFiles/MyChatProject.dir/src/utils/utils.c.o: /home/vawnwuyest/Documents/lin
 
 /usr/include/glib-2.0/gio/gpollableoutputstream.h:
 
-/usr/include/glib-2.0/gio/gmemoryinputstream.h:
-
-/usr/include/gtk-3.0/gdk/gdkenumtypes.h:
+/usr/include/glib-2.0/gobject/gsignal.h:
 
 /home/vawnwuyest/Documents/linux/linux-chat/include/json_utils.h:
 
@@ -11161,6 +11158,8 @@ CMakeFiles/MyChatProject.dir/src/utils/utils.c.o: /home/vawnwuyest/Documents/lin
 /usr/include/gtk-3.0/gtk/gtktextbufferrichtext.h:
 
 /usr/include/gtk-3.0/gtk/deprecated/gtktearoffmenuitem.h:
+
+/usr/include/x86_64-linux-gnu/bits/sigcontext.h:
 
 /usr/include/gtk-3.0/gtk/deprecated/gtkthemingengine.h:
 

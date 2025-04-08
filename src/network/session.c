@@ -669,13 +669,13 @@ Message *session_read_message(Session *session)
         return msg;
     }
 
-
-    unsigned char iv[16];
-    if (recv(session->socket, iv, sizeof(iv), 0) <= 0)
-    {
-        log_message(ERROR, "Failed to receive IV");
+    unsigned char iv[16];  // 16 bytes cho AES IV
+    int bytes_received = recv(session->socket, iv, sizeof(iv), 0);
+    if (bytes_received <= 0) {
+        log_message(ERROR, "Failed to receive IV, bytes received: %d", bytes_received);
         return NULL;
     }
+
 
     uint32_t original_size;
     if (recv(session->socket, &original_size, sizeof(original_size), 0) <= 0)

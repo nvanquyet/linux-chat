@@ -90,6 +90,8 @@ void service_search_users(Service* service, const char* text)
     message_write_int(message, service->session->user->id);
     message_write_string(message, text);
     session_send_message(service->session, message);
+
+    log_message(INFO, "Search users %s", text);
 }
 
 // Group Handling

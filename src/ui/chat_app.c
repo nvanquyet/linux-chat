@@ -25,7 +25,6 @@ GtkWidget *main_window = NULL;
 Session *main_session = NULL;
 int select_target_id = 0;
 
-//hande btn join Group
 void on_join_group_clicked(GtkWidget *widget, gpointer data) {
     ChatApp *chat_app = (ChatApp *)data;
     Session *session = chat_app->session;
@@ -58,24 +57,29 @@ static void on_create_group_clicked(GtkWidget *widget, gpointer data) {
 static void on_log_out_clicked(GtkWidget *widget, gpointer data) {
     Session *session = (Session *)data;
 
-    // Hide main window
+    // Hide the main window instead of destroying it
     if (main_window != NULL) {
         gtk_widget_hide(main_window);
+        log_message(INFO, "Main window hidden for logout");
     }
 
-    // Set login status to FALSE
+    // Update logout status
     session->isLogin = FALSE;
+    session->current_user_id = -1;
 
-    // Send logout notification to server
-    Message *msg = message_create(LOGOUT);
-    if (msg != NULL) {
-        session_send_message(session, msg);
-        log_message(INFO, "Sent LOGOUT request to server");
+    // Send logout notification to server if user exists
+    if (session->user != NULL) {
+        session->user->logout(session->user);
+        // Free user info if needed,
+        // but make sure user->logout() handles sending notification without duplicate freeing.
+        free(session->user);
+        session->user = NULL;
     }
 
-    // Show login window
-    show_login_window(session);
+    // Don't need to add this here as the server response will trigger handle_logout
+    // which will show the login window
 }
+
 
 // Main window close callback
 static void on_main_window_destroy(GtkWidget *widget, gpointer data) {
@@ -321,7 +325,11 @@ void init_contact_map() {
 
 void get_history()
 {
-    main_session->service->get_history(main_session->service, main_session->user);
+    if (main_session && main_session->service)
+    {
+        main_session->service->get_history(main_session->service, main_session->user);
+    }
+
 }
 
 //################---------search box-----------------------
@@ -453,8 +461,6 @@ void update_search_user_results(User *users, int count) {
 
 void on_search_changed(GtkEntry *entry, gpointer user_data) {
     const gchar *text = gtk_entry_get_text(entry);
-    g_print("Người dùng đang gõ: %s\n", text);
-
     main_session->service->search_users(main_session->service, text);
 }
 
@@ -508,7 +514,6 @@ void show_chat_window(Session *session) {
     gtk_container_add(GTK_CONTAINER(main_window), grid);
     /* Cột 0: Search với Autocomplete */
     GtkWidget *search_area = create_search_area(grid);
-
     /* Cột 1: Danh sách contacts */
     // Tạo scrolled window cho vùng contacts
     contacts_scroll = gtk_scrolled_window_new(NULL, NULL);
@@ -523,7 +528,6 @@ void show_chat_window(Session *session) {
 
     // Ví dụ: Thêm một vài contact item
     init_contact_map();
-
     /* Cột 2: Vùng tin nhắn (chat area) */
     // Tạo scrolled window cho vùng chat
     GtkWidget *chat_scrolled = gtk_scrolled_window_new(NULL, NULL);
@@ -572,13 +576,16 @@ void show_chat_window(Session *session) {
 
     // Hiển thị tất cả widget
     gtk_widget_show_all(main_window);
-
     get_history();
 }
 
 // Safe callback to display chat window from GTK main thread
 gboolean show_chat_window_callback(gpointer data) {
-    show_chat_window(main_session);
+    Session *session = (Session *)data;
+    show_chat_window(session);
     return G_SOURCE_REMOVE; // Only execute once
 }
+
+
+
 

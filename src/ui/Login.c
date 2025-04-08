@@ -6,18 +6,29 @@
 
 
 // Cấu trúc dữ liệu cho giao diện đăng nhập
-typedef struct {
-    GtkWidget *window;
-    GtkEntry *entry_username;
-    GtkEntry *entry_password;
-    Session *session;  // Session được truyền từ main
-} LoginData;
+
 
 // Prototype các hàm
 static void show_message_dialog(GtkWindow *parent, const gchar *message, gboolean success);
 static void on_login_button_clicked(GtkWidget *button, gpointer user_data);
 static void on_register_button_clicked(GtkWidget *button, gpointer user_data);
-static void on_login_window_destroy(GtkWidget *widget, gpointer user_data);
+ void on_login_window_destroy(GtkWidget *widget, gpointer user_data);
+gboolean show_login_window_callback(gpointer data);
+
+gboolean show_login_window_callback(gpointer data) {
+    Session *session = (Session *)data;
+
+    // Nếu đã có cửa sổ login hiện tại, huỷ nó đi
+    if (main_window != NULL) {
+        gtk_widget_destroy(main_window);
+        main_window = NULL;
+    }
+
+    // Tạo cửa sổ login mới (giả sử create_login_window trả về GtkWidget*)
+    show_login_window(session);
+    return FALSE;  // Trả về FALSE để nguồn sự kiện không được lặp lại
+}
+
 
 // Hiển thị hộp thoại thông báo
 static void show_message_dialog(GtkWindow *parent, const gchar *message, gboolean success) {
@@ -71,14 +82,21 @@ static void on_register_button_clicked(GtkWidget *button, gpointer user_data) {
 }
 
 // Giải phóng bộ nhớ khi đóng cửa sổ
-static void on_login_window_destroy(GtkWidget *widget, gpointer user_data) {
-    LoginData *login_data = (LoginData *)user_data;
-    g_free(login_data);
-    gtk_main_quit();  // Thoát khỏi vòng lặp chính khi cửa sổ đăng nhập bị đóng
+// Hàm callback khi cửa sổ bị đóng
+void on_login_window_destroy(GtkWidget *widget, gpointer data) {
+    LoginData *login_data = (LoginData *)data;
+    if (login_data) {
+        // Giải phóng data cấp phát bằng g_malloc
+        g_free(login_data);
+    }
+
+
+    log_message(INFO, "Login window destroyed and memory cleaned");
 }
 
+
 // Tạo và hiển thị cửa sổ đăng nhập
-void show_login_window(Session *session) {
+void *show_login_window(Session *session) {
     GtkWidget *window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_title(GTK_WINDOW(window), "Đăng nhập");
     gtk_window_set_default_size(GTK_WINDOW(window), 300, 200);
@@ -116,4 +134,5 @@ void show_login_window(Session *session) {
     g_signal_connect(window, "destroy", G_CALLBACK(on_login_window_destroy), login_data);
 
     gtk_widget_show_all(window);
+
 }
