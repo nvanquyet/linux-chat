@@ -417,6 +417,30 @@ src/ui/create_group.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyChatProject.dir/build.make CMakeFiles/MyChatProject.dir/src/ui/create_group.c.s
 .PHONY : src/ui/create_group.c.s
 
+src/ui/join_group.o: src/ui/join_group.c.o
+.PHONY : src/ui/join_group.o
+
+# target to build an object file
+src/ui/join_group.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyChatProject.dir/build.make CMakeFiles/MyChatProject.dir/src/ui/join_group.c.o
+.PHONY : src/ui/join_group.c.o
+
+src/ui/join_group.i: src/ui/join_group.c.i
+.PHONY : src/ui/join_group.i
+
+# target to preprocess a source file
+src/ui/join_group.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyChatProject.dir/build.make CMakeFiles/MyChatProject.dir/src/ui/join_group.c.i
+.PHONY : src/ui/join_group.c.i
+
+src/ui/join_group.s: src/ui/join_group.c.s
+.PHONY : src/ui/join_group.s
+
+# target to generate assembly for a file
+src/ui/join_group.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyChatProject.dir/build.make CMakeFiles/MyChatProject.dir/src/ui/join_group.c.s
+.PHONY : src/ui/join_group.c.s
+
 src/utils/aes_utils.o: src/utils/aes_utils.c.o
 .PHONY : src/utils/aes_utils.o
 
@@ -558,6 +582,9 @@ help:
 	@echo "... src/ui/create_group.o"
 	@echo "... src/ui/create_group.i"
 	@echo "... src/ui/create_group.s"
+	@echo "... src/ui/join_group.o"
+	@echo "... src/ui/join_group.i"
+	@echo "... src/ui/join_group.s"
 	@echo "... src/utils/aes_utils.o"
 	@echo "... src/utils/aes_utils.i"
 	@echo "... src/utils/aes_utils.s"

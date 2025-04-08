@@ -5,7 +5,7 @@
 #include "message.h"
 #include "service.h"
 #include <stdbool.h>
-
+#include <gtk/gtk.h>
 // Forward declarations
 typedef struct User User;
 typedef struct Session Session;
@@ -29,6 +29,8 @@ struct Session
   int socket;
   bool isRunning;
 
+  GtkWidget *loginWindow;
+  GtkWidget *chatWindow;
   // Function pointers
   bool (*isConnected)(Session *self);
   void (*setHandler)(Session *self, Controller *handler);

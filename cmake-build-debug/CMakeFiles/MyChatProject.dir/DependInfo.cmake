@@ -20,6 +20,7 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/thuy/Desktop/linux-chat/src/ui/Register.c" "CMakeFiles/MyChatProject.dir/src/ui/Register.c.o" "gcc" "CMakeFiles/MyChatProject.dir/src/ui/Register.c.o.d"
   "/home/thuy/Desktop/linux-chat/src/ui/chat_app.c" "CMakeFiles/MyChatProject.dir/src/ui/chat_app.c.o" "gcc" "CMakeFiles/MyChatProject.dir/src/ui/chat_app.c.o.d"
   "/home/thuy/Desktop/linux-chat/src/ui/create_group.c" "CMakeFiles/MyChatProject.dir/src/ui/create_group.c.o" "gcc" "CMakeFiles/MyChatProject.dir/src/ui/create_group.c.o.d"
+  "/home/thuy/Desktop/linux-chat/src/ui/join_group.c" "CMakeFiles/MyChatProject.dir/src/ui/join_group.c.o" "gcc" "CMakeFiles/MyChatProject.dir/src/ui/join_group.c.o.d"
   "/home/thuy/Desktop/linux-chat/src/utils/aes_utils.c" "CMakeFiles/MyChatProject.dir/src/utils/aes_utils.c.o" "gcc" "CMakeFiles/MyChatProject.dir/src/utils/aes_utils.c.o.d"
   "/home/thuy/Desktop/linux-chat/src/utils/json_utils.c" "CMakeFiles/MyChatProject.dir/src/utils/json_utils.c.o" "gcc" "CMakeFiles/MyChatProject.dir/src/utils/json_utils.c.o.d"
   "/home/thuy/Desktop/linux-chat/src/utils/log.c" "CMakeFiles/MyChatProject.dir/src/utils/log.c.o" "gcc" "CMakeFiles/MyChatProject.dir/src/utils/log.c.o.d"

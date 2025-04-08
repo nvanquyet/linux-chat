@@ -23,6 +23,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/MyChatProject.dir/src/ui/chat_app.c.o.d"
   "CMakeFiles/MyChatProject.dir/src/ui/create_group.c.o"
   "CMakeFiles/MyChatProject.dir/src/ui/create_group.c.o.d"
+  "CMakeFiles/MyChatProject.dir/src/ui/join_group.c.o"
+  "CMakeFiles/MyChatProject.dir/src/ui/join_group.c.o.d"
   "CMakeFiles/MyChatProject.dir/src/utils/aes_utils.c.o"
   "CMakeFiles/MyChatProject.dir/src/utils/aes_utils.c.o.d"
   "CMakeFiles/MyChatProject.dir/src/utils/json_utils.c.o"

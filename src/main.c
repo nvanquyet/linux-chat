@@ -13,17 +13,7 @@
 #include "chat_common.h"
 #include "gtk/gtk.h"
 
-void *socket_thread(void *arg) {
-    Session *session = (Session *)arg;
-    while (session->isRunning) {
-        if (!session->connected) {
-            log_message(INFO, "Server disconnected, keyboard handler exiting");
-            break;
-        }
 
-    }
-    return NULL;
-}
 
 // Hàm kiểm tra kết nối và khởi tạo GTK
 gboolean check_connection(gpointer data) {
@@ -78,7 +68,7 @@ int main(int argc, char *argv[]) {
     log_message(INFO, "Connected to server successfully");
 
     // Pass the session to the login window
-    show_login_window(session);
+    show_chat_window(session);
 
     // Set up a timer to check connection periodically
     g_timeout_add(1000, check_connection, session);

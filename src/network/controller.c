@@ -1,4 +1,7 @@
 #include "controller.h"
+
+#include <chat_common.h>
+
 #include "cmd.h"
 #include "log.h"
 #include "message.h"
@@ -9,7 +12,7 @@
 #include <string.h>
 
 #include "group.h"
-
+#include "mess_form.h"
 void controller_on_message(Controller *self, Message *message);
 void controller_on_connection_fail(Controller *self);
 void controller_on_disconnected(Controller *self);
@@ -17,8 +20,11 @@ void controller_on_connect_ok(Controller *self);
 void controller_message_in_chat(Controller *self, Message *ms);
 void controller_message_not_in_chat(Controller *self, Message *ms);
 void controller_new_message(Controller *self, Message *ms);
-
+void handle_login(Controller *self, Message *msg);
+void handle_logout(Controller *self, Message *msg);
+void handle_register(Controller *self, Message *msg);
 char **get_online_users(Controller *controller, Message *message);
+gboolean show_chat_window_callback(gpointer data);
 
 
 Controller *createController(Session *client)
@@ -89,8 +95,14 @@ void controller_on_message(Controller *self, Message *message)
       log_message(ERROR, "Service is NULL");
     }
     break;
-  case LOGIN_SUCCESS:
-    self->client->isLogin = true;
+  case LOGIN:
+    handle_login(self, message);
+    break;
+  // case LOGOUT:
+  //   handle_logout(self, message);
+  //   break;
+  case REGISTER:
+    handle_register(self, message);
     break;
   case GET_JOINED_GROUPS:
     get_joined_groups(self, message);
@@ -175,13 +187,90 @@ void controller_new_message(Controller *self, Message *ms)
   }
 }
 
+
+void handle_login(Controller *self, Message *msg) {
+  if (msg == NULL) {
+    // Nếu message rỗng, hiển thị thông báo lỗi
+    show_message_form("Login Null", FALSE);
+    return;
+  }
+
+  msg->position = 0;
+  bool loginOk = message_read_bool(msg);
+
+  if (loginOk) {
+    int user_id = (int) message_read_int(msg);
+    char username[256];
+
+    if (!message_read_string(msg, username, sizeof(username))) {
+      log_message(WARN, "Invalid username");
+    }
+
+    User *user = createUser(NULL, self->client, username, "");
+
+    if (user == NULL) {
+      log_message(ERROR, "Failed to create user");
+      return;
+    }
+
+    user->id = user_id;
+    user->isOnline = true;
+    self->client->user = user;
+    user->session = self->client;
+    self->client->isLogin = true;
+
+    // Hiển thị thông báo login thành công
+    show_message_form("Login success", TRUE);
+
+
+    // Dùng g_idle_add để hiển thị cửa sổ chat trong luồng chính của GTK
+    g_idle_add((GSourceFunc)show_chat_window_callback, self->client);
+
+  } else {
+    char error[256] = {0};
+
+    if (!message_read_string(msg, error, sizeof(error))) {
+      log_message(ERROR, "Failed to read error message");
+      return;
+    }
+
+    log_message(INFO, "Đăng nhập thất bại: %s\n", error);
+    // Hiển thị thông báo lỗi từ server
+    show_message_form(error, FALSE);
+  }
+}
+
+
+
+void handle_register(Controller *self, Message *msg) {
+  if (msg == NULL) {
+    log_message(ERROR, "Register response message is NULL");
+    return;
+  }
+
+  msg->position = 0;
+
+  bool isSuccess = message_read_bool(msg);
+
+  if (isSuccess) {
+    printf("Register successful! You can now log in.\n");
+  } else {
+    char errorMsg[256] = {0};
+    if (message_read_string(msg, errorMsg, sizeof(errorMsg))) {
+      printf("Register failed: %s\n", errorMsg);
+    } else {
+      printf("Register failed: Unknown error\n");
+    }
+  }
+}
+
 char **get_online_users(Controller *controller, Message *message)
 {
   if (controller == NULL || message == NULL)
   {
     return NULL;
   }
-  
+
   uint8_t count = message_read_int(message);
   char **users = (char **)malloc(sizeof(char *) * count);
   if (users == NULL)
@@ -206,21 +295,86 @@ char **get_online_users(Controller *controller, Message *message)
   return users;
 }
 
+// void get_all_users(Controller *controller, Message *message) {
+//   if (!controller || !message) return;
+//
+//   message->position = 0; // Reset position để đọc từ đầu
+//   int count = message_read_int(message);
+//
+//   printf("Danh sách tất cả người dùng (Tổng: %d):\n", count);
+//   for (int i = 0; i < count; i++) {
+//     int user_id = (int) message_read_int(message);
+//     char username[1024];
+//     // Đọc username và giới hạn buffer để tránh overflow
+//     if (!message_read_string(message, username, sizeof(username))) {
+//       printf("[Lỗi] Không đọc được username ở user %d\n", i);
+//       break; // Dừng nếu không thể đọc
+//     }
+//
+//     bool isOnline = message_read_bool(message);
+//
+//     printf("Username: %-20s (Id: %d) - Trạng thái: %s\n",
+//            username, user_id,
+//            isOnline ? "Online" : "Offline");
+//   }
+// }
 void get_all_users(Controller *controller, Message *message) {
-    if (!controller || !message) return;
+  if (!controller || !message) {
+    log_message(ERROR, "Invalid controller or message");
+    return;
+  }
 
-    message->position = 0;
-    int count = message_read_int(message);
+  // Check if the session is valid before proceeding
+  if (!controller->client || !controller->client->connected) {
+    log_message(ERROR, "Invalid session or connection");
+    return;
+  }
 
-    printf("Danh sách tất cả người dùng:\n");
-    for (int i = 0; i < count; i++) {
-      char username[1024];
-      if (!message_read_string(message, username, 1024)) continue;
-      bool isOnline = message_read_bool(message);
+  message->position = 0;
 
-      printf("Username: %s - Trạng thái: %s\n", username, isOnline ? "Online" : "Offline");
+  // Đọc số lượng người dùng từ tin nhắn
+  int count = (int) message_read_int(message);
+  log_message(INFO, "Received %d users", count);
+
+  // Create a dynamic string to store user list
+  GString *user_list = g_string_new(NULL);
+  // Process list of users
+  for (int i = 0; i < count; i++) {
+    int user_id = (int) message_read_int(message);
+    //if (user_id == controller->client->user->id) continue;
+    char username[2024];
+    if (!message_read_string(message, username, sizeof(username))) {
+      log_message(WARN, "Failed to read username at index %d", i);
+      continue;
     }
+
+    bool isOnline = message_read_bool(message);
+    if (i > 0) {
+      g_string_append(user_list, ", ");
+    }
+
+    g_string_append_printf(user_list, "%s/%d", username, user_id);
+  }
+
+
+  // Prepare data for UI update
+  FriendListData *fl_data = g_malloc(sizeof(FriendListData));
+
+  if (!fl_data) {
+    log_message(ERROR, "Failed to allocate memory for friend list data");
+    g_string_free(user_list, TRUE);
+    return;
+  }
+
+  fl_data->friend_list = g_strdup(user_list->str);
+  fl_data->session = controller->client;
+
+  // Update UI in the main thread
+  g_idle_add((GSourceFunc)update_friend_list, fl_data);
+  g_string_free(user_list, TRUE);
 }
+
+
 
 void get_joined_groups(Controller *controller, Message *message) {
   if (!controller || !message) {

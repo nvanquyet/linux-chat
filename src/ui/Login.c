@@ -88,6 +88,7 @@ void show_login_window(Session *session) {
     login_data->entry_password = GTK_ENTRY(gtk_entry_new());
     login_data->session = session;  // Lưu lại session được truyền vào
 
+    session->loginWindow = window;
     // Ẩn mật khẩu
     gtk_entry_set_visibility(login_data->entry_password, FALSE);
 
