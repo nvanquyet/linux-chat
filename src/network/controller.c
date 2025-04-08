@@ -96,11 +96,16 @@ void controller_on_message(Controller *self, Message *message)
     }
     break;
   case LOGIN:
-    handle_login(self, message);
+    log_message(INFO,"login");
+    if(self->service != NULL) {
+      handle_login(self, message);
+    } else {
+      log_message(ERROR, "Service is NULL");
+    }
     break;
-  // case LOGOUT:
-  //   handle_logout(self, message);
-  //   break;
+  case LOGOUT:
+    handle_logout(self, message);
+    break;
   case REGISTER:
     handle_register(self, message);
     break;
@@ -193,66 +198,129 @@ void controller_new_message(Controller *self, Message *ms)
   }
 }
 
+
 int  current_user_id;
 void handle_login(Controller *self, Message *msg) {
-  Session *session = (Session *)self->client;  // Make sure we're getting the right pointer
+  // Validate pointers first
+  if (self == NULL || self->client == NULL) {
+    log_message(ERROR, "Invalid controller or client in handle_login");
+    return;
+  }
+
+  Session *session = (Session *)self->client;
+
   if (msg == NULL) {
-    // Nếu message rỗng, hiển thị thông báo lỗi
+    // If message is empty, display error message
     show_message_form("Login Null", FALSE);
     return;
   }
 
+  // Reset message position to read from beginning
   msg->position = 0;
   bool loginOk = message_read_bool(msg);
+  log_message(INFO, "Login result: %s", loginOk ? "success" : "failed");
 
   if (loginOk) {
     int user_id = (int)message_read_int(msg);
-    char username[256];
+    char username[256] = {0};
 
     if (!message_read_string(msg, username, sizeof(username))) {
       log_message(WARN, "Invalid username");
-    }
-
-    User *user = createUser(NULL, self->client, username, "");
-
-    if (user == NULL) {
-      log_message(ERROR, "Failed to create user");
+      show_message_form("Invalid username data", FALSE);
       return;
     }
 
+    log_message(INFO, "Logged in as: %s (ID: %d)", username, user_id);
+
+    // Create user object
+    User *user = createUser(NULL, session, username, "");
+    if (user == NULL) {
+      log_message(ERROR, "Failed to create user object");
+      show_message_form("Internal error: Failed to create user", FALSE);
+      return;
+    }
+
+    // Update user and session properties
     user->id = user_id;
     user->isOnline = true;
-    self->client->user = user;
-    user->session = self->client;
-    self->client->isLogin = true;
+    user->session = session;
 
-    // Explicitly set the current_user_id in the session
-    self->client->current_user_id = user_id;
-    session->current_user_id = user_id;  // Make sure it's set in both places
+    // Update session properties
+    session->user = user;
+    session->current_user_id = user_id;
 
-    // Log the user ID for debugging
-    log_message(INFO, "User logged in with ID: %d", user_id);
-    log_message(INFO, "Session current_user_id set to: %d", session->current_user_id);
+    // Hide the login window if it exists
+    if (session->loginWindow != NULL) {
+      gtk_widget_hide(session->loginWindow);
+      log_message(INFO, "Login window hidden");
+    }
 
-    // Hiển thị thông báo login thành công
-    show_message_form("Login success", TRUE);
+    // Use g_idle_add to display chat window on GTK main thread
+    g_idle_add(show_chat_window_callback, session);
 
-    // Dùng g_idle_add để hiển thị cửa sổ chat trong luồng chính của GTK
-    g_idle_add((GSourceFunc)show_chat_window_callback, self->client);
-
+    log_message(INFO, "Login successful, showing chat window");
   } else {
+    // Handle login failure
     char error[256] = {0};
 
     if (!message_read_string(msg, error, sizeof(error))) {
       log_message(ERROR, "Failed to read error message");
-      return;
+      strcpy(error, "Unknown login error");
     }
 
-    log_message(INFO, "Đăng nhập thất bại: %s\n", error);
-    // Hiển thị thông báo lỗi từ server
+    log_message(INFO, "Login failed: %s", error);
+    // Display server error message
     show_message_form(error, FALSE);
   }
 }
+void handle_logout(Controller *self, Message *msg) {
+  log_message(INFO, "handle_logout invoked");
+  Session *session = (Session *)self;
+
+  if (self == NULL || self->client == NULL) {
+    log_message(ERROR, "Invalid controller or client in handle_logout");
+    return;
+  }
+  if (msg == NULL) {
+    show_message_form("Logout message null", FALSE);
+    return;
+  }
+
+  msg->position = 0;
+  bool logoutOk = message_read_bool(msg);
+  if (logoutOk) {
+    // Nếu có thông tin user, giải phóng nó (và tránh truy cập sau khi free)
+    if (session->user != NULL) {
+      log_message(INFO, "User %s (ID: %d) logged out", session->user->username, session->user->id);
+      free(session->user);
+      session->user = NULL;
+    }
+    session->isLogin = FALSE;
+    session->current_user_id = -1;
+
+    // Ẩn main window nếu chưa bị ẩn
+    if (main_window != NULL) {
+      gtk_widget_hide(main_window);
+    }
+
+    // Hiển thị thông báo logout thành công và hiện lại cửa sổ login
+    show_message_form("Logout success", TRUE);
+    g_idle_add(show_login_window_callback, session);
+  } else {
+    char error[256] = {0};
+    if (!message_read_string(msg, error, sizeof(error))) {
+      log_message(ERROR, "Failed to read logout error message");
+      return;
+    }
+    log_message(ERROR, "Logout failed: %s", error);
+    show_message_form(error, FALSE);
+  }
+
+  // Giải phóng message nếu cần (sử dụng hàm message_free nếu có)
+ // message_free(msg);
+}
+
+
 
 
 
