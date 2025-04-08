@@ -13,6 +13,7 @@ struct Service {
     void (*login_success)(Service* self);
     void (*server_message)(Service* self, Message* message);
     void (*get_online_users)(Service* self);
+    void (*search_users)(Service* self, const char *text);
 
     // Group Management
     void (*get_group_list)(Service* self,  User* user);
@@ -21,6 +22,7 @@ struct Service {
     void (*leave_group)(Service* self, User* user, int group_id);
     void (*delete_group)(Service* self, User* user, int group_id);
     void (*get_history)(Service* self, User* user);
+    void (*get_history_message)(Service* self, User* user, int target_id);
 
     // Messaging
     void (*send_group_message)(Service* self, User* user, int group_id, const char* message);
@@ -35,12 +37,15 @@ void destroyService(Service* service);
 void server_message(Service* service, Message* message);
 void service_get_online_users(Service* service);
 
+void service_search_users(Service* service, const char* text);
+
 // Group Handling
 void service_get_group_list(Service* service,  User* user);
 void service_create_group(Service* service, User* user, const char* group_name, const char * group_password);
 void service_join_group(Service* service, User* user, const char* group_name, const char * group_password);
 void service_leave_group(Service* service, User* user,int group_id);
 void service_delete_group(Service* service,  User* user, int group_id);
+void service_get_history_message(Service* service,  User* user, int target_id);
 
 // Messaging
 void service_send_group_message(Service* service,  User* user, int group_id, const char* message);

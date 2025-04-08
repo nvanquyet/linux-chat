@@ -137,6 +137,9 @@ void controller_on_message(Controller *self, Message *message)
   case GROUP_NOTIFICATION:
     handle_group_noti(self, message);
     break;
+  case SEARCH_USERS:
+    handle_search_users(self, message);
+    break;
   default:
     log_message(ERROR, "Unknown command %d",
                 command);
@@ -396,8 +399,8 @@ void get_all_users(Controller *controller, Message *message) {
   fl_data->session = controller->client;
 
   // Update UI in the main thread
-  g_idle_add((GSourceFunc)update_friend_list, fl_data);
-  g_string_free(user_list, TRUE);
+  //g_idle_add((GSourceFunc)update_friend_list, fl_data);
+  //g_string_free(user_list, TRUE);
 }
 
 
@@ -602,12 +605,34 @@ void leave_group(Controller *controller, Message *message) {
   }
   free(message);
 }
-
+void handle_search_users(Controller *controller, Message *message)
+{
+  if (message == NULL) {
+    log_message(ERROR, "Invalid message received");
+    return;
+  }
+  message->position = 0;
+  bool result = message_read_bool(message);
+  if (!result)
+  {
+    char* error_message = (char*)malloc(1024);
+    if (!message_read_string(message, error_message, 1024))
+    {
+      log_message(WARN, "NULL Message");
+    }
+    return;
+  }
+  int count = (int)message_read_int(message);
+  User *results = NULL;
+  //loop to create data
+  update_search_user_results(results, count);
+}
 void handle_group_noti(Controller *controller, Message *message) {
   if (message == NULL) {
     log_message(ERROR, "Invalid message received");
     return;
   }
+  message->position = 0;
   int group_id = (int) message_read_int(message);
   int user_id = (int) message_read_int(message);
   char* noti_message = (char*)malloc(1024);

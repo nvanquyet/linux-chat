@@ -34,13 +34,13 @@
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 73,
+				"line" : 74,
 				"parent" : 0
 			},
 			{
 				"command" : 2,
 				"file" : 0,
-				"line" : 74,
+				"line" : 75,
 				"parent" : 0
 			},
 			{
@@ -52,7 +52,7 @@
 			{
 				"command" : 4,
 				"file" : 0,
-				"line" : 72,
+				"line" : 73,
 				"parent" : 0
 			}
 		]
@@ -74,71 +74,11 @@
 			[
 				{
 					"backtrace" : 4,
-					"path" : "/home/thuy/Desktop/linux-chat/include"
+					"path" : "/home/vawnwuyest/Documents/linux/linux-chat/include"
 				},
 				{
 					"backtrace" : 5,
 					"path" : "/usr/include/gtk-3.0"
-				},
-				{
-					"backtrace" : 5,
-					"path" : "/usr/include/pango-1.0"
-				},
-				{
-					"backtrace" : 5,
-					"path" : "/usr/include/glib-2.0"
-				},
-				{
-					"backtrace" : 5,
-					"path" : "/usr/lib/x86_64-linux-gnu/glib-2.0/include"
-				},
-				{
-					"backtrace" : 5,
-					"path" : "/usr/include/harfbuzz"
-				},
-				{
-					"backtrace" : 5,
-					"path" : "/usr/include/freetype2"
-				},
-				{
-					"backtrace" : 5,
-					"path" : "/usr/include/libpng16"
-				},
-				{
-					"backtrace" : 5,
-					"path" : "/usr/include/libmount"
-				},
-				{
-					"backtrace" : 5,
-					"path" : "/usr/include/blkid"
-				},
-				{
-					"backtrace" : 5,
-					"path" : "/usr/include/fribidi"
-				},
-				{
-					"backtrace" : 5,
-					"path" : "/usr/include/cairo"
-				},
-				{
-					"backtrace" : 5,
-					"path" : "/usr/include/pixman-1"
-				},
-				{
-					"backtrace" : 5,
-					"path" : "/usr/include/gdk-pixbuf-2.0"
-				},
-				{
-					"backtrace" : 5,
-					"path" : "/usr/include/webp"
-				},
-				{
-					"backtrace" : 5,
-					"path" : "/usr/include/gio-unix-2.0"
-				},
-				{
-					"backtrace" : 5,
-					"path" : "/usr/include/atk-1.0"
 				},
 				{
 					"backtrace" : 5,
@@ -155,6 +95,66 @@
 				{
 					"backtrace" : 5,
 					"path" : "/usr/lib/x86_64-linux-gnu/dbus-1.0/include"
+				},
+				{
+					"backtrace" : 5,
+					"path" : "/usr/include/gio-unix-2.0"
+				},
+				{
+					"backtrace" : 5,
+					"path" : "/usr/include/cairo"
+				},
+				{
+					"backtrace" : 5,
+					"path" : "/usr/include/pango-1.0"
+				},
+				{
+					"backtrace" : 5,
+					"path" : "/usr/include/harfbuzz"
+				},
+				{
+					"backtrace" : 5,
+					"path" : "/usr/include/fribidi"
+				},
+				{
+					"backtrace" : 5,
+					"path" : "/usr/include/atk-1.0"
+				},
+				{
+					"backtrace" : 5,
+					"path" : "/usr/include/pixman-1"
+				},
+				{
+					"backtrace" : 5,
+					"path" : "/usr/include/uuid"
+				},
+				{
+					"backtrace" : 5,
+					"path" : "/usr/include/freetype2"
+				},
+				{
+					"backtrace" : 5,
+					"path" : "/usr/include/gdk-pixbuf-2.0"
+				},
+				{
+					"backtrace" : 5,
+					"path" : "/usr/include/libpng16"
+				},
+				{
+					"backtrace" : 5,
+					"path" : "/usr/include/libmount"
+				},
+				{
+					"backtrace" : 5,
+					"path" : "/usr/include/blkid"
+				},
+				{
+					"backtrace" : 5,
+					"path" : "/usr/include/glib-2.0"
+				},
+				{
+					"backtrace" : 5,
+					"path" : "/usr/lib/x86_64-linux-gnu/glib-2.0/include"
 				}
 			],
 			"language" : "C",
@@ -209,11 +209,6 @@
 			{
 				"backtrace" : 2,
 				"fragment" : "-lgdk-3",
-				"role" : "libraries"
-			},
-			{
-				"backtrace" : 2,
-				"fragment" : "-lz",
 				"role" : "libraries"
 			},
 			{
@@ -318,7 +313,8 @@
 				17,
 				18,
 				19,
-				20
+				20,
+				21
 			]
 		}
 	],
@@ -444,6 +440,11 @@
 		{
 			"backtrace" : 1,
 			"path" : "include/mess_form.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "include/chat_message.h",
 			"sourceGroupIndex" : 1
 		}
 	],

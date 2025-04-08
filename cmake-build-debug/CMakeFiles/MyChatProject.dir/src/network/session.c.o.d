@@ -1,5 +1,5 @@
 CMakeFiles/MyChatProject.dir/src/network/session.c.o: \
- /home/thuy/Desktop/linux-chat/src/network/session.c \
+ /home/vawnwuyest/Documents/linux/linux-chat/src/network/session.c \
  /usr/include/stdc-predef.h /usr/include/arpa/inet.h \
  /usr/include/features.h /usr/include/features-time64.h \
  /usr/include/x86_64-linux-gnu/bits/wordsize.h \
@@ -14,7 +14,7 @@ CMakeFiles/MyChatProject.dir/src/network/session.c.o: \
  /usr/include/x86_64-linux-gnu/bits/time64.h \
  /usr/include/x86_64-linux-gnu/sys/socket.h \
  /usr/include/x86_64-linux-gnu/bits/types/struct_iovec.h \
- /usr/lib/gcc/x86_64-linux-gnu/13/include/stddef.h \
+ /usr/lib/gcc/x86_64-linux-gnu/11/include/stddef.h \
  /usr/include/x86_64-linux-gnu/bits/socket.h \
  /usr/include/x86_64-linux-gnu/sys/types.h \
  /usr/include/x86_64-linux-gnu/bits/types/clock_t.h \
@@ -33,7 +33,6 @@ CMakeFiles/MyChatProject.dir/src/network/session.c.o: \
  /usr/include/x86_64-linux-gnu/bits/types/struct_timeval.h \
  /usr/include/x86_64-linux-gnu/bits/types/struct_timespec.h \
  /usr/include/x86_64-linux-gnu/bits/select2.h \
- /usr/include/x86_64-linux-gnu/bits/select-decl.h \
  /usr/include/x86_64-linux-gnu/bits/pthreadtypes.h \
  /usr/include/x86_64-linux-gnu/bits/thread-shared-types.h \
  /usr/include/x86_64-linux-gnu/bits/pthreadtypes-arch.h \
@@ -67,20 +66,18 @@ CMakeFiles/MyChatProject.dir/src/network/session.c.o: \
  /usr/include/x86_64-linux-gnu/bits/types/struct___jmp_buf_tag.h \
  /usr/include/x86_64-linux-gnu/bits/pthread_stack_min-dynamic.h \
  /usr/include/x86_64-linux-gnu/bits/pthread_stack_min.h \
- /usr/lib/gcc/x86_64-linux-gnu/13/include/stdbool.h /usr/include/stdio.h \
+ /usr/lib/gcc/x86_64-linux-gnu/11/include/stdbool.h /usr/include/stdio.h \
  /usr/include/x86_64-linux-gnu/bits/libc-header-start.h \
- /usr/lib/gcc/x86_64-linux-gnu/13/include/stdarg.h \
+ /usr/lib/gcc/x86_64-linux-gnu/11/include/stdarg.h \
  /usr/include/x86_64-linux-gnu/bits/types/__fpos_t.h \
  /usr/include/x86_64-linux-gnu/bits/types/__mbstate_t.h \
  /usr/include/x86_64-linux-gnu/bits/types/__fpos64_t.h \
  /usr/include/x86_64-linux-gnu/bits/types/__FILE.h \
  /usr/include/x86_64-linux-gnu/bits/types/FILE.h \
  /usr/include/x86_64-linux-gnu/bits/types/struct_FILE.h \
- /usr/include/x86_64-linux-gnu/bits/types/cookie_io_functions_t.h \
  /usr/include/x86_64-linux-gnu/bits/stdio_lim.h \
  /usr/include/x86_64-linux-gnu/bits/floatn.h \
  /usr/include/x86_64-linux-gnu/bits/floatn-common.h \
- /usr/include/x86_64-linux-gnu/bits/stdio2-decl.h \
  /usr/include/x86_64-linux-gnu/bits/stdio.h \
  /usr/include/x86_64-linux-gnu/bits/stdio2.h /usr/include/stdlib.h \
  /usr/include/x86_64-linux-gnu/bits/waitflags.h \
@@ -97,22 +94,20 @@ CMakeFiles/MyChatProject.dir/src/network/session.c.o: \
  /usr/include/x86_64-linux-gnu/bits/getopt_posix.h \
  /usr/include/x86_64-linux-gnu/bits/getopt_core.h \
  /usr/include/x86_64-linux-gnu/bits/unistd.h \
- /usr/include/x86_64-linux-gnu/bits/unistd-decl.h \
  /usr/include/x86_64-linux-gnu/bits/unistd_ext.h \
  /usr/include/openssl/rand.h /usr/include/openssl/macros.h \
  /usr/include/x86_64-linux-gnu/openssl/opensslconf.h \
  /usr/include/x86_64-linux-gnu/openssl/configuration.h \
  /usr/include/openssl/opensslv.h /usr/include/openssl/types.h \
- /usr/lib/gcc/x86_64-linux-gnu/13/include/limits.h \
- /usr/lib/gcc/x86_64-linux-gnu/13/include/syslimits.h \
+ /usr/lib/gcc/x86_64-linux-gnu/11/include/limits.h \
+ /usr/lib/gcc/x86_64-linux-gnu/11/include/syslimits.h \
  /usr/include/limits.h /usr/include/x86_64-linux-gnu/bits/posix1_lim.h \
  /usr/include/x86_64-linux-gnu/bits/local_lim.h \
  /usr/include/linux/limits.h \
  /usr/include/x86_64-linux-gnu/bits/posix2_lim.h \
  /usr/include/openssl/e_os2.h /usr/include/inttypes.h \
- /usr/lib/gcc/x86_64-linux-gnu/13/include/stdint.h /usr/include/stdint.h \
+ /usr/lib/gcc/x86_64-linux-gnu/11/include/stdint.h /usr/include/stdint.h \
  /usr/include/x86_64-linux-gnu/bits/wchar.h \
- /usr/include/x86_64-linux-gnu/bits/stdint-least.h \
  /usr/include/openssl/safestack.h /usr/include/openssl/stack.h \
  /usr/include/openssl/randerr.h /usr/include/openssl/symhacks.h \
  /usr/include/openssl/cryptoerr_legacy.h /usr/include/openssl/evp.h \
@@ -124,22 +119,21 @@ CMakeFiles/MyChatProject.dir/src/network/session.c.o: \
  /usr/include/openssl/objects.h /usr/include/openssl/obj_mac.h \
  /usr/include/openssl/asn1.h /usr/include/openssl/asn1err.h \
  /usr/include/openssl/objectserr.h \
- /home/thuy/Desktop/linux-chat/include/aes_utils.h \
- /home/thuy/Desktop/linux-chat/include/cmd.h \
- /home/thuy/Desktop/linux-chat/include/controller.h \
- /home/thuy/Desktop/linux-chat/include/session.h \
- /home/thuy/Desktop/linux-chat/include/controller.h \
- /home/thuy/Desktop/linux-chat/include/message.h \
- /home/thuy/Desktop/linux-chat/include/service.h \
- /home/thuy/Desktop/linux-chat/include/user.h \
+ /home/vawnwuyest/Documents/linux/linux-chat/include/aes_utils.h \
+ /home/vawnwuyest/Documents/linux/linux-chat/include/cmd.h \
+ /home/vawnwuyest/Documents/linux/linux-chat/include/controller.h \
+ /home/vawnwuyest/Documents/linux/linux-chat/include/session.h \
+ /home/vawnwuyest/Documents/linux/linux-chat/include/controller.h \
+ /home/vawnwuyest/Documents/linux/linux-chat/include/message.h \
+ /home/vawnwuyest/Documents/linux/linux-chat/include/service.h \
+ /home/vawnwuyest/Documents/linux/linux-chat/include/user.h \
  /usr/include/gtk-3.0/gtk/gtk.h /usr/include/gtk-3.0/gdk/gdk.h \
  /usr/include/gtk-3.0/gdk/gdkconfig.h /usr/include/glib-2.0/glib.h \
  /usr/include/glib-2.0/glib/galloca.h /usr/include/glib-2.0/glib/gtypes.h \
  /usr/lib/x86_64-linux-gnu/glib-2.0/include/glibconfig.h \
  /usr/include/glib-2.0/glib/gmacros.h \
- /usr/lib/gcc/x86_64-linux-gnu/13/include/float.h \
+ /usr/lib/gcc/x86_64-linux-gnu/11/include/float.h \
  /usr/include/glib-2.0/glib/gversionmacros.h \
- /usr/include/glib-2.0/glib/glib-visibility.h \
  /usr/include/glib-2.0/glib/garray.h \
  /usr/include/glib-2.0/glib/gasyncqueue.h \
  /usr/include/glib-2.0/glib/gthread.h \
@@ -193,7 +187,6 @@ CMakeFiles/MyChatProject.dir/src/network/session.c.o: \
  /usr/include/glib-2.0/glib/gmain.h /usr/include/glib-2.0/glib/gpoll.h \
  /usr/include/glib-2.0/glib/gslist.h /usr/include/glib-2.0/glib/gstring.h \
  /usr/include/glib-2.0/glib/gunicode.h \
- /usr/include/glib-2.0/glib/gstrfuncs.h \
  /usr/include/glib-2.0/glib/gkeyfile.h \
  /usr/include/glib-2.0/glib/gmappedfile.h \
  /usr/include/glib-2.0/glib/gmarkup.h \
@@ -201,7 +194,6 @@ CMakeFiles/MyChatProject.dir/src/network/session.c.o: \
  /usr/include/glib-2.0/glib/gvariant.h \
  /usr/include/glib-2.0/glib/gvarianttype.h \
  /usr/include/glib-2.0/glib/goption.h \
- /usr/include/glib-2.0/glib/gpathbuf.h \
  /usr/include/glib-2.0/glib/gpattern.h \
  /usr/include/glib-2.0/glib/gprimes.h /usr/include/glib-2.0/glib/gqsort.h \
  /usr/include/glib-2.0/glib/gqueue.h /usr/include/glib-2.0/glib/grand.h \
@@ -214,6 +206,7 @@ CMakeFiles/MyChatProject.dir/src/network/session.c.o: \
  /usr/include/glib-2.0/glib/gsequence.h \
  /usr/include/glib-2.0/glib/gshell.h /usr/include/glib-2.0/glib/gslice.h \
  /usr/include/glib-2.0/glib/gspawn.h \
+ /usr/include/glib-2.0/glib/gstrfuncs.h \
  /usr/include/glib-2.0/glib/gstringchunk.h \
  /usr/include/glib-2.0/glib/gstrvbuilder.h \
  /usr/include/glib-2.0/glib/gtestutils.h /usr/include/errno.h \
@@ -239,7 +232,6 @@ CMakeFiles/MyChatProject.dir/src/network/session.c.o: \
  /usr/include/glib-2.0/gobject/gbinding.h \
  /usr/include/glib-2.0/gobject/gobject.h \
  /usr/include/glib-2.0/gobject/gtype.h \
- /usr/include/glib-2.0/gobject/gobject-visibility.h \
  /usr/include/glib-2.0/gobject/gvalue.h \
  /usr/include/glib-2.0/gobject/gparam.h \
  /usr/include/glib-2.0/gobject/gclosure.h \
@@ -258,7 +250,6 @@ CMakeFiles/MyChatProject.dir/src/network/session.c.o: \
  /usr/include/glib-2.0/gobject/gvaluearray.h \
  /usr/include/glib-2.0/gobject/gvaluetypes.h \
  /usr/include/glib-2.0/gobject/gobject-autocleanups.h \
- /usr/include/glib-2.0/gio/gio-visibility.h \
  /usr/include/glib-2.0/gio/gaction.h \
  /usr/include/glib-2.0/gio/gactiongroup.h \
  /usr/include/glib-2.0/gio/gactiongroupexporter.h \
@@ -335,7 +326,6 @@ CMakeFiles/MyChatProject.dir/src/network/session.c.o: \
  /usr/include/glib-2.0/gio/gsocketaddress.h \
  /usr/include/glib-2.0/gio/gioenumtypes.h \
  /usr/include/glib-2.0/gio/giomodule.h /usr/include/glib-2.0/gmodule.h \
- /usr/include/glib-2.0/gmodule/gmodule-visibility.h \
  /usr/include/glib-2.0/gio/gioscheduler.h \
  /usr/include/glib-2.0/gio/glistmodel.h \
  /usr/include/glib-2.0/gio/gliststore.h \
@@ -404,10 +394,6 @@ CMakeFiles/MyChatProject.dir/src/network/session.c.o: \
  /usr/include/glib-2.0/gio/gtlsinteraction.h \
  /usr/include/glib-2.0/gio/gtlspassword.h \
  /usr/include/glib-2.0/gio/gtlsserverconnection.h \
- /usr/include/glib-2.0/gio/gunixconnection.h \
- /usr/include/glib-2.0/gio/gunixcredentialsmessage.h \
- /usr/include/glib-2.0/gio/gunixfdlist.h \
- /usr/include/glib-2.0/gio/gunixsocketaddress.h \
  /usr/include/glib-2.0/gio/gvfs.h /usr/include/glib-2.0/gio/gvolume.h \
  /usr/include/glib-2.0/gio/gzlibcompressor.h \
  /usr/include/glib-2.0/gio/gzlibdecompressor.h \
@@ -421,11 +407,11 @@ CMakeFiles/MyChatProject.dir/src/network/session.c.o: \
  /usr/include/harfbuzz/hb-blob.h /usr/include/harfbuzz/hb-common.h \
  /usr/include/harfbuzz/hb-buffer.h /usr/include/harfbuzz/hb-unicode.h \
  /usr/include/harfbuzz/hb-font.h /usr/include/harfbuzz/hb-face.h \
- /usr/include/harfbuzz/hb-map.h /usr/include/harfbuzz/hb-set.h \
- /usr/include/harfbuzz/hb-draw.h /usr/include/harfbuzz/hb.h \
- /usr/include/harfbuzz/hb-paint.h /usr/include/harfbuzz/hb-deprecated.h \
- /usr/include/harfbuzz/hb-shape.h /usr/include/harfbuzz/hb-shape-plan.h \
- /usr/include/harfbuzz/hb-style.h /usr/include/harfbuzz/hb-version.h \
+ /usr/include/harfbuzz/hb-set.h /usr/include/harfbuzz/hb-draw.h \
+ /usr/include/harfbuzz/hb.h /usr/include/harfbuzz/hb-deprecated.h \
+ /usr/include/harfbuzz/hb-map.h /usr/include/harfbuzz/hb-shape.h \
+ /usr/include/harfbuzz/hb-shape-plan.h /usr/include/harfbuzz/hb-style.h \
+ /usr/include/harfbuzz/hb-version.h \
  /usr/include/pango-1.0/pango/pango-types.h \
  /usr/include/pango-1.0/pango/pango-gravity.h \
  /usr/include/pango-1.0/pango/pango-matrix.h \
@@ -499,22 +485,22 @@ CMakeFiles/MyChatProject.dir/src/network/session.c.o: \
  /usr/include/gtk-3.0/gtk/gtkaccelgroup.h \
  /usr/include/gtk-3.0/gtk/gtkenums.h /usr/include/gtk-3.0/gtk/gtkborder.h \
  /usr/include/gtk-3.0/gtk/gtktypes.h /usr/include/atk-1.0/atk/atk.h \
- /usr/include/atk-1.0/atk/atk-enum-types.h \
- /usr/include/atk-1.0/atk/atkversion.h \
- /usr/include/atk-1.0/atk/atkaction.h \
  /usr/include/atk-1.0/atk/atkobject.h \
- /usr/include/atk-1.0/atk/atkrelationtype.h \
+ /usr/include/atk-1.0/atk/atkversion.h \
  /usr/include/atk-1.0/atk/atkstate.h \
+ /usr/include/atk-1.0/atk/atkrelationtype.h \
+ /usr/include/atk-1.0/atk/atkaction.h \
  /usr/include/atk-1.0/atk/atkcomponent.h \
  /usr/include/atk-1.0/atk/atkutil.h \
  /usr/include/atk-1.0/atk/atkdocument.h \
  /usr/include/atk-1.0/atk/atkeditabletext.h \
  /usr/include/atk-1.0/atk/atktext.h \
+ /usr/include/atk-1.0/atk/atk-enum-types.h \
  /usr/include/atk-1.0/atk/atkgobjectaccessible.h \
  /usr/include/atk-1.0/atk/atkhyperlink.h \
  /usr/include/atk-1.0/atk/atkhyperlinkimpl.h \
  /usr/include/atk-1.0/atk/atkhypertext.h \
- /usr/include/atk-1.0/atk/atkimage.h /usr/include/atk-1.0/atk/atkmisc.h \
+ /usr/include/atk-1.0/atk/atkimage.h \
  /usr/include/atk-1.0/atk/atknoopobject.h \
  /usr/include/atk-1.0/atk/atknoopobjectfactory.h \
  /usr/include/atk-1.0/atk/atkobjectfactory.h \
@@ -529,9 +515,8 @@ CMakeFiles/MyChatProject.dir/src/network/session.c.o: \
  /usr/include/atk-1.0/atk/atkstreamablecontent.h \
  /usr/include/atk-1.0/atk/atktable.h \
  /usr/include/atk-1.0/atk/atktablecell.h \
- /usr/include/atk-1.0/atk/atkvalue.h /usr/include/atk-1.0/atk/atkwindow.h \
- /usr/include/atk-1.0/atk/atk-autocleanups.h \
- /usr/include/gtk-3.0/gtk/gtkbin.h \
+ /usr/include/atk-1.0/atk/atkmisc.h /usr/include/atk-1.0/atk/atkvalue.h \
+ /usr/include/atk-1.0/atk/atkwindow.h /usr/include/gtk-3.0/gtk/gtkbin.h \
  /usr/include/gtk-3.0/gtk/gtkcontainer.h \
  /usr/include/gtk-3.0/gtk/gtkaccellabel.h \
  /usr/include/gtk-3.0/gtk/gtklabel.h \
@@ -779,9 +764,9 @@ CMakeFiles/MyChatProject.dir/src/network/session.c.o: \
  /usr/include/gtk-3.0/gtk/deprecated/gtkvscrollbar.h \
  /usr/include/gtk-3.0/gtk/deprecated/gtkvseparator.h \
  /usr/include/gtk-3.0/gtk/gtk-autocleanups.h \
- /home/thuy/Desktop/linux-chat/include/log.h \
- /home/thuy/Desktop/linux-chat/include/m_utils.h \
- /home/thuy/Desktop/linux-chat/include/message.h \
- /home/thuy/Desktop/linux-chat/include/service.h \
- /home/thuy/Desktop/linux-chat/include/session.h \
- /home/thuy/Desktop/linux-chat/include/user.h
+ /home/vawnwuyest/Documents/linux/linux-chat/include/log.h \
+ /home/vawnwuyest/Documents/linux/linux-chat/include/m_utils.h \
+ /home/vawnwuyest/Documents/linux/linux-chat/include/message.h \
+ /home/vawnwuyest/Documents/linux/linux-chat/include/service.h \
+ /home/vawnwuyest/Documents/linux/linux-chat/include/session.h \
+ /home/vawnwuyest/Documents/linux/linux-chat/include/user.h

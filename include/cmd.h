@@ -33,4 +33,6 @@
 #define GET_GROUPS_MESSAGE 0x15
 
 #define GROUP_NOTIFICATION 0x16
+
+#define SEARCH_USERS 0x17
 #endif

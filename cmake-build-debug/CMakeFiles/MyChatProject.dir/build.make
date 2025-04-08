@@ -44,19 +44,19 @@ cmake_force:
 SHELL = /bin/sh
 
 # The CMake executable.
-CMAKE_COMMAND = /snap/clion/332/bin/cmake/linux/x64/bin/cmake
+CMAKE_COMMAND = /home/vawnwuyest/Application/clion-2024.3.5/bin/cmake/linux/x64/bin/cmake
 
 # The command to remove a file.
-RM = /snap/clion/332/bin/cmake/linux/x64/bin/cmake -E rm -f
+RM = /home/vawnwuyest/Application/clion-2024.3.5/bin/cmake/linux/x64/bin/cmake -E rm -f
 
 # Escaping for special characters.
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/thuy/Desktop/linux-chat
+CMAKE_SOURCE_DIR = /home/vawnwuyest/Documents/linux/linux-chat
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/thuy/Desktop/linux-chat/cmake-build-debug
+CMAKE_BINARY_DIR = /home/vawnwuyest/Documents/linux/linux-chat/cmake-build-debug
 
 # Include any dependencies generated for this target.
 include CMakeFiles/MyChatProject.dir/depend.make
@@ -70,242 +70,242 @@ include CMakeFiles/MyChatProject.dir/progress.make
 include CMakeFiles/MyChatProject.dir/flags.make
 
 CMakeFiles/MyChatProject.dir/src/main.c.o: CMakeFiles/MyChatProject.dir/flags.make
-CMakeFiles/MyChatProject.dir/src/main.c.o: /home/thuy/Desktop/linux-chat/src/main.c
+CMakeFiles/MyChatProject.dir/src/main.c.o: /home/vawnwuyest/Documents/linux/linux-chat/src/main.c
 CMakeFiles/MyChatProject.dir/src/main.c.o: CMakeFiles/MyChatProject.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/thuy/Desktop/linux-chat/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/MyChatProject.dir/src/main.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/MyChatProject.dir/src/main.c.o -MF CMakeFiles/MyChatProject.dir/src/main.c.o.d -o CMakeFiles/MyChatProject.dir/src/main.c.o -c /home/thuy/Desktop/linux-chat/src/main.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/vawnwuyest/Documents/linux/linux-chat/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/MyChatProject.dir/src/main.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/MyChatProject.dir/src/main.c.o -MF CMakeFiles/MyChatProject.dir/src/main.c.o.d -o CMakeFiles/MyChatProject.dir/src/main.c.o -c /home/vawnwuyest/Documents/linux/linux-chat/src/main.c
 
 CMakeFiles/MyChatProject.dir/src/main.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/MyChatProject.dir/src/main.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/thuy/Desktop/linux-chat/src/main.c > CMakeFiles/MyChatProject.dir/src/main.c.i
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/vawnwuyest/Documents/linux/linux-chat/src/main.c > CMakeFiles/MyChatProject.dir/src/main.c.i
 
 CMakeFiles/MyChatProject.dir/src/main.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/MyChatProject.dir/src/main.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/thuy/Desktop/linux-chat/src/main.c -o CMakeFiles/MyChatProject.dir/src/main.c.s
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/vawnwuyest/Documents/linux/linux-chat/src/main.c -o CMakeFiles/MyChatProject.dir/src/main.c.s
 
 CMakeFiles/MyChatProject.dir/src/manager/request_manager.c.o: CMakeFiles/MyChatProject.dir/flags.make
-CMakeFiles/MyChatProject.dir/src/manager/request_manager.c.o: /home/thuy/Desktop/linux-chat/src/manager/request_manager.c
+CMakeFiles/MyChatProject.dir/src/manager/request_manager.c.o: /home/vawnwuyest/Documents/linux/linux-chat/src/manager/request_manager.c
 CMakeFiles/MyChatProject.dir/src/manager/request_manager.c.o: CMakeFiles/MyChatProject.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/thuy/Desktop/linux-chat/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object CMakeFiles/MyChatProject.dir/src/manager/request_manager.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/MyChatProject.dir/src/manager/request_manager.c.o -MF CMakeFiles/MyChatProject.dir/src/manager/request_manager.c.o.d -o CMakeFiles/MyChatProject.dir/src/manager/request_manager.c.o -c /home/thuy/Desktop/linux-chat/src/manager/request_manager.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/vawnwuyest/Documents/linux/linux-chat/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object CMakeFiles/MyChatProject.dir/src/manager/request_manager.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/MyChatProject.dir/src/manager/request_manager.c.o -MF CMakeFiles/MyChatProject.dir/src/manager/request_manager.c.o.d -o CMakeFiles/MyChatProject.dir/src/manager/request_manager.c.o -c /home/vawnwuyest/Documents/linux/linux-chat/src/manager/request_manager.c
 
 CMakeFiles/MyChatProject.dir/src/manager/request_manager.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/MyChatProject.dir/src/manager/request_manager.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/thuy/Desktop/linux-chat/src/manager/request_manager.c > CMakeFiles/MyChatProject.dir/src/manager/request_manager.c.i
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/vawnwuyest/Documents/linux/linux-chat/src/manager/request_manager.c > CMakeFiles/MyChatProject.dir/src/manager/request_manager.c.i
 
 CMakeFiles/MyChatProject.dir/src/manager/request_manager.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/MyChatProject.dir/src/manager/request_manager.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/thuy/Desktop/linux-chat/src/manager/request_manager.c -o CMakeFiles/MyChatProject.dir/src/manager/request_manager.c.s
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/vawnwuyest/Documents/linux/linux-chat/src/manager/request_manager.c -o CMakeFiles/MyChatProject.dir/src/manager/request_manager.c.s
 
 CMakeFiles/MyChatProject.dir/src/models/group.c.o: CMakeFiles/MyChatProject.dir/flags.make
-CMakeFiles/MyChatProject.dir/src/models/group.c.o: /home/thuy/Desktop/linux-chat/src/models/group.c
+CMakeFiles/MyChatProject.dir/src/models/group.c.o: /home/vawnwuyest/Documents/linux/linux-chat/src/models/group.c
 CMakeFiles/MyChatProject.dir/src/models/group.c.o: CMakeFiles/MyChatProject.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/thuy/Desktop/linux-chat/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building C object CMakeFiles/MyChatProject.dir/src/models/group.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/MyChatProject.dir/src/models/group.c.o -MF CMakeFiles/MyChatProject.dir/src/models/group.c.o.d -o CMakeFiles/MyChatProject.dir/src/models/group.c.o -c /home/thuy/Desktop/linux-chat/src/models/group.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/vawnwuyest/Documents/linux/linux-chat/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building C object CMakeFiles/MyChatProject.dir/src/models/group.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/MyChatProject.dir/src/models/group.c.o -MF CMakeFiles/MyChatProject.dir/src/models/group.c.o.d -o CMakeFiles/MyChatProject.dir/src/models/group.c.o -c /home/vawnwuyest/Documents/linux/linux-chat/src/models/group.c
 
 CMakeFiles/MyChatProject.dir/src/models/group.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/MyChatProject.dir/src/models/group.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/thuy/Desktop/linux-chat/src/models/group.c > CMakeFiles/MyChatProject.dir/src/models/group.c.i
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/vawnwuyest/Documents/linux/linux-chat/src/models/group.c > CMakeFiles/MyChatProject.dir/src/models/group.c.i
 
 CMakeFiles/MyChatProject.dir/src/models/group.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/MyChatProject.dir/src/models/group.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/thuy/Desktop/linux-chat/src/models/group.c -o CMakeFiles/MyChatProject.dir/src/models/group.c.s
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/vawnwuyest/Documents/linux/linux-chat/src/models/group.c -o CMakeFiles/MyChatProject.dir/src/models/group.c.s
 
 CMakeFiles/MyChatProject.dir/src/models/user.c.o: CMakeFiles/MyChatProject.dir/flags.make
-CMakeFiles/MyChatProject.dir/src/models/user.c.o: /home/thuy/Desktop/linux-chat/src/models/user.c
+CMakeFiles/MyChatProject.dir/src/models/user.c.o: /home/vawnwuyest/Documents/linux/linux-chat/src/models/user.c
 CMakeFiles/MyChatProject.dir/src/models/user.c.o: CMakeFiles/MyChatProject.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/thuy/Desktop/linux-chat/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building C object CMakeFiles/MyChatProject.dir/src/models/user.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/MyChatProject.dir/src/models/user.c.o -MF CMakeFiles/MyChatProject.dir/src/models/user.c.o.d -o CMakeFiles/MyChatProject.dir/src/models/user.c.o -c /home/thuy/Desktop/linux-chat/src/models/user.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/vawnwuyest/Documents/linux/linux-chat/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building C object CMakeFiles/MyChatProject.dir/src/models/user.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/MyChatProject.dir/src/models/user.c.o -MF CMakeFiles/MyChatProject.dir/src/models/user.c.o.d -o CMakeFiles/MyChatProject.dir/src/models/user.c.o -c /home/vawnwuyest/Documents/linux/linux-chat/src/models/user.c
 
 CMakeFiles/MyChatProject.dir/src/models/user.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/MyChatProject.dir/src/models/user.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/thuy/Desktop/linux-chat/src/models/user.c > CMakeFiles/MyChatProject.dir/src/models/user.c.i
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/vawnwuyest/Documents/linux/linux-chat/src/models/user.c > CMakeFiles/MyChatProject.dir/src/models/user.c.i
 
 CMakeFiles/MyChatProject.dir/src/models/user.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/MyChatProject.dir/src/models/user.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/thuy/Desktop/linux-chat/src/models/user.c -o CMakeFiles/MyChatProject.dir/src/models/user.c.s
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/vawnwuyest/Documents/linux/linux-chat/src/models/user.c -o CMakeFiles/MyChatProject.dir/src/models/user.c.s
 
 CMakeFiles/MyChatProject.dir/src/network/controller.c.o: CMakeFiles/MyChatProject.dir/flags.make
-CMakeFiles/MyChatProject.dir/src/network/controller.c.o: /home/thuy/Desktop/linux-chat/src/network/controller.c
+CMakeFiles/MyChatProject.dir/src/network/controller.c.o: /home/vawnwuyest/Documents/linux/linux-chat/src/network/controller.c
 CMakeFiles/MyChatProject.dir/src/network/controller.c.o: CMakeFiles/MyChatProject.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/thuy/Desktop/linux-chat/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building C object CMakeFiles/MyChatProject.dir/src/network/controller.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/MyChatProject.dir/src/network/controller.c.o -MF CMakeFiles/MyChatProject.dir/src/network/controller.c.o.d -o CMakeFiles/MyChatProject.dir/src/network/controller.c.o -c /home/thuy/Desktop/linux-chat/src/network/controller.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/vawnwuyest/Documents/linux/linux-chat/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building C object CMakeFiles/MyChatProject.dir/src/network/controller.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/MyChatProject.dir/src/network/controller.c.o -MF CMakeFiles/MyChatProject.dir/src/network/controller.c.o.d -o CMakeFiles/MyChatProject.dir/src/network/controller.c.o -c /home/vawnwuyest/Documents/linux/linux-chat/src/network/controller.c
 
 CMakeFiles/MyChatProject.dir/src/network/controller.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/MyChatProject.dir/src/network/controller.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/thuy/Desktop/linux-chat/src/network/controller.c > CMakeFiles/MyChatProject.dir/src/network/controller.c.i
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/vawnwuyest/Documents/linux/linux-chat/src/network/controller.c > CMakeFiles/MyChatProject.dir/src/network/controller.c.i
 
 CMakeFiles/MyChatProject.dir/src/network/controller.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/MyChatProject.dir/src/network/controller.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/thuy/Desktop/linux-chat/src/network/controller.c -o CMakeFiles/MyChatProject.dir/src/network/controller.c.s
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/vawnwuyest/Documents/linux/linux-chat/src/network/controller.c -o CMakeFiles/MyChatProject.dir/src/network/controller.c.s
 
 CMakeFiles/MyChatProject.dir/src/network/message.c.o: CMakeFiles/MyChatProject.dir/flags.make
-CMakeFiles/MyChatProject.dir/src/network/message.c.o: /home/thuy/Desktop/linux-chat/src/network/message.c
+CMakeFiles/MyChatProject.dir/src/network/message.c.o: /home/vawnwuyest/Documents/linux/linux-chat/src/network/message.c
 CMakeFiles/MyChatProject.dir/src/network/message.c.o: CMakeFiles/MyChatProject.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/thuy/Desktop/linux-chat/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building C object CMakeFiles/MyChatProject.dir/src/network/message.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/MyChatProject.dir/src/network/message.c.o -MF CMakeFiles/MyChatProject.dir/src/network/message.c.o.d -o CMakeFiles/MyChatProject.dir/src/network/message.c.o -c /home/thuy/Desktop/linux-chat/src/network/message.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/vawnwuyest/Documents/linux/linux-chat/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building C object CMakeFiles/MyChatProject.dir/src/network/message.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/MyChatProject.dir/src/network/message.c.o -MF CMakeFiles/MyChatProject.dir/src/network/message.c.o.d -o CMakeFiles/MyChatProject.dir/src/network/message.c.o -c /home/vawnwuyest/Documents/linux/linux-chat/src/network/message.c
 
 CMakeFiles/MyChatProject.dir/src/network/message.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/MyChatProject.dir/src/network/message.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/thuy/Desktop/linux-chat/src/network/message.c > CMakeFiles/MyChatProject.dir/src/network/message.c.i
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/vawnwuyest/Documents/linux/linux-chat/src/network/message.c > CMakeFiles/MyChatProject.dir/src/network/message.c.i
 
 CMakeFiles/MyChatProject.dir/src/network/message.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/MyChatProject.dir/src/network/message.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/thuy/Desktop/linux-chat/src/network/message.c -o CMakeFiles/MyChatProject.dir/src/network/message.c.s
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/vawnwuyest/Documents/linux/linux-chat/src/network/message.c -o CMakeFiles/MyChatProject.dir/src/network/message.c.s
 
 CMakeFiles/MyChatProject.dir/src/network/service.c.o: CMakeFiles/MyChatProject.dir/flags.make
-CMakeFiles/MyChatProject.dir/src/network/service.c.o: /home/thuy/Desktop/linux-chat/src/network/service.c
+CMakeFiles/MyChatProject.dir/src/network/service.c.o: /home/vawnwuyest/Documents/linux/linux-chat/src/network/service.c
 CMakeFiles/MyChatProject.dir/src/network/service.c.o: CMakeFiles/MyChatProject.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/thuy/Desktop/linux-chat/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building C object CMakeFiles/MyChatProject.dir/src/network/service.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/MyChatProject.dir/src/network/service.c.o -MF CMakeFiles/MyChatProject.dir/src/network/service.c.o.d -o CMakeFiles/MyChatProject.dir/src/network/service.c.o -c /home/thuy/Desktop/linux-chat/src/network/service.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/vawnwuyest/Documents/linux/linux-chat/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building C object CMakeFiles/MyChatProject.dir/src/network/service.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/MyChatProject.dir/src/network/service.c.o -MF CMakeFiles/MyChatProject.dir/src/network/service.c.o.d -o CMakeFiles/MyChatProject.dir/src/network/service.c.o -c /home/vawnwuyest/Documents/linux/linux-chat/src/network/service.c
 
 CMakeFiles/MyChatProject.dir/src/network/service.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/MyChatProject.dir/src/network/service.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/thuy/Desktop/linux-chat/src/network/service.c > CMakeFiles/MyChatProject.dir/src/network/service.c.i
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/vawnwuyest/Documents/linux/linux-chat/src/network/service.c > CMakeFiles/MyChatProject.dir/src/network/service.c.i
 
 CMakeFiles/MyChatProject.dir/src/network/service.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/MyChatProject.dir/src/network/service.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/thuy/Desktop/linux-chat/src/network/service.c -o CMakeFiles/MyChatProject.dir/src/network/service.c.s
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/vawnwuyest/Documents/linux/linux-chat/src/network/service.c -o CMakeFiles/MyChatProject.dir/src/network/service.c.s
 
 CMakeFiles/MyChatProject.dir/src/network/session.c.o: CMakeFiles/MyChatProject.dir/flags.make
-CMakeFiles/MyChatProject.dir/src/network/session.c.o: /home/thuy/Desktop/linux-chat/src/network/session.c
+CMakeFiles/MyChatProject.dir/src/network/session.c.o: /home/vawnwuyest/Documents/linux/linux-chat/src/network/session.c
 CMakeFiles/MyChatProject.dir/src/network/session.c.o: CMakeFiles/MyChatProject.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/thuy/Desktop/linux-chat/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building C object CMakeFiles/MyChatProject.dir/src/network/session.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/MyChatProject.dir/src/network/session.c.o -MF CMakeFiles/MyChatProject.dir/src/network/session.c.o.d -o CMakeFiles/MyChatProject.dir/src/network/session.c.o -c /home/thuy/Desktop/linux-chat/src/network/session.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/vawnwuyest/Documents/linux/linux-chat/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building C object CMakeFiles/MyChatProject.dir/src/network/session.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/MyChatProject.dir/src/network/session.c.o -MF CMakeFiles/MyChatProject.dir/src/network/session.c.o.d -o CMakeFiles/MyChatProject.dir/src/network/session.c.o -c /home/vawnwuyest/Documents/linux/linux-chat/src/network/session.c
 
 CMakeFiles/MyChatProject.dir/src/network/session.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/MyChatProject.dir/src/network/session.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/thuy/Desktop/linux-chat/src/network/session.c > CMakeFiles/MyChatProject.dir/src/network/session.c.i
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/vawnwuyest/Documents/linux/linux-chat/src/network/session.c > CMakeFiles/MyChatProject.dir/src/network/session.c.i
 
 CMakeFiles/MyChatProject.dir/src/network/session.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/MyChatProject.dir/src/network/session.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/thuy/Desktop/linux-chat/src/network/session.c -o CMakeFiles/MyChatProject.dir/src/network/session.c.s
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/vawnwuyest/Documents/linux/linux-chat/src/network/session.c -o CMakeFiles/MyChatProject.dir/src/network/session.c.s
 
 CMakeFiles/MyChatProject.dir/src/ui/Login.c.o: CMakeFiles/MyChatProject.dir/flags.make
-CMakeFiles/MyChatProject.dir/src/ui/Login.c.o: /home/thuy/Desktop/linux-chat/src/ui/Login.c
+CMakeFiles/MyChatProject.dir/src/ui/Login.c.o: /home/vawnwuyest/Documents/linux/linux-chat/src/ui/Login.c
 CMakeFiles/MyChatProject.dir/src/ui/Login.c.o: CMakeFiles/MyChatProject.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/thuy/Desktop/linux-chat/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building C object CMakeFiles/MyChatProject.dir/src/ui/Login.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/MyChatProject.dir/src/ui/Login.c.o -MF CMakeFiles/MyChatProject.dir/src/ui/Login.c.o.d -o CMakeFiles/MyChatProject.dir/src/ui/Login.c.o -c /home/thuy/Desktop/linux-chat/src/ui/Login.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/vawnwuyest/Documents/linux/linux-chat/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building C object CMakeFiles/MyChatProject.dir/src/ui/Login.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/MyChatProject.dir/src/ui/Login.c.o -MF CMakeFiles/MyChatProject.dir/src/ui/Login.c.o.d -o CMakeFiles/MyChatProject.dir/src/ui/Login.c.o -c /home/vawnwuyest/Documents/linux/linux-chat/src/ui/Login.c
 
 CMakeFiles/MyChatProject.dir/src/ui/Login.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/MyChatProject.dir/src/ui/Login.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/thuy/Desktop/linux-chat/src/ui/Login.c > CMakeFiles/MyChatProject.dir/src/ui/Login.c.i
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/vawnwuyest/Documents/linux/linux-chat/src/ui/Login.c > CMakeFiles/MyChatProject.dir/src/ui/Login.c.i
 
 CMakeFiles/MyChatProject.dir/src/ui/Login.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/MyChatProject.dir/src/ui/Login.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/thuy/Desktop/linux-chat/src/ui/Login.c -o CMakeFiles/MyChatProject.dir/src/ui/Login.c.s
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/vawnwuyest/Documents/linux/linux-chat/src/ui/Login.c -o CMakeFiles/MyChatProject.dir/src/ui/Login.c.s
 
 CMakeFiles/MyChatProject.dir/src/ui/Register.c.o: CMakeFiles/MyChatProject.dir/flags.make
-CMakeFiles/MyChatProject.dir/src/ui/Register.c.o: /home/thuy/Desktop/linux-chat/src/ui/Register.c
+CMakeFiles/MyChatProject.dir/src/ui/Register.c.o: /home/vawnwuyest/Documents/linux/linux-chat/src/ui/Register.c
 CMakeFiles/MyChatProject.dir/src/ui/Register.c.o: CMakeFiles/MyChatProject.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/thuy/Desktop/linux-chat/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building C object CMakeFiles/MyChatProject.dir/src/ui/Register.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/MyChatProject.dir/src/ui/Register.c.o -MF CMakeFiles/MyChatProject.dir/src/ui/Register.c.o.d -o CMakeFiles/MyChatProject.dir/src/ui/Register.c.o -c /home/thuy/Desktop/linux-chat/src/ui/Register.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/vawnwuyest/Documents/linux/linux-chat/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building C object CMakeFiles/MyChatProject.dir/src/ui/Register.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/MyChatProject.dir/src/ui/Register.c.o -MF CMakeFiles/MyChatProject.dir/src/ui/Register.c.o.d -o CMakeFiles/MyChatProject.dir/src/ui/Register.c.o -c /home/vawnwuyest/Documents/linux/linux-chat/src/ui/Register.c
 
 CMakeFiles/MyChatProject.dir/src/ui/Register.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/MyChatProject.dir/src/ui/Register.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/thuy/Desktop/linux-chat/src/ui/Register.c > CMakeFiles/MyChatProject.dir/src/ui/Register.c.i
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/vawnwuyest/Documents/linux/linux-chat/src/ui/Register.c > CMakeFiles/MyChatProject.dir/src/ui/Register.c.i
 
 CMakeFiles/MyChatProject.dir/src/ui/Register.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/MyChatProject.dir/src/ui/Register.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/thuy/Desktop/linux-chat/src/ui/Register.c -o CMakeFiles/MyChatProject.dir/src/ui/Register.c.s
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/vawnwuyest/Documents/linux/linux-chat/src/ui/Register.c -o CMakeFiles/MyChatProject.dir/src/ui/Register.c.s
 
 CMakeFiles/MyChatProject.dir/src/ui/chat_app.c.o: CMakeFiles/MyChatProject.dir/flags.make
-CMakeFiles/MyChatProject.dir/src/ui/chat_app.c.o: /home/thuy/Desktop/linux-chat/src/ui/chat_app.c
+CMakeFiles/MyChatProject.dir/src/ui/chat_app.c.o: /home/vawnwuyest/Documents/linux/linux-chat/src/ui/chat_app.c
 CMakeFiles/MyChatProject.dir/src/ui/chat_app.c.o: CMakeFiles/MyChatProject.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/thuy/Desktop/linux-chat/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building C object CMakeFiles/MyChatProject.dir/src/ui/chat_app.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/MyChatProject.dir/src/ui/chat_app.c.o -MF CMakeFiles/MyChatProject.dir/src/ui/chat_app.c.o.d -o CMakeFiles/MyChatProject.dir/src/ui/chat_app.c.o -c /home/thuy/Desktop/linux-chat/src/ui/chat_app.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/vawnwuyest/Documents/linux/linux-chat/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building C object CMakeFiles/MyChatProject.dir/src/ui/chat_app.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/MyChatProject.dir/src/ui/chat_app.c.o -MF CMakeFiles/MyChatProject.dir/src/ui/chat_app.c.o.d -o CMakeFiles/MyChatProject.dir/src/ui/chat_app.c.o -c /home/vawnwuyest/Documents/linux/linux-chat/src/ui/chat_app.c
 
 CMakeFiles/MyChatProject.dir/src/ui/chat_app.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/MyChatProject.dir/src/ui/chat_app.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/thuy/Desktop/linux-chat/src/ui/chat_app.c > CMakeFiles/MyChatProject.dir/src/ui/chat_app.c.i
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/vawnwuyest/Documents/linux/linux-chat/src/ui/chat_app.c > CMakeFiles/MyChatProject.dir/src/ui/chat_app.c.i
 
 CMakeFiles/MyChatProject.dir/src/ui/chat_app.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/MyChatProject.dir/src/ui/chat_app.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/thuy/Desktop/linux-chat/src/ui/chat_app.c -o CMakeFiles/MyChatProject.dir/src/ui/chat_app.c.s
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/vawnwuyest/Documents/linux/linux-chat/src/ui/chat_app.c -o CMakeFiles/MyChatProject.dir/src/ui/chat_app.c.s
 
 CMakeFiles/MyChatProject.dir/src/ui/create_group.c.o: CMakeFiles/MyChatProject.dir/flags.make
-CMakeFiles/MyChatProject.dir/src/ui/create_group.c.o: /home/thuy/Desktop/linux-chat/src/ui/create_group.c
+CMakeFiles/MyChatProject.dir/src/ui/create_group.c.o: /home/vawnwuyest/Documents/linux/linux-chat/src/ui/create_group.c
 CMakeFiles/MyChatProject.dir/src/ui/create_group.c.o: CMakeFiles/MyChatProject.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/thuy/Desktop/linux-chat/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building C object CMakeFiles/MyChatProject.dir/src/ui/create_group.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/MyChatProject.dir/src/ui/create_group.c.o -MF CMakeFiles/MyChatProject.dir/src/ui/create_group.c.o.d -o CMakeFiles/MyChatProject.dir/src/ui/create_group.c.o -c /home/thuy/Desktop/linux-chat/src/ui/create_group.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/vawnwuyest/Documents/linux/linux-chat/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building C object CMakeFiles/MyChatProject.dir/src/ui/create_group.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/MyChatProject.dir/src/ui/create_group.c.o -MF CMakeFiles/MyChatProject.dir/src/ui/create_group.c.o.d -o CMakeFiles/MyChatProject.dir/src/ui/create_group.c.o -c /home/vawnwuyest/Documents/linux/linux-chat/src/ui/create_group.c
 
 CMakeFiles/MyChatProject.dir/src/ui/create_group.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/MyChatProject.dir/src/ui/create_group.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/thuy/Desktop/linux-chat/src/ui/create_group.c > CMakeFiles/MyChatProject.dir/src/ui/create_group.c.i
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/vawnwuyest/Documents/linux/linux-chat/src/ui/create_group.c > CMakeFiles/MyChatProject.dir/src/ui/create_group.c.i
 
 CMakeFiles/MyChatProject.dir/src/ui/create_group.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/MyChatProject.dir/src/ui/create_group.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/thuy/Desktop/linux-chat/src/ui/create_group.c -o CMakeFiles/MyChatProject.dir/src/ui/create_group.c.s
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/vawnwuyest/Documents/linux/linux-chat/src/ui/create_group.c -o CMakeFiles/MyChatProject.dir/src/ui/create_group.c.s
 
 CMakeFiles/MyChatProject.dir/src/ui/join_group.c.o: CMakeFiles/MyChatProject.dir/flags.make
-CMakeFiles/MyChatProject.dir/src/ui/join_group.c.o: /home/thuy/Desktop/linux-chat/src/ui/join_group.c
+CMakeFiles/MyChatProject.dir/src/ui/join_group.c.o: /home/vawnwuyest/Documents/linux/linux-chat/src/ui/join_group.c
 CMakeFiles/MyChatProject.dir/src/ui/join_group.c.o: CMakeFiles/MyChatProject.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/thuy/Desktop/linux-chat/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building C object CMakeFiles/MyChatProject.dir/src/ui/join_group.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/MyChatProject.dir/src/ui/join_group.c.o -MF CMakeFiles/MyChatProject.dir/src/ui/join_group.c.o.d -o CMakeFiles/MyChatProject.dir/src/ui/join_group.c.o -c /home/thuy/Desktop/linux-chat/src/ui/join_group.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/vawnwuyest/Documents/linux/linux-chat/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building C object CMakeFiles/MyChatProject.dir/src/ui/join_group.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/MyChatProject.dir/src/ui/join_group.c.o -MF CMakeFiles/MyChatProject.dir/src/ui/join_group.c.o.d -o CMakeFiles/MyChatProject.dir/src/ui/join_group.c.o -c /home/vawnwuyest/Documents/linux/linux-chat/src/ui/join_group.c
 
 CMakeFiles/MyChatProject.dir/src/ui/join_group.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/MyChatProject.dir/src/ui/join_group.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/thuy/Desktop/linux-chat/src/ui/join_group.c > CMakeFiles/MyChatProject.dir/src/ui/join_group.c.i
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/vawnwuyest/Documents/linux/linux-chat/src/ui/join_group.c > CMakeFiles/MyChatProject.dir/src/ui/join_group.c.i
 
 CMakeFiles/MyChatProject.dir/src/ui/join_group.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/MyChatProject.dir/src/ui/join_group.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/thuy/Desktop/linux-chat/src/ui/join_group.c -o CMakeFiles/MyChatProject.dir/src/ui/join_group.c.s
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/vawnwuyest/Documents/linux/linux-chat/src/ui/join_group.c -o CMakeFiles/MyChatProject.dir/src/ui/join_group.c.s
 
 CMakeFiles/MyChatProject.dir/src/utils/aes_utils.c.o: CMakeFiles/MyChatProject.dir/flags.make
-CMakeFiles/MyChatProject.dir/src/utils/aes_utils.c.o: /home/thuy/Desktop/linux-chat/src/utils/aes_utils.c
+CMakeFiles/MyChatProject.dir/src/utils/aes_utils.c.o: /home/vawnwuyest/Documents/linux/linux-chat/src/utils/aes_utils.c
 CMakeFiles/MyChatProject.dir/src/utils/aes_utils.c.o: CMakeFiles/MyChatProject.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/thuy/Desktop/linux-chat/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building C object CMakeFiles/MyChatProject.dir/src/utils/aes_utils.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/MyChatProject.dir/src/utils/aes_utils.c.o -MF CMakeFiles/MyChatProject.dir/src/utils/aes_utils.c.o.d -o CMakeFiles/MyChatProject.dir/src/utils/aes_utils.c.o -c /home/thuy/Desktop/linux-chat/src/utils/aes_utils.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/vawnwuyest/Documents/linux/linux-chat/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building C object CMakeFiles/MyChatProject.dir/src/utils/aes_utils.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/MyChatProject.dir/src/utils/aes_utils.c.o -MF CMakeFiles/MyChatProject.dir/src/utils/aes_utils.c.o.d -o CMakeFiles/MyChatProject.dir/src/utils/aes_utils.c.o -c /home/vawnwuyest/Documents/linux/linux-chat/src/utils/aes_utils.c
 
 CMakeFiles/MyChatProject.dir/src/utils/aes_utils.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/MyChatProject.dir/src/utils/aes_utils.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/thuy/Desktop/linux-chat/src/utils/aes_utils.c > CMakeFiles/MyChatProject.dir/src/utils/aes_utils.c.i
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/vawnwuyest/Documents/linux/linux-chat/src/utils/aes_utils.c > CMakeFiles/MyChatProject.dir/src/utils/aes_utils.c.i
 
 CMakeFiles/MyChatProject.dir/src/utils/aes_utils.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/MyChatProject.dir/src/utils/aes_utils.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/thuy/Desktop/linux-chat/src/utils/aes_utils.c -o CMakeFiles/MyChatProject.dir/src/utils/aes_utils.c.s
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/vawnwuyest/Documents/linux/linux-chat/src/utils/aes_utils.c -o CMakeFiles/MyChatProject.dir/src/utils/aes_utils.c.s
 
 CMakeFiles/MyChatProject.dir/src/utils/json_utils.c.o: CMakeFiles/MyChatProject.dir/flags.make
-CMakeFiles/MyChatProject.dir/src/utils/json_utils.c.o: /home/thuy/Desktop/linux-chat/src/utils/json_utils.c
+CMakeFiles/MyChatProject.dir/src/utils/json_utils.c.o: /home/vawnwuyest/Documents/linux/linux-chat/src/utils/json_utils.c
 CMakeFiles/MyChatProject.dir/src/utils/json_utils.c.o: CMakeFiles/MyChatProject.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/thuy/Desktop/linux-chat/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Building C object CMakeFiles/MyChatProject.dir/src/utils/json_utils.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/MyChatProject.dir/src/utils/json_utils.c.o -MF CMakeFiles/MyChatProject.dir/src/utils/json_utils.c.o.d -o CMakeFiles/MyChatProject.dir/src/utils/json_utils.c.o -c /home/thuy/Desktop/linux-chat/src/utils/json_utils.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/vawnwuyest/Documents/linux/linux-chat/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Building C object CMakeFiles/MyChatProject.dir/src/utils/json_utils.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/MyChatProject.dir/src/utils/json_utils.c.o -MF CMakeFiles/MyChatProject.dir/src/utils/json_utils.c.o.d -o CMakeFiles/MyChatProject.dir/src/utils/json_utils.c.o -c /home/vawnwuyest/Documents/linux/linux-chat/src/utils/json_utils.c
 
 CMakeFiles/MyChatProject.dir/src/utils/json_utils.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/MyChatProject.dir/src/utils/json_utils.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/thuy/Desktop/linux-chat/src/utils/json_utils.c > CMakeFiles/MyChatProject.dir/src/utils/json_utils.c.i
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/vawnwuyest/Documents/linux/linux-chat/src/utils/json_utils.c > CMakeFiles/MyChatProject.dir/src/utils/json_utils.c.i
 
 CMakeFiles/MyChatProject.dir/src/utils/json_utils.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/MyChatProject.dir/src/utils/json_utils.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/thuy/Desktop/linux-chat/src/utils/json_utils.c -o CMakeFiles/MyChatProject.dir/src/utils/json_utils.c.s
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/vawnwuyest/Documents/linux/linux-chat/src/utils/json_utils.c -o CMakeFiles/MyChatProject.dir/src/utils/json_utils.c.s
 
 CMakeFiles/MyChatProject.dir/src/utils/log.c.o: CMakeFiles/MyChatProject.dir/flags.make
-CMakeFiles/MyChatProject.dir/src/utils/log.c.o: /home/thuy/Desktop/linux-chat/src/utils/log.c
+CMakeFiles/MyChatProject.dir/src/utils/log.c.o: /home/vawnwuyest/Documents/linux/linux-chat/src/utils/log.c
 CMakeFiles/MyChatProject.dir/src/utils/log.c.o: CMakeFiles/MyChatProject.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/thuy/Desktop/linux-chat/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_16) "Building C object CMakeFiles/MyChatProject.dir/src/utils/log.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/MyChatProject.dir/src/utils/log.c.o -MF CMakeFiles/MyChatProject.dir/src/utils/log.c.o.d -o CMakeFiles/MyChatProject.dir/src/utils/log.c.o -c /home/thuy/Desktop/linux-chat/src/utils/log.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/vawnwuyest/Documents/linux/linux-chat/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_16) "Building C object CMakeFiles/MyChatProject.dir/src/utils/log.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/MyChatProject.dir/src/utils/log.c.o -MF CMakeFiles/MyChatProject.dir/src/utils/log.c.o.d -o CMakeFiles/MyChatProject.dir/src/utils/log.c.o -c /home/vawnwuyest/Documents/linux/linux-chat/src/utils/log.c
 
 CMakeFiles/MyChatProject.dir/src/utils/log.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/MyChatProject.dir/src/utils/log.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/thuy/Desktop/linux-chat/src/utils/log.c > CMakeFiles/MyChatProject.dir/src/utils/log.c.i
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/vawnwuyest/Documents/linux/linux-chat/src/utils/log.c > CMakeFiles/MyChatProject.dir/src/utils/log.c.i
 
 CMakeFiles/MyChatProject.dir/src/utils/log.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/MyChatProject.dir/src/utils/log.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/thuy/Desktop/linux-chat/src/utils/log.c -o CMakeFiles/MyChatProject.dir/src/utils/log.c.s
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/vawnwuyest/Documents/linux/linux-chat/src/utils/log.c -o CMakeFiles/MyChatProject.dir/src/utils/log.c.s
 
 CMakeFiles/MyChatProject.dir/src/utils/utils.c.o: CMakeFiles/MyChatProject.dir/flags.make
-CMakeFiles/MyChatProject.dir/src/utils/utils.c.o: /home/thuy/Desktop/linux-chat/src/utils/utils.c
+CMakeFiles/MyChatProject.dir/src/utils/utils.c.o: /home/vawnwuyest/Documents/linux/linux-chat/src/utils/utils.c
 CMakeFiles/MyChatProject.dir/src/utils/utils.c.o: CMakeFiles/MyChatProject.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/thuy/Desktop/linux-chat/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_17) "Building C object CMakeFiles/MyChatProject.dir/src/utils/utils.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/MyChatProject.dir/src/utils/utils.c.o -MF CMakeFiles/MyChatProject.dir/src/utils/utils.c.o.d -o CMakeFiles/MyChatProject.dir/src/utils/utils.c.o -c /home/thuy/Desktop/linux-chat/src/utils/utils.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/vawnwuyest/Documents/linux/linux-chat/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_17) "Building C object CMakeFiles/MyChatProject.dir/src/utils/utils.c.o"
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/MyChatProject.dir/src/utils/utils.c.o -MF CMakeFiles/MyChatProject.dir/src/utils/utils.c.o.d -o CMakeFiles/MyChatProject.dir/src/utils/utils.c.o -c /home/vawnwuyest/Documents/linux/linux-chat/src/utils/utils.c
 
 CMakeFiles/MyChatProject.dir/src/utils/utils.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/MyChatProject.dir/src/utils/utils.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/thuy/Desktop/linux-chat/src/utils/utils.c > CMakeFiles/MyChatProject.dir/src/utils/utils.c.i
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/vawnwuyest/Documents/linux/linux-chat/src/utils/utils.c > CMakeFiles/MyChatProject.dir/src/utils/utils.c.i
 
 CMakeFiles/MyChatProject.dir/src/utils/utils.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/MyChatProject.dir/src/utils/utils.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/thuy/Desktop/linux-chat/src/utils/utils.c -o CMakeFiles/MyChatProject.dir/src/utils/utils.c.s
+	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/vawnwuyest/Documents/linux/linux-chat/src/utils/utils.c -o CMakeFiles/MyChatProject.dir/src/utils/utils.c.s
 
 # Object files for target MyChatProject
 MyChatProject_OBJECTS = \
@@ -351,7 +351,7 @@ MyChatProject: CMakeFiles/MyChatProject.dir/build.make
 MyChatProject: /usr/lib/x86_64-linux-gnu/libssl.so
 MyChatProject: /usr/lib/x86_64-linux-gnu/libcrypto.so
 MyChatProject: CMakeFiles/MyChatProject.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/thuy/Desktop/linux-chat/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_18) "Linking C executable MyChatProject"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/vawnwuyest/Documents/linux/linux-chat/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_18) "Linking C executable MyChatProject"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/MyChatProject.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -363,6 +363,6 @@ CMakeFiles/MyChatProject.dir/clean:
 .PHONY : CMakeFiles/MyChatProject.dir/clean
 
 CMakeFiles/MyChatProject.dir/depend:
-	cd /home/thuy/Desktop/linux-chat/cmake-build-debug && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/thuy/Desktop/linux-chat /home/thuy/Desktop/linux-chat /home/thuy/Desktop/linux-chat/cmake-build-debug /home/thuy/Desktop/linux-chat/cmake-build-debug /home/thuy/Desktop/linux-chat/cmake-build-debug/CMakeFiles/MyChatProject.dir/DependInfo.cmake "--color=$(COLOR)"
+	cd /home/vawnwuyest/Documents/linux/linux-chat/cmake-build-debug && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/vawnwuyest/Documents/linux/linux-chat /home/vawnwuyest/Documents/linux/linux-chat /home/vawnwuyest/Documents/linux/linux-chat/cmake-build-debug /home/vawnwuyest/Documents/linux/linux-chat/cmake-build-debug /home/vawnwuyest/Documents/linux/linux-chat/cmake-build-debug/CMakeFiles/MyChatProject.dir/DependInfo.cmake "--color=$(COLOR)"
 .PHONY : CMakeFiles/MyChatProject.dir/depend
 

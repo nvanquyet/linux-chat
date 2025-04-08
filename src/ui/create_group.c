@@ -55,7 +55,7 @@ void create_group_action(GtkWidget *widget, gpointer data) {
 
     g_object_set_data(G_OBJECT(group_button), "type", "group");
     gtk_widget_set_size_request(group_button, -1, 40);
-    g_signal_connect(group_button, "clicked", G_CALLBACK(on_contact_clicked), session);
+    //g_signal_connect(group_button, "clicked", G_CALLBACK(on_contact_clicked), session);
 
     // Thêm vào đầu danh sách
     gtk_box_pack_start(GTK_BOX(contacts_box), group_button, FALSE, FALSE, 0);

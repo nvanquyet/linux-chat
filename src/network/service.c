@@ -30,6 +30,8 @@ Service* createService(Session* session) {
     service->delete_group = service_delete_group;
 
     service->get_history = service_get_history;
+    service->get_history_message = service_get_history_message;
+    service->search_users = service_search_users;
 
     service->send_group_message = service_send_group_message;
     service->send_user_message = service_send_user_message;
@@ -68,6 +70,25 @@ void service_get_online_users(Service* service) {
         log_message(ERROR, "Session is NULL");
         return;
     }
+    session_send_message(service->session, message);
+}
+
+void service_search_users(Service* service, const char* text)
+{
+    if (service == NULL || text == NULL)
+    {
+        return;
+    }
+    if(!service->session)
+    {
+        log_message(ERROR, "Session is NULL");
+        return;
+    }
+    Message *message = message_create(SEARCH_USERS);
+    if (message == NULL)
+        return;
+    message_write_int(message, service->session->user->id);
+    message_write_string(message, text);
     session_send_message(service->session, message);
 }
 
@@ -255,4 +276,18 @@ void service_get_history(Service* service, User* user) {
     }
     message_write_int(message, user->id);
     session_send_message(service->session, message);
+}
+
+void service_get_history_message(Service* service,  User* user, int target_id)
+{
+    if (service == NULL) return;
+    Message* m = target_id > 0 ? message_create(GET_USERS_MESSAGE) : message_create(GET_GROUPS_MESSAGE);
+    if (m == NULL)
+    {
+        log_message(ERROR, "Failed to create message");
+        return;
+    }
+    message_write_int(m, user->id);
+    message_write_int(m, target_id);
+    session_send_message(service->session, m);
 }
