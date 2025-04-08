@@ -116,6 +116,9 @@ void controller_on_message(Controller *self, Message *message)
   case DELETE_GROUP:
     delete_group(self, message);
     break;
+  case JOIN_GROUP:
+    handle_join_group(self, message);
+    break;
   case USER_MESSAGE:
     receive_user_message(self, message);
     break;
@@ -130,6 +133,9 @@ void controller_on_message(Controller *self, Message *message)
     break;
   case GET_GROUPS_MESSAGE:
     get_group_message(self,message);
+    break;
+  case GROUP_NOTIFICATION:
+    handle_group_noti(self, message);
     break;
   default:
     log_message(ERROR, "Unknown command %d",
@@ -495,7 +501,25 @@ void get_chat_history(Controller *controller, Message *message) {
     free(last_message);
   }
 }
+void handle_join_group(Controller *controller, Message *message) {
+    if (!message) return;
 
+    message->position = 0;
+
+    bool joined = message_read_bool(message);
+
+    char response_msg[256] = {0};
+    if (!message_read_string(message, response_msg, sizeof(response_msg))) {
+      log_message(ERROR, "Failed to read response message");
+      return;
+    }
+
+    if (joined) {
+      log_message(INFO, "Join group success: %s", response_msg);
+    } else {
+      log_message(WARN, "Join group failed: %s", response_msg);
+    }
+}
 void delete_group(Controller *controller, Message *message) {
   if (message == NULL) {
     log_message(ERROR, "Invalid message received");
@@ -559,6 +583,30 @@ void leave_group(Controller *controller, Message *message) {
   free(message);
 }
 
+void handle_group_noti(Controller *controller, Message *message) {
+  if (message == NULL) {
+    log_message(ERROR, "Invalid message received");
+    return;
+  }
+  int group_id = (int) message_read_int(message);
+  int user_id = (int) message_read_int(message);
+  char* noti_message = (char*)malloc(1024);
+  char* user_name = (char*)malloc(1024);
+  char* group_name = (char*)malloc(1024);
+  if (!message_read_string(message, user_name, 1024)) {
+    log_message(WARN, "NULL User");
+  }
+  if (!message_read_string(message, noti_message, 1024)) {
+    log_message(WARN, "NULL Message");
+  }
+  if (!message_read_string(message, group_name, 1024)) {
+    log_message(WARN, "NULL Group");
+  }
+  log_message(INFO, "User %d Group id: %d %s %s %s", user_id, group_id, user_name,noti_message, user_name);
+  free(noti_message);
+  free(message);
+}
+
 void receive_user_message(Controller *controller, Message *message) {
   message->position = 0;
   int sender_id = (int) message_read_int(message);
@@ -584,7 +632,6 @@ void receive_group_message(Controller *controller, Message *message) {
   log_message(INFO, "Received Group ID: %d, Content: %s", group_id, content);
   free(message);
 }
-
 void get_user_message(Controller *controller, Message* msg) {
   log_message(INFO, "Get history user message");
   if (msg == NULL) {
