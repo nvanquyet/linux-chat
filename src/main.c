@@ -288,24 +288,34 @@ void *keyboard_input_handler(void *arg) {
         else if (strncmp(input, CMD_JOIN_GROUP, strlen(CMD_JOIN_GROUP)) == 0) {
             char *cmd_ptr = input + strlen(CMD_JOIN_GROUP);
 
-            // Skip whitespace
+            // Bỏ qua khoảng trắng
             while (*cmd_ptr == ' ') cmd_ptr++;
 
             if (*cmd_ptr == '\0') {
-                log_message(ERROR, "Usage: /join <group_id>");
+                log_message(ERROR, "Usage: /join <group_name> <group_password>");
                 continue;
             }
 
-            int group_id = atoi(cmd_ptr);
-            if (group_id <= 0) {
-                log_message(ERROR, "Invalid group ID: %s", cmd_ptr);
+            // Tách group_name và group_password
+            char group_name[256] = {0};
+            char group_password[256] = {0};
+
+            int scanned = sscanf(cmd_ptr, "%255s %255s", group_name, group_password);
+            if (scanned < 2) {
+                log_message(ERROR, "Usage: /join <group_name> <group_password>");
                 continue;
             }
 
             if (check_session_valid(session, "join command")) {
-                session->service->join_group(session->service, session->user, group_id);
+                if (session->service->join_group) {
+                    session->service->join_group(session->service, session->user, group_name, group_password);
+                    log_message(INFO, "Join group request sent for '%s'", group_name);
+                } else {
+                    log_message(ERROR, "Join group with password function is not implemented in this version");
+                }
             }
         }
+
         // Handle leave group command
         else if (strncmp(input, CMD_LEAVE_GROUP, strlen(CMD_LEAVE_GROUP)) == 0) {
             char *cmd_ptr = input + strlen(CMD_LEAVE_GROUP);
@@ -330,28 +340,35 @@ void *keyboard_input_handler(void *arg) {
         }
         // Handle create group command
         else if (strncmp(input, CMD_CREATE_GROUP, strlen(CMD_CREATE_GROUP)) == 0) {
-            // Skip whitespace
-            char *cmd_ptr = input + strlen(CMD_CREATE_GROUP) + 1;
-            //while (*cmd_ptr == ' ') cmd_ptr++;
-            //
+            // Bỏ qua khoảng trắng sau lệnh
+            char *cmd_ptr = input + strlen(CMD_CREATE_GROUP);
+            while (*cmd_ptr == ' ') cmd_ptr++;
+
             if (*cmd_ptr == '\0') {
-                log_message(ERROR, "Usage: /create <group_name>");
+                log_message(ERROR, "Usage: /create <group_name> <group_password>");
                 continue;
             }
 
             char group_name[256] = {0};
-            strncpy(group_name, cmd_ptr, sizeof(group_name) - 1);
+            char group_password[256] = {0};
+
+            // Tách group_name và group_password
+            int scanned = sscanf(cmd_ptr, "%255s %255s", group_name, group_password);
+            if (scanned < 2) {
+                log_message(ERROR, "Usage: /create <group_name> <group_password>");
+                continue;
+            }
 
             if (check_session_valid(session, "create command")) {
-                // Check if create_group function exists in the service structure
                 if (session->service->create_group) {
-                    session->service->create_group(session->service, session->user, group_name);
+                    session->service->create_group(session->service, session->user, group_name, group_password);
                     log_message(INFO, "Group creation request sent for '%s'", group_name);
                 } else {
-                    log_message(ERROR, "Create group function is not implemented in this version");
+                    log_message(ERROR, "Create group with password not implemented");
                 }
             }
         }
+
         else if (strncmp(input, CMD_DELETE_GROUP, strlen(CMD_DELETE_GROUP)) == 0) {
             // Skip whitespace
             char *cmd_ptr = input + strlen(CMD_DELETE_GROUP) + 1;

@@ -43,6 +43,8 @@ void get_group_message(Controller *controller, Message* msg);
 void delete_group(Controller *controller, Message *message);
 void create_group(Controller *controller, Message *msg);
 void leave_group(Controller *controller, Message *message);
+void handle_group_noti(Controller *controller, Message *message);
+void handle_join_group(Controller *controller, Message *message);
 
 
 void receive_user_message(Controller *controller, Message *message);
