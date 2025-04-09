@@ -18,6 +18,7 @@ typedef enum {
     DEBUG
 } NOTI_LEVEL;
 
+
 typedef enum {
     LOGIN,
     LOGOUT,
