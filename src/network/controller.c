@@ -71,76 +71,71 @@ void controller_on_message(Controller *self, Message *message)
 {
   if (self == NULL || message == NULL)
   {
-    log_message(LogLevel::ERROR, "Client %d: message is NULL");
+    log_message(ERROR, "Client %d: message is NULL");
     return;
   }
 
   uint8_t command = message->command;
   switch (command)
   {
-  case SERVER_MESSAGE:
+  case CMD_SERVER_MESSAGE:
     if(self->service != NULL) {
       self->service->server_message(self->service, message);
     } else {
-      log_message(LogLevel::ERROR, "Service is NULL");
+      log_message(ERROR, "Service is NULL");
     }
     break;
-  case GET_USERS:
+  case CMD_GET_USERS:
     if(self->service != NULL) {
       get_all_users(self, message);
       //get_online_users(self, message);
     } else {
-      log_message(LogLevel::ERROR, "Service is NULL");
+      log_message(ERROR, "Service is NULL");
     }
     break;
-  case LOGIN:
-    log_message(LogLevel::ERROR,"login");
-    if(self->service != NULL) {
+  case CMD_LOGIN:
       handle_login(self, message);
-    } else {
-      log_message(LogLevel::ERROR, "Service is NULL");
-    }
     break;
-  case LOGOUT:
+  case CMD_LOGOUT:
     handle_logout(self, message);
     break;
   case REGISTER:
     handle_register(self, message);
     break;
-  case GET_JOINED_GROUPS:
+  case CMD_GET_JOINED_GROUPS:
     get_joined_groups(self, message);
     break;
-  case CREATE_GROUP:
+  case CMD_CREATE_GROUP:
     create_group(self, message);
     break;
-  case LEAVE_GROUP:
+  case CMD_LEAVE_GROUP:
     leave_group(self, message);
     break;
-  case DELETE_GROUP:
+  case CMD_DELETE_GROUP:
     delete_group(self, message);
     break;
-  case JOIN_GROUP:
+  case CMD_JOIN_GROUP:
     handle_join_group(self, message);
     break;
-  case USER_MESSAGE:
+  case CMD_USER_MESSAGE:
     receive_user_message(self, message);
     break;
-  case GROUP_MESSAGE:
+  case CMD_GROUP_MESSAGE:
     receive_group_message(self, message);
     break;
-  case GET_CHAT_HISTORY:
+  case CMD_GET_CHAT_HISTORY:
     get_chat_connected(self,message);
     break;
-  case GET_USERS_MESSAGE:
+  case CMD_GET_USERS_MESSAGE:
     get_user_message(self,message);
     break;
-  case GET_GROUPS_MESSAGE:
+  case CMD_GET_GROUPS_MESSAGE:
     get_group_message(self,message);
     break;
-  case GROUP_NOTIFICATION:
+  case CMD_GROUP_NOTIFICATION:
     handle_group_noti(self, message);
     break;
-  case SEARCH_USERS:
+  case CMD_SEARCH_USERS:
     handle_search_users(self, message);
     break;
   default:

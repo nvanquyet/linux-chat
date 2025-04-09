@@ -92,7 +92,10 @@ static void on_registration_window_destroy(GtkWidget *widget, gpointer user_data
 
 // Tạo và hiển thị cửa sổ đăng ký
 void show_register_window(Session *session) {
+    Session *main_session = NULL;
+    current_ui = NULL;
     GtkWidget *window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    current_ui = GTK_WIDGET(window);
     gtk_window_set_title(GTK_WINDOW(window), "Đăng ký");
     gtk_window_set_default_size(GTK_WINDOW(window), 300, 250);
 

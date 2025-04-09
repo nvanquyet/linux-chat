@@ -20,7 +20,7 @@ void on_show_ui(MAIN_UI_LEVEL level)
             }
         case HOME:
             {
-                show_home_window();
+                show_chat_window();
                 break;
             }
         default:
@@ -35,7 +35,7 @@ void init(Session *session)
 {
     if (session == NULL)
     {
-        log_message(LogLevel::ERROR, "Null Sessions");
+        log_message(ERROR, "Null Sessions");
         return;
     }
     main_session = session;
@@ -60,25 +60,25 @@ void set_current_ui(GtkWidget *widget) {
     current_ui = widget;
 }
 
-void show_home_window()
+void show_home_window1()
 {
     g_idle_add((GSourceFunc)g_on_show_home_window, NULL);
 }
-void show_login_window()
+void show_login_window1()
 {
     g_idle_add((GSourceFunc)g_on_show_login_window, NULL);
 
 }
-void show_create_group_window()
+void show_create_group_window1()
 {
     g_idle_add((GSourceFunc)g_on_show_create_window, NULL);
 
 }
-void show_join_group_window()
+void show_join_group_window1()
 {
     g_idle_add((GSourceFunc)g_on_show_join_window, NULL);
 }
-void show_register_window()
+void show_register_window1()
 {
     g_idle_add((GSourceFunc)g_on_show_register_window, NULL);
 }
@@ -102,10 +102,10 @@ void show_notification_window(LogLevel level, const char *content, ...)
     gtk_widget_show_all(dialog);
 }
 
-void on_receive_message()
-{
-
-}
+// void on_receive_message()
+// {
+//
+// }
 void on_load_history_message(ChatMessageList *data)
 {
     g_idle_add((GSourceFunc)g_on_load_history_message, data);

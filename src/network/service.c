@@ -59,7 +59,7 @@ void service_get_online_users(Service* service) {
         return;
     }
     
-    Message* message = message_create(GET_USERS);
+    Message* message = message_create(CMD_GET_USERS);
     if (message == NULL) {
         log_message(ERROR, "Failed to create message");
         return;
@@ -84,7 +84,7 @@ void service_search_users(Service* service, const char* text)
         log_message(ERROR, "Session is NULL");
         return;
     }
-    Message *message = message_create(SEARCH_USERS);
+    Message *message = message_create(CMD_SEARCH_USERS);
     if (message == NULL)
         return;
     message_write_int(message, service->session->user->id);
@@ -98,7 +98,7 @@ void service_search_users(Service* service, const char* text)
 void service_get_group_list(Service* service,  User* user) {
     if (service == NULL) return;
 
-    Message* message = message_create(GET_JOINED_GROUPS);
+    Message* message = message_create(CMD_GET_JOINED_GROUPS);
     if (message == NULL) {
         log_message(ERROR, "Failed to create message");
         return;
@@ -116,7 +116,7 @@ void service_create_group(Service* service, User* user, const char* group_name, 
     if (service == NULL || group_name == NULL) {
         return;
     }
-    Message* message = message_create(CREATE_GROUP);
+    Message* message = message_create(CMD_CREATE_GROUP);
 
     if (message == NULL) {
         log_message(ERROR, "Failed to create message");
@@ -146,7 +146,7 @@ void service_join_group(Service* service, User* user, const char* group_name, co
     }
 
     // Tạo message để gửi tới server
-    Message* message = message_create(JOIN_GROUP);
+    Message* message = message_create(CMD_JOIN_GROUP);
     if (message == NULL) {
         log_message(ERROR, "Failed to create message");
         return;
@@ -179,7 +179,7 @@ void service_leave_group(Service* service, User* user, int group_id) {
         return;
     }
 
-    Message* message = message_create(LEAVE_GROUP);
+    Message* message = message_create(CMD_LEAVE_GROUP);
     if (message == NULL) {
         log_message(ERROR, "Failed to create message");
         return;
@@ -206,7 +206,7 @@ void service_delete_group(Service* service, User* user, int group_id) {
         return;
     }
 
-    Message* message = message_create(DELETE_GROUP);
+    Message* message = message_create(CMD_DELETE_GROUP);
     if (message == NULL) {
         log_message(ERROR, "Failed to create message");
         return;
@@ -227,7 +227,7 @@ void service_delete_group(Service* service, User* user, int group_id) {
 void service_send_group_message(Service* service,  User* user, int group_id, const char* message) {
     if (service == NULL) return;
 
-    Message* m = message_create(GROUP_MESSAGE);
+    Message* m = message_create(CMD_GROUP_MESSAGE);
     if (m == NULL) {
         log_message(ERROR, "Failed to create message");
         return;
@@ -249,7 +249,7 @@ void service_send_group_message(Service* service,  User* user, int group_id, con
 void service_send_user_message(Service* service,  User* user, int user_id, const char* message) {
     if (service == NULL) return;
 
-    Message* m = message_create(USER_MESSAGE);
+    Message* m = message_create(CMD_USER_MESSAGE);
     if (m == NULL) {
         log_message(ERROR, "Failed to create message");
         return;
@@ -273,7 +273,7 @@ void service_get_history(Service* service, User* user) {
         log_message(ERROR, "User is NULL");
         return;
     }
-    Message* message = message_create(GET_CHAT_HISTORY);
+    Message* message = message_create(CMD_GET_CHAT_HISTORY);
     if (message == NULL) {
         log_message(ERROR, "Failed to create message");
         return;
@@ -285,7 +285,7 @@ void service_get_history(Service* service, User* user) {
 void service_get_history_message(Service* service,  User* user, int target_id)
 {
     if (service == NULL) return;
-    Message* m = target_id > 0 ? message_create(GET_USERS_MESSAGE) : message_create(GET_GROUPS_MESSAGE);
+    Message* m = target_id > 0 ? message_create(CMD_GET_USERS_MESSAGE) : message_create(CMD_GET_GROUPS_MESSAGE);
     if (m == NULL)
     {
         log_message(ERROR, "Failed to create message");

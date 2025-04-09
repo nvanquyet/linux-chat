@@ -6,6 +6,7 @@
 #include <stdbool.h>
 #include "session.h"
 #include "chat_message.h"
+#include "ui_controller.h"
 #define CONTACT_MAX_LENGTH 64
 
 // Main window reference
@@ -37,6 +38,12 @@ typedef struct {
     int count;
 } ChatMessageList;
 
+typedef struct {
+    gchar *message;
+    gboolean success;
+} NotificationData;
+
+
 //event
 void on_show_ui(MAIN_UI_LEVEL level);
 
@@ -46,6 +53,7 @@ gboolean g_on_show_home_window(gpointer data);
 gboolean g_on_show_create_window(gpointer data);
 gboolean g_on_show_join_window(gpointer data);
 
+gboolean g_on_show_notification(gpointer data);
 gboolean g_on_update_search_user(gpointer data);
 gboolean g_on_update_history_contact(gpointer data);
 gboolean g_on_remove_history_contact(gpointer data);
@@ -54,7 +62,7 @@ gboolean g_on_receive_message(gpointer data);
 
 // Function declarations for UI operations
 //show ui
-void show_chat_window(Session *session);
+void show_chat_window();
 void init(Session *session);
 void set_current_ui(GtkWidget *widget);
 void show_home_window();
@@ -65,13 +73,14 @@ void show_register_window();
 void show_notification_window(LogLevel level, const char *content, ...);
 
 
+
 //home UI
-void on_receive_message();
+void on_receive_message(Controller *self, Message *message);
 void on_load_history_message(ChatMessageList *data);
 void on_update_history_contact(ChatMessage *data);
 void on_remove_contact(int id);
 void on_update_search_user(UserListData *data);
 
 
-void on_receive_message(int id, const char* message, bool isGroup);
+//void on_receive_message(int id, const char* message, bool isGroup);
 #endif

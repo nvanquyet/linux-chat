@@ -4,16 +4,16 @@
 
 #include "log.h"
 #include "user.h"
+#include "session.h"
 
-
-// Cấu trúc dữ liệu cho giao diện đăng nhập
+Session *main_session = NULL;
 
 // Prototype các hàm
 static void show_message_dialog(GtkWindow *parent, const gchar *message, gboolean success);
 static void on_login_button_clicked(GtkWidget *button, gpointer user_data);
 static void on_register_button_clicked(GtkWidget *button, gpointer user_data);
  void on_login_window_destroy(GtkWidget *widget, gpointer user_data);
-gboolean show_login_window_callback(gpointer data);
+
 
 // Hiển thị hộp thoại thông báo
 static void show_message_dialog(GtkWindow *parent, const gchar *message, gboolean success) {
@@ -30,30 +30,24 @@ static void show_message_dialog(GtkWindow *parent, const gchar *message, gboolea
 
 // Xử lý nút "Đăng nhập"
 static void on_login_button_clicked(GtkWidget *button, gpointer user_data) {
-    LoginData *login_data = (LoginData *)user_data;
+    CredentialForm *login_data = (CredentialForm *)user_data;
     const gchar *username = gtk_entry_get_text(login_data->entry_username);
     const gchar *password = gtk_entry_get_text(login_data->entry_password);
-    GtkWindow *parent_window = GTK_WINDOW(login_data->window);
-    Session *session = login_data->session;
+
+
 
     if (g_strcmp0(username, "") == 0 || g_strcmp0(password, "") == 0) {
-        show_message_dialog(parent_window, "Vui lòng nhập đầy đủ thông tin!", FALSE);
+        g_on_show_notification("Khong nhap day du thong tin");
         return;
     }
 
-    // Kiểm tra kết nối
-    if (session == NULL || !session->connected) {
-        show_message_dialog(parent_window, "Lỗi kết nối máy chủ!", FALSE);
-        return;
-    }
-
-    User *user = createUser(NULL, session, username, password);
+    User *user = createUser(NULL, main_session, username, password);
     if (user != NULL) {
-        session->user = user;
+        main_session->user = user;
         user->login(user);
 
     } else {
-        show_message_dialog(parent_window, "Lỗi tạo người dùng!", FALSE);
+        g_on_show_notification("Lỗi tạo người dùng!");
     }
 }
 
@@ -65,26 +59,28 @@ static void on_register_button_clicked(GtkWidget *button, gpointer user_data) {
 // Giải phóng bộ nhớ khi đóng cửa sổ
 // Hàm callback khi cửa sổ bị đóng
 void on_login_window_destroy(GtkWidget *widget, gpointer data) {
+    CredentialForm *login_data = (CredentialForm *)data;
     if (login_data) {
         // Giải phóng data cấp phát bằng g_malloc
         g_free(login_data);
     }
+
 
     log_message(INFO, "Login window destroyed and memory cleaned");
 }
 
 
 // Tạo và hiển thị cửa sổ đăng nhập
-void *show_login_window(Session *session) {
+void show_login_window() {
+    Session *main_session = NULL;
+    current_ui = NULL;
     GtkWidget *window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_title(GTK_WINDOW(window), "Đăng nhập");
     gtk_window_set_default_size(GTK_WINDOW(window), 300, 200);
 
-    LoginData *login_data = g_malloc(sizeof(LoginData));
-    login_data->window = window;
+    CredentialForm *login_data = g_malloc(sizeof(CredentialForm));
     login_data->entry_username = GTK_ENTRY(gtk_entry_new());
     login_data->entry_password = GTK_ENTRY(gtk_entry_new());
-    login_data->session = session;  // Lưu lại session được truyền vào
 
     // Ẩn mật khẩu
     gtk_entry_set_visibility(login_data->entry_password, FALSE);
@@ -113,4 +109,9 @@ void *show_login_window(Session *session) {
 
     gtk_widget_show_all(window);
 
+}
+
+gboolean g_on_show_login_window(gpointer data) {
+    show_login_window();
+    return false;
 }
