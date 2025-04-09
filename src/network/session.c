@@ -299,7 +299,7 @@ void session_do_connect(Session *session, char *ip, int port)
     private->collector->running = true;
     pthread_create(&private->collector->thread, NULL, collector_thread, private->collector);
 
-    Message *msg = message_create(GET_SESSION_ID);
+    Message *msg = message_create(CMD_GET_SESSION_ID);
     if (msg == NULL)
     {
         log_message(ERROR, "Failed to create message");
@@ -404,10 +404,10 @@ void trade_key(Session *session, Message *msg)
 
     switch (msg->command)
     {
-    case TRADE_DH_PARAMS:
+    case CMD_TRADE_DH_PARAMS:
         send_private_key(session, msg);
         break;
-    case TRADE_KEY:
+    case CMD_TRADE_KEY:
         compute_shared_key(session, msg);
         break;
     default:
@@ -435,7 +435,7 @@ void send_private_key(Session *session, Message *msg)
         return;
     }
 
-    Message *message = message_create(TRADE_DH_PARAMS);
+    Message *message = message_create(CMD_TRADE_DH_PARAMS);
     message_write(message, &key->B, sizeof(key->B));
     session->doSendMessage(session, message);
     message_destroy(message);
@@ -619,7 +619,7 @@ Message *session_read_message(Session *session)
         return NULL;
     }
 
-    if (command == GET_SESSION_ID || command == TRADE_KEY || command == TRADE_DH_PARAMS)
+    if (command == CMD_GET_SESSION_ID || command == CMD_TRADE_KEY || command == CMD_TRADE_DH_PARAMS)
     {
 
         uint32_t size_network;
@@ -777,7 +777,7 @@ bool do_send_message(Session *session, Message *msg)
         return false;
     }
 
-    if (msg->command == GET_SESSION_ID || msg->command == TRADE_KEY || msg->command == TRADE_DH_PARAMS)
+    if (msg->command == CMD_GET_SESSION_ID || msg->command == CMD_TRADE_KEY || msg->command == CMD_TRADE_DH_PARAMS)
     {
         if (send(session->socket, &msg->command, sizeof(uint8_t), 0) < 0)
         {
