@@ -3,7 +3,7 @@
 //
 #include <gtk/gtk.h>
 #include <ui_controller.h>
-
+gboolean g_on_show_notification(gpointer data);
 void show_message_form(const gchar *message, gboolean success) {
     // Tạo một cửa sổ thông báo modal, không có parent
     GtkWidget *dialog = gtk_message_dialog_new(

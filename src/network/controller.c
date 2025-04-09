@@ -22,7 +22,7 @@ void handle_login(Controller *self, Message *msg);
 void handle_logout(Controller *self, Message *msg);
 void handle_register(Controller *self, Message *msg);
 char **get_online_users(Controller *controller, Message *message);
-gboolean show_chat_window_callback(gpointer data);
+gboolean show_home_window_callback(gpointer data);
 
 
 Controller *createController(Session *client)

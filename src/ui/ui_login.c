@@ -6,8 +6,6 @@
 #include "user.h"
 #include "session.h"
 
-Session *main_session = NULL;
-
 // Prototype các hàm
 static void show_message_dialog(GtkWindow *parent, const gchar *message, gboolean success);
 static void on_login_button_clicked(GtkWidget *button, gpointer user_data);

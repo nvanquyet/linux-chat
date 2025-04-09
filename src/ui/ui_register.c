@@ -6,20 +6,13 @@
 #include "log.h"
 #include "user.h"
 
-// Cấu trúc dữ liệu cho giao diện đăng ký, bao gồm các widget và session
-typedef struct {
-    GtkWidget *window;
-    GtkEntry *entry_username;
-    GtkEntry *entry_password;
-    GtkEntry *entry_confirm;
-    Session  *session;  // Session được truyền từ main
-} RegistrationData;
-
 // Prototype các hàm
 static void show_message_dialog(GtkWindow *parent, const gchar *message, gboolean success);
 static void on_register_button_clicked(GtkWidget *button, gpointer user_data);
 static void on_back_button_clicked(GtkWidget *button, gpointer user_data);
 static void on_registration_window_destroy(GtkWidget *widget, gpointer user_data);
+gboolean g_on_show_register_window(gpointer data);
+void show_register_window();
 
 // Hiển thị hộp thoại thông báo
 static void show_message_dialog(GtkWindow *parent, const gchar *message, gboolean success) {
@@ -36,75 +29,68 @@ static void show_message_dialog(GtkWindow *parent, const gchar *message, gboolea
 
 // Xử lý nút "Đăng ký"
 static void on_register_button_clicked(GtkWidget *button, gpointer user_data) {
-    RegistrationData *reg_data = (RegistrationData *)user_data;
+    CredentialForm *reg_data = (CredentialForm *)user_data;
     const gchar *username = gtk_entry_get_text(reg_data->entry_username);
     const gchar *password = gtk_entry_get_text(reg_data->entry_password);
     const gchar *confirm  = gtk_entry_get_text(reg_data->entry_confirm);
-    GtkWindow *parent_window = GTK_WINDOW(reg_data->window);
-    Session *session = reg_data->session;  // Lấy session từ reg_data
+
 
     if (g_strcmp0(username, "") == 0 || g_strcmp0(password, "") == 0) {
-        show_message_dialog(parent_window, "Vui lòng nhập đầy đủ thông tin!", FALSE);
+        //show_message_dialog(parent_window, "Vui lòng nhập đầy đủ thông tin!", FALSE);
         return;
     }
 
     if (g_strcmp0(password, confirm) != 0) {
-        show_message_dialog(parent_window, "Mật khẩu xác nhận không khớp!", FALSE);
+      //  show_message_dialog(parent_window, "Mật khẩu xác nhận không khớp!", FALSE);
         return;
     }
 
     // Đảm bảo session không phải NULL trước khi sử dụng
-    if (session == NULL) {
-        show_message_dialog(parent_window, "Lỗi kết nối session!", FALSE);
-        return;
-    }
 
     // Kiểm tra kết nối
-    log_message(INFO, "SESSION IS %s", session->connected ? "connected" : "disconnected");
+    log_message(INFO, "SESSION IS %s", main_session->connected ? "connected" : "disconnected");
 
-    User *user = createUser(NULL, session, username, password);
+    User *user = createUser(NULL, main_session, username, password);
     if (user != NULL) {
-        session->user = user;
-        user->session = session;
+        main_session->user = user;
         user->userRegister(user);
-        show_message_dialog(parent_window, "Đã gửi yêu cầu đăng ký!", TRUE);
-        gtk_widget_hide(reg_data->window);
+       // show_message_dialog(parent_window, "Đã gửi yêu cầu đăng ký!", TRUE);
+      //  gtk_widget_hide(reg_data->window);
         on_show_ui(LOGIN);  // Truyền lại session
     } else {
-        show_message_dialog(parent_window, "Lỗi tạo người dùng!", FALSE);
+        //show_message_dialog(parent_window, "Lỗi tạo người dùng!", FALSE);
     }
 }
 
 // Xử lý nút "Quay lại"
 static void on_back_button_clicked(GtkWidget *button, gpointer user_data) {
-    RegistrationData *reg_data = (RegistrationData *)user_data;
-    Session *session = reg_data->session;  // Lấy session
+    CredentialForm *reg_data = (CredentialForm *)user_data;
+    //Session *session = reg_data->session;  // Lấy session
 
-    gtk_widget_hide(reg_data->window);
-    show_login_window(session);  // Truyền session khi quay lại login
+   // gtk_widget_hide(reg_data->window);
+    show_login_window();  // Truyền session khi quay lại login
 }
 
 // Giải phóng bộ nhớ khi đóng cửa sổ
 static void on_registration_window_destroy(GtkWidget *widget, gpointer user_data) {
-    RegistrationData *reg_data = (RegistrationData *)user_data;
+    CredentialForm *reg_data = (CredentialForm *)user_data;
     g_free(reg_data);
 }
 
 // Tạo và hiển thị cửa sổ đăng ký
-void show_register_window(Session *session) {
-    Session *main_session = NULL;
-    current_ui = NULL;
+void show_register_window() {
+
     GtkWidget *window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     current_ui = GTK_WIDGET(window);
     gtk_window_set_title(GTK_WINDOW(window), "Đăng ký");
     gtk_window_set_default_size(GTK_WINDOW(window), 300, 250);
 
-    RegistrationData *reg_data = g_malloc(sizeof(RegistrationData));
-    reg_data->window = window;
+    CredentialForm *reg_data = g_malloc(sizeof(CredentialForm));
+   // reg_data->window = window;
     reg_data->entry_username = GTK_ENTRY(gtk_entry_new());
     reg_data->entry_password = GTK_ENTRY(gtk_entry_new());
     reg_data->entry_confirm = GTK_ENTRY(gtk_entry_new());
-    reg_data->session = session;  // Lưu lại session được truyền vào
+
 
     // Ẩn mật khẩu
     gtk_entry_set_visibility(reg_data->entry_password, FALSE);
@@ -137,4 +123,8 @@ void show_register_window(Session *session) {
     g_signal_connect(window, "destroy", G_CALLBACK(on_registration_window_destroy), reg_data);
 
     gtk_widget_show_all(window);
+}
+gboolean g_on_show_register_window(gpointer data) {
+    show_register_window();
+    return false;
 }
