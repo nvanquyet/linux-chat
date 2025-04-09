@@ -1,7 +1,5 @@
 #include <ui_controller.h>
 #include <gtk/gtk.h>
-
-#include "chat_common.h"
 #include "chat_message.h"
 #include "cmd.h"
 #include "user.h"
@@ -19,8 +17,6 @@ static char* truncate_message(const char *msg) {
     return g_strdup(msg);
 }
 // Global variable for main window
-GtkWidget *main_window = NULL;
-Session *main_session = NULL;
 int select_target_id = 0;
 
 void on_join_group_clicked(GtkWidget *widget, gpointer data) {
@@ -50,29 +46,9 @@ static void on_create_group_clicked(GtkWidget *widget, gpointer data) {
 }
 
 static void on_log_out_clicked(GtkWidget *widget, gpointer data) {
-    Session *session = (Session *)data;
-
-    // Hide the main window instead of destroying it
-    if (main_window != NULL) {
-        gtk_widget_hide(main_window);
-        log_message(INFO, "Main window hidden for logout");
-    }
-
-    // Update logout status
-    session->isLogin = FALSE;
-    session->current_user_id = -1;
-
-    // Send logout notification to server if user exists
-    if (session->user != NULL) {
-        session->user->logout(session->user);
-        // Free user info if needed,
-        // but make sure user->logout() handles sending notification without duplicate freeing.
-        free(session->user);
-        session->user = NULL;
-    }
-
     // Don't need to add this here as the server response will trigger handle_logout
     // which will show the login window
+    log_message(INFO, "Log out");
 }
 
 // Main window close callback
@@ -137,16 +113,7 @@ void load_chat_history(ChatMessage *history, int count) {
         insert_message_to_buffer(buffer, &history[i]);
     }
 }
-gboolean load_history_message(gpointer data)
-{
-    ChatMessageList *list = (ChatMessageList *)data;
-    if (list && list->history)
-    {
-        load_chat_history(list->history, list->count);
-        free(data);
-    }
-    return false;
-}
+
 void append_chat_message(ChatMessage *msg) {
     GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(chat_view));
     insert_message_to_buffer(buffer, msg);
@@ -490,33 +457,6 @@ void on_search_changed(GtkEntry *entry, gpointer user_data) {
     const gchar *text = gtk_entry_get_text(entry);
     main_session->service->search_users(main_session->service, text);
 }
-gboolean update_search_user(gpointer user_data) {
-    SearchUserData *data = (SearchUserData *)user_data;
-    int count = data->count;
-    User *users = data->users;
-    update_search_user_results(users, count);
-    // Giải phóng nếu cần
-    for (int i = 0; i < count; ++i) {
-        free(users[i].username);
-    }
-    free(users);
-    free(data); // đừng quên giải phóng bộ nhớ struct tạm này
-
-    return FALSE; // trả FALSE để chỉ chạy 1 lần
-}
-
-gboolean update_history(gpointer user_data) {
-    ChatMessage *data = (ChatMessage *)user_data;
-   if (data)
-   {
-       on_load_history(data->sender_id, data->target_name, data->content, data->timestamp, data->is_group_message);
-       free(data);
-   }
-
-    return FALSE; // trả FALSE để chỉ chạy 1 lần
-}
-
-
 
 /* ======== Hàm k;hởi tạo giao diện của cột Search ======== */
 GtkWidget* create_search_area(GtkWidget *grid) {
@@ -544,46 +484,38 @@ GtkWidget* create_search_area(GtkWidget *grid) {
 }
 
 /* Hàm tạo và hiển thị giao diện chat */
-void show_chat_window(Session *session) {
-    static GtkWidget *main_window = NULL;
-
-    if (main_window != NULL) {
-        gtk_widget_show_all(main_window);
-        return;
-    }
+void show_chat_window() {
     g_print("Creating main chat window...\n");
-    main_session = session;
     // Tạo cửa sổ chính
-    current_ui = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-    gtk_window_set_title(GTK_WINDOW(main_window), "Chat Application");
-    gtk_window_set_default_size(GTK_WINDOW(main_window), 1200, 600);
-    gtk_window_set_position(GTK_WINDOW(main_window), GTK_WIN_POS_CENTER);
-    g_signal_connect(main_window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
+    GtkWidget *widget = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    set_current_ui(widget);
+    gtk_window_set_title(GTK_WINDOW(widget), "Chat Application");
+    gtk_window_set_default_size(GTK_WINDOW(widget), 1200, 600);
+    gtk_window_set_position(GTK_WINDOW(widget), GTK_WIN_POS_CENTER);
+    g_signal_connect(widget, "destroy", G_CALLBACK(gtk_main_quit), NULL);
 
     // Tạo lưới chính với 4 cột (theo yêu cầu)
     GtkWidget *grid = gtk_grid_new();
     gtk_grid_set_row_spacing(GTK_GRID(grid), 10);
     gtk_grid_set_column_spacing(GTK_GRID(grid), 10);
     gtk_container_set_border_width(GTK_CONTAINER(grid), 10);
-    gtk_container_add(GTK_CONTAINER(main_window), grid);
-    /* Cột 0: Search với Autocomplete */
+    gtk_container_add(GTK_CONTAINER(widget), grid);
+    // Column 0
     GtkWidget *search_area = create_search_area(grid);
-    /* Cột 1: Danh sách contacts */
-    // Tạo scrolled window cho vùng contacts
+
+    // Column 1
     contacts_scroll = gtk_scrolled_window_new(NULL, NULL);
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(contacts_scroll),
                                    GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
     gtk_widget_set_size_request(contacts_scroll, 250, 400);
     gtk_grid_attach(GTK_GRID(grid), contacts_scroll, 1, 1, 1, 1);
 
-    // Hộp chứa danh sách contacts
     contacts_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
     gtk_container_add(GTK_CONTAINER(contacts_scroll), contacts_box);
-
-    // Ví dụ: Thêm một vài contact item
     init_contact_map();
-    /* Cột 2: Vùng tin nhắn (chat area) */
-    // Tạo scrolled window cho vùng chat
+
+
+    //Column 2
     GtkWidget *chat_scrolled = gtk_scrolled_window_new(NULL, NULL);
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(chat_scrolled),
                                    GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
@@ -591,7 +523,7 @@ void show_chat_window(Session *session) {
     gtk_widget_set_hexpand(chat_scrolled, TRUE);
     gtk_grid_attach(GTK_GRID(grid), chat_scrolled, 2, 1, 1, 1);
 
-    // Vùng hiển thị tin nhắn
+    // Chat Area
     chat_view = gtk_text_view_new();
     gtk_text_view_set_editable(GTK_TEXT_VIEW(chat_view), FALSE);
     gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(chat_view), GTK_WRAP_WORD_CHAR);
@@ -603,43 +535,75 @@ void show_chat_window(Session *session) {
     gtk_box_pack_start(GTK_BOX(message_box), message_entry, TRUE, TRUE, 0);
     GtkWidget *send_button = gtk_button_new_with_label("Send");
     gtk_box_pack_start(GTK_BOX(message_box), send_button, FALSE, FALSE, 0);
-    // Bạn cần kết nối signal cho nút send và sự kiện nhấn Enter của entry
-    // Sau khi tạo send_button:
+
     g_object_set_data(G_OBJECT(send_button), "message_entry", message_entry);
     g_object_set_data(G_OBJECT(send_button), "chat_view", chat_view);
 
-    // Gắn sự kiện click cho nút Send
     g_signal_connect(send_button, "clicked", G_CALLBACK(on_send_button_clicked), NULL);
-    // Gắn sự kiện nhấn Enter để gửi luôn
     g_signal_connect(message_entry, "activate", G_CALLBACK(on_send_button_clicked), send_button);
-    /* Cột 3: Giữ nguyên như cũ (các nút chức năng) */
+
+    //Column 3
     GtkWidget *func_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
     gtk_grid_attach(GTK_GRID(grid), func_box, 3, 1, 1, 2);
 
     GtkWidget *create_group_button = gtk_button_new_with_label("Create Group");
-    g_signal_connect(create_group_button, "clicked", G_CALLBACK(on_create_group_clicked), session);
+    g_signal_connect(create_group_button, "clicked", G_CALLBACK(on_create_group_clicked), NULL);
     gtk_box_pack_start(GTK_BOX(func_box), create_group_button, FALSE, FALSE, 0);
 
     GtkWidget *join_group_button = gtk_button_new_with_label("Join Group");
-    g_signal_connect(join_group_button, "clicked", G_CALLBACK(on_join_group_clicked), session);
+    g_signal_connect(join_group_button, "clicked", G_CALLBACK(on_join_group_clicked), NULL);
     gtk_box_pack_start(GTK_BOX(func_box), join_group_button, FALSE, FALSE, 0);
 
     GtkWidget *logout_button = gtk_button_new_with_label("Log Out");
-    g_signal_connect(logout_button, "clicked", G_CALLBACK(on_log_out_clicked), session);
+    g_signal_connect(logout_button, "clicked", G_CALLBACK(on_log_out_clicked), NULL);
     gtk_box_pack_start(GTK_BOX(func_box), logout_button, FALSE, FALSE, 0);
 
     // Hiển thị tất cả widget
-    gtk_widget_show_all(main_window);
+    gtk_widget_show_all(widget);
     get_history();
 }
 
-// Safe callback to display chat window from GTK main thread
-gboolean show_chat_window_callback(gpointer data) {
-    Session *session = (Session *)data;
-    show_chat_window(session);
-    return G_SOURCE_REMOVE; // Only execute once
+gboolean g_on_show_home_window(gpointer data)
+{
+    show_chat_window();
+    return FALSE;
 }
 
+gboolean g_on_update_search_user(const gpointer user_data) {
+    UserListData *data = (UserListData *)user_data;
+    int count = data->count;
+    User *users = data->users;
+    update_search_user_results(users, count);
+    for (int i = 0; i < count; ++i) {
+        free(users[i].username);
+    }
+    free(users);
+    free(data);
+
+    return FALSE;
+}
+
+gboolean g_on_update_history_contact(const gpointer user_data) {
+    ChatMessage *data = (ChatMessage *)user_data;
+    if (data)
+    {
+        on_load_history(data->sender_id, data->target_name, data->content, data->timestamp, data->is_group_message);
+        free(data);
+    }
+
+    return FALSE; // trả FALSE để chỉ chạy 1 lần
+}
+
+gboolean g_on_load_history_message(gpointer data)
+{
+    ChatMessageList *list = (ChatMessageList *)data;
+    if (list && list->history)
+    {
+        load_chat_history(list->history, list->count);
+        free(data);
+    }
+    return false;
+}
 
 
 

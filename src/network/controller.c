@@ -1,7 +1,5 @@
 #include "controller.h"
 
-#include <chat_common.h>
-
 #include "cmd.h"
 #include "log.h"
 #include "message.h"
@@ -10,6 +8,8 @@
 #include "user.h"
 #include <stdlib.h>
 #include <string.h>
+#include <ui_controller.h>
+
 #include "group.h"
 void controller_on_message(Controller *self, Message *message);
 void controller_on_connection_fail(Controller *self);
@@ -71,7 +71,7 @@ void controller_on_message(Controller *self, Message *message)
 {
   if (self == NULL || message == NULL)
   {
-    log_message(ERROR, "Client %d: message is NULL");
+    log_message(LogLevel::ERROR, "Client %d: message is NULL");
     return;
   }
 
@@ -82,7 +82,7 @@ void controller_on_message(Controller *self, Message *message)
     if(self->service != NULL) {
       self->service->server_message(self->service, message);
     } else {
-      log_message(ERROR, "Service is NULL");
+      log_message(LogLevel::ERROR, "Service is NULL");
     }
     break;
   case GET_USERS:
@@ -90,15 +90,15 @@ void controller_on_message(Controller *self, Message *message)
       get_all_users(self, message);
       //get_online_users(self, message);
     } else {
-      log_message(ERROR, "Service is NULL");
+      log_message(LogLevel::ERROR, "Service is NULL");
     }
     break;
   case LOGIN:
-    log_message(INFO,"login");
+    log_message(LogLevel::ERROR,"login");
     if(self->service != NULL) {
       handle_login(self, message);
     } else {
-      log_message(ERROR, "Service is NULL");
+      log_message(LogLevel::ERROR, "Service is NULL");
     }
     break;
   case LOGOUT:
@@ -129,7 +129,7 @@ void controller_on_message(Controller *self, Message *message)
     receive_group_message(self, message);
     break;
   case GET_CHAT_HISTORY:
-    get_chat_history(self,message);
+    get_chat_connected(self,message);
     break;
   case GET_USERS_MESSAGE:
     get_user_message(self,message);
@@ -204,15 +204,14 @@ int  current_user_id;
 void handle_login(Controller *self, Message *msg) {
   // Validate pointers first
   if (self == NULL || self->client == NULL) {
-    log_message(ERROR, "Invalid controller or client in handle_login");
+    log_message(WARN, "Invalid controller or client in handle_login");
     return;
   }
 
   Session *session = (Session *)self->client;
 
   if (msg == NULL) {
-    // If message is empty, display error message
-    show_message_form("Login Null", FALSE);
+    log_message(WARN, "Invalid controller or client is NULL");
     return;
   }
 
@@ -227,8 +226,7 @@ void handle_login(Controller *self, Message *msg) {
     char username[256] = {0};
 
     if (!message_read_string(msg, username, sizeof(username))) {
-      log_message(WARN, "Invalid username");
-      show_message_form("Invalid username data", FALSE);
+      show_notification_window(ERROR, "Invalid username data");
       return;
     }
 
@@ -236,8 +234,7 @@ void handle_login(Controller *self, Message *msg) {
     // Create user object
     User *user = createUser(NULL, session, username, "");
     if (user == NULL) {
-      log_message(ERROR, "Failed to create user object");
-      show_message_form("Internal error: Failed to create user", FALSE);
+      show_notification_window(ERROR, "Internal error: Failed to create user");
       return;
     }
 
@@ -248,42 +245,28 @@ void handle_login(Controller *self, Message *msg) {
 
     // Update session properties
     session->user = user;
-    session->current_user_id = user_id;
 
-    // Hide the login window if it exists
-    if (session->loginWindow != NULL) {
-      gtk_widget_hide(session->loginWindow);
-      log_message(INFO, "Login window hidden");
-    }
-
-    // Use g_idle_add to display chat window on GTK main thread
-    g_idle_add(show_chat_window_callback, session);
-
-    log_message(INFO, "Login successful, showing chat window");
+    on_show_ui(HOME);
   } else {
     // Handle login failure
     char error[256] = {0};
-
     if (!message_read_string(msg, error, sizeof(error))) {
-      log_message(ERROR, "Failed to read error message");
       strcpy(error, "Unknown login error");
     }
-
-    log_message(INFO, "Login failed: %s", error);
-    // Display server error message
-    show_message_form(error, FALSE);
+    show_notification_window(ERROR, error);
   }
 }
+
 void handle_logout(Controller *self, Message *msg) {
   log_message(INFO, "handle_logout invoked");
   Session *session = (Session *)self;
 
   if (self == NULL || self->client == NULL) {
-    log_message(ERROR, "Invalid controller or client in handle_logout");
+    log_message(WARN, "Invalid controller or client in handle_logout");
     return;
   }
   if (msg == NULL) {
-    show_message_form("Logout message null", FALSE);
+    log_message(WARN, "Logout message null", FALSE);
     return;
   }
 
@@ -297,32 +280,15 @@ void handle_logout(Controller *self, Message *msg) {
       session->user = NULL;
     }
     session->isLogin = FALSE;
-    session->current_user_id = -1;
-
-    // Ẩn main window nếu chưa bị ẩn
-    if (main_window != NULL) {
-      gtk_widget_hide(main_window);
-    }
-
     // Hiển thị thông báo logout thành công và hiện lại cửa sổ login
-    show_message_form("Logout success", TRUE);
-    g_idle_add(show_login_window_callback, session);
+    show_notification_window(INFO, "Logout success");
   } else {
-    char error[256] = {0};
-    if (!message_read_string(msg, error, sizeof(error))) {
-      log_message(ERROR, "Failed to read logout error message");
-      return;
-    }
-    log_message(ERROR, "Logout failed: %s", error);
-    show_message_form(error, FALSE);
+    show_notification_window(INFO, "Logout success");
   }
 
   // Giải phóng message nếu cần (sử dụng hàm message_free nếu có)
-  // message_free(msg);
+  free(msg);
 }
-
-
-
 
 void handle_register(Controller *self, Message *msg) {
   if (msg == NULL) {
@@ -377,29 +343,6 @@ char **get_online_users(Controller *controller, Message *message)
   return users;
 }
 
-// void get_all_users(Controller *controller, Message *message) {
-//   if (!controller || !message) return;
-//
-//   message->position = 0; // Reset position để đọc từ đầu
-//   int count = message_read_int(message);
-//
-//   printf("Danh sách tất cả người dùng (Tổng: %d):\n", count);
-//   for (int i = 0; i < count; i++) {
-//     int user_id = (int) message_read_int(message);
-//     char username[1024];
-//     // Đọc username và giới hạn buffer để tránh overflow
-//     if (!message_read_string(message, username, sizeof(username))) {
-//       printf("[Lỗi] Không đọc được username ở user %d\n", i);
-//       break; // Dừng nếu không thể đọc
-//     }
-//
-//     bool isOnline = message_read_bool(message);
-//
-//     printf("Username: %-20s (Id: %d) - Trạng thái: %s\n",
-//            username, user_id,
-//            isOnline ? "Online" : "Offline");
-//   }
-// }
 void get_all_users(Controller *controller, Message *message) {
   if (!controller || !message) {
     log_message(ERROR, "Invalid controller or message");
@@ -422,7 +365,7 @@ void get_all_users(Controller *controller, Message *message) {
   GString *user_list = g_string_new(NULL);
 
   // Get current user ID for comparison
-  int current_user_id = controller->client->current_user_id;
+  int current_user_id = controller->client->user->id;
   log_message(INFO, "Current user ID: %d", current_user_id);
 
   // Process list of users
@@ -539,7 +482,8 @@ void get_joined_groups(Controller *controller, Message *message) {
   }
   free(groups);
 }
-void get_chat_history(Controller *controller, Message *message) {
+
+void get_chat_connected(Controller *controller, Message *message) {
   if (!controller || !message) {
     log_message(ERROR, "Invalid controller or message");
     return;
@@ -581,12 +525,14 @@ void get_chat_history(Controller *controller, Message *message) {
     m->timestamp = last_time;
     m->is_group_message = id < 0;
 
-    g_idle_add((GSourceFunc)update_history, m);
+    on_update_history_contact(m);
 
     free(chat_with);
     free(last_message);
   }
+  free(message);
 }
+
 void handle_join_group(Controller *controller, Message *message) {
     if (!message) return;
 
@@ -605,7 +551,9 @@ void handle_join_group(Controller *controller, Message *message) {
     } else {
       log_message(WARN, "Join group failed: %s", response_msg);
     }
+  free(message);
 }
+
 void delete_group(Controller *controller, Message *message) {
   if (message == NULL) {
     log_message(ERROR, "Invalid message received");
@@ -628,7 +576,9 @@ void delete_group(Controller *controller, Message *message) {
     log_message(INFO, "Failed to delete group: %s", error_message);
     printf("Failed to delete group: %s\n", error_message);
   }
+  free(message);
 }
+
 void create_group(Controller *controller, Message *msg) {
   if (msg == NULL) {
     log_message(ERROR, "Invalid message received");
@@ -646,6 +596,7 @@ void create_group(Controller *controller, Message *msg) {
   }
   free(msg);
 }
+
 void leave_group(Controller *controller, Message *message) {
   if (message == NULL) {
     log_message(ERROR, "Invalid message received");
@@ -668,6 +619,7 @@ void leave_group(Controller *controller, Message *message) {
   }
   free(message);
 }
+
 void handle_search_users(Controller *controller, Message *message)
 {
   if (message == NULL) {
@@ -686,7 +638,7 @@ void handle_search_users(Controller *controller, Message *message)
     return;
   }
   int count = (int)message_read_int(message);
-  User *results = malloc(sizeof(User) * count);
+  User *results = (User*)malloc(sizeof(User) * count);
   for (int i = 0; i < count; i++) {
     results[i].id = (int) message_read_int(message);
 
@@ -698,13 +650,13 @@ void handle_search_users(Controller *controller, Message *message)
     }
   }
   //loop to create data
-  SearchUserData *data = malloc(sizeof(SearchUserData));
+  UserListData *data = malloc(sizeof(UserListData));
   data->count = count;
   data->users = results;
-
-  // Sau đó truyền vào g_idle_add
-  g_idle_add((GSourceFunc)update_search_user, data);
+  on_update_search_user(data);
+  free(message);
 }
+
 void handle_group_noti(Controller *controller, Message *message) {
   if (message == NULL) {
     log_message(ERROR, "Invalid message received");
@@ -742,6 +694,7 @@ void receive_user_message(Controller *controller, Message *message) {
   log_message(INFO, "Received User ID: %d, Content: %s", user_id, content);
   free(message);
 }
+
 void receive_group_message(Controller *controller, Message *message) {
   log_message(INFO, "receive_group_message");
   message->position = 0;
@@ -755,6 +708,7 @@ void receive_group_message(Controller *controller, Message *message) {
   log_message(INFO, "Received Group ID: %d, Content: %s", group_id, content);
   free(message);
 }
+
 void get_user_message(Controller *controller, Message* msg) {
   log_message(INFO, "Get history user message");
   if (msg == NULL) {
@@ -774,7 +728,7 @@ void get_user_message(Controller *controller, Message* msg) {
   int count = (int) message_read_int(msg);
   log_message(INFO, "Received %d messages", count);
 
-  ChatMessage *history = malloc(sizeof(ChatMessage) * count);
+  ChatMessage *history = (ChatMessage *)malloc(sizeof(ChatMessage) * count);
 
   for (int i = 0; i < count; i++) {
     int sender_id = (int) message_read_int(msg);
@@ -805,10 +759,10 @@ void get_user_message(Controller *controller, Message* msg) {
   ChatMessageList *data = malloc(sizeof(ChatMessageList));
   data->history = history;
   data->count = count;
-
-  g_idle_add((GSourceFunc)load_history_message, data);
+  on_load_history_message(data);
   free(msg);
 }
+
 void get_group_message(Controller *controller, Message* msg) {
   if (msg == NULL) {
     log_message(ERROR, "Invalid message received from server");

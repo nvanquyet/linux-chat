@@ -1,4 +1,3 @@
-#include <chat_common.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,6 +5,7 @@
 #include "session.h"
 #include "log.h"
 #include <signal.h>
+#include <ui_controller.h>
 #include <gtk/gtk.h>
 
 int main(int argc, char *argv[]) {
@@ -44,8 +44,8 @@ int main(int argc, char *argv[]) {
     }
 
     log_message(INFO, "Connected to server successfully");
-    show_login_window(session);
-
+    init(session);
+    on_show_ui(LOGIN);
     gtk_main();
     // Clean up and exit
     session->close(session);

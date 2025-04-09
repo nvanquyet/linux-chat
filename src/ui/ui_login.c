@@ -1,12 +1,12 @@
 #include <gtk/gtk.h>
 #include <session.h>
-#include "chat_common.h"
+#include <ui_controller.h>
+
 #include "log.h"
 #include "user.h"
 
 
 // Cấu trúc dữ liệu cho giao diện đăng nhập
-
 
 // Prototype các hàm
 static void show_message_dialog(GtkWindow *parent, const gchar *message, gboolean success);
@@ -14,21 +14,6 @@ static void on_login_button_clicked(GtkWidget *button, gpointer user_data);
 static void on_register_button_clicked(GtkWidget *button, gpointer user_data);
  void on_login_window_destroy(GtkWidget *widget, gpointer user_data);
 gboolean show_login_window_callback(gpointer data);
-
-gboolean show_login_window_callback(gpointer data) {
-    Session *session = (Session *)data;
-
-    // Nếu đã có cửa sổ login hiện tại, huỷ nó đi
-    if (main_window != NULL) {
-        gtk_widget_destroy(main_window);
-        main_window = NULL;
-    }
-
-    // Tạo cửa sổ login mới (giả sử create_login_window trả về GtkWidget*)
-    show_login_window(session);
-    return FALSE;  // Trả về FALSE để nguồn sự kiện không được lặp lại
-}
-
 
 // Hiển thị hộp thoại thông báo
 static void show_message_dialog(GtkWindow *parent, const gchar *message, gboolean success) {
@@ -74,11 +59,7 @@ static void on_login_button_clicked(GtkWidget *button, gpointer user_data) {
 
 // Xử lý nút "Đăng ký"
 static void on_register_button_clicked(GtkWidget *button, gpointer user_data) {
-    LoginData *login_data = (LoginData *)user_data;
-    Session *session = login_data->session;
-
-    gtk_widget_hide(login_data->window);
-    show_register_window(session);  // Truyền session sang màn hình đăng ký
+    on_show_ui(REGISTER);
 }
 
 // Giải phóng bộ nhớ khi đóng cửa sổ
@@ -107,7 +88,6 @@ void *show_login_window(Session *session) {
     login_data->entry_password = GTK_ENTRY(gtk_entry_new());
     login_data->session = session;  // Lưu lại session được truyền vào
 
-    session->loginWindow = window;
     // Ẩn mật khẩu
     gtk_entry_set_visibility(login_data->entry_password, FALSE);
 

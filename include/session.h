@@ -28,10 +28,7 @@ struct Session
   int port;
   int socket;
   bool isRunning;
-  int  current_user_id;
 
-  GtkWidget *loginWindow;
-  GtkWidget *chatWindow;
   // Function pointers
   bool (*isConnected)(Session *self);
   void (*setHandler)(Session *self, Controller *handler);

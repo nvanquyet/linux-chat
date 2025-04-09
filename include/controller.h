@@ -35,7 +35,7 @@ void controller_on_message(Controller* controller, Message* msg);
 char **get_online_users(Controller* controller, Message* message);
 void get_all_users(Controller *controller, Message *message);
 void get_joined_groups(Controller *controller, Message *message);
-void get_chat_history(Controller *controller, Message *message);
+void get_chat_connected(Controller *controller, Message *message);
 
 void get_user_message(Controller *controller, Message* msg);
 void get_group_message(Controller *controller, Message* msg);

@@ -1,7 +1,8 @@
 #include <gtk/gtk.h>
 #include <glib.h>
-#include <session.h>     // Giả sử bạn có định nghĩa Session trong file này
-#include "chat_common.h"
+#include <session.h>
+#include <ui_controller.h>
+
 #include "log.h"
 #include "user.h"
 
@@ -68,7 +69,7 @@ static void on_register_button_clicked(GtkWidget *button, gpointer user_data) {
         user->userRegister(user);
         show_message_dialog(parent_window, "Đã gửi yêu cầu đăng ký!", TRUE);
         gtk_widget_hide(reg_data->window);
-        show_login_window(session);  // Truyền lại session
+        on_show_ui(LOGIN);  // Truyền lại session
     } else {
         show_message_dialog(parent_window, "Lỗi tạo người dùng!", FALSE);
     }

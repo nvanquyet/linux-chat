@@ -1,6 +1,5 @@
 #include <log.h>
 #include <gtk/gtk.h>
-#include "chat_common.h"
 GtkWidget *join_group_window = NULL;
 void join_group_action(GtkAction *action, gpointer data) {
     JoinGroupData *jg_data = (JoinGroupData *)data;
