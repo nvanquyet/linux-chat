@@ -77,23 +77,30 @@ void show_register_window()
 }
 void show_notification_window(LogLevel level, const char *content, ...)
 {
-    GtkMessageType type = level == ERROR ? GTK_MESSAGE_ERROR : (level == INFO ? GTK_MESSAGE_INFO : (level == WARN ? GTK_MESSAGE_WARNING : GTK_MESSAGE_OTHER));
+    GtkMessageType type = level == ERROR ? GTK_MESSAGE_ERROR :
+                          (level == INFO ? GTK_MESSAGE_INFO :
+                          (level == WARN ? GTK_MESSAGE_WARNING : GTK_MESSAGE_OTHER));
+
+    // Format nội dung vào buffer
+    char formatted[512];  // hoặc lớn hơn nếu cần
     va_list args;
     va_start(args, content);
-    vprintf(content, args);
+    vsnprintf(formatted, sizeof(formatted), content, args);
     va_end(args);
 
+    // Hiển thị dialog
     GtkWidget *dialog = gtk_message_dialog_new(
         NULL,
         GTK_DIALOG_MODAL,
         type,
         GTK_BUTTONS_OK,
-        "%s", content
+        "%s", formatted
     );
 
     g_signal_connect(dialog, "response", G_CALLBACK(gtk_widget_destroy), dialog);
     gtk_widget_show_all(dialog);
 }
+
 
 // void on_receive_message()
 // {

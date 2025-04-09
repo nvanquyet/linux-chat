@@ -4,10 +4,9 @@
 #include <gtk/gtk.h>
 
 
-
+extern Session* main_session;
+extern GtkWidget* current_ui;
 GtkWidget *create_group_window = NULL;
-gboolean g_on_show_create_window(gpointer data) ;
-void show_create_group_window();
 // Hàm xử lý khi nhấn nút "Create"
 void create_group_action(GtkWidget *widget, gpointer data) {
     CredentialForm *cg_data = (CredentialForm *)data;
@@ -42,7 +41,7 @@ void create_group_action(GtkWidget *widget, gpointer data) {
 
 
 // Hàm tạo và hiển thị cửa sổ "Create Group"
-void show_create_group_window() {
+void create_group_ui() {
     GtkWidget *grid;
     GtkWidget *name_label, *pass_label;
     GtkWidget *name_entry, *pass_entry;
@@ -50,8 +49,6 @@ void show_create_group_window() {
     GtkWidget *button_box;
 
     create_group_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-    current_ui = create_group_window;
-    current_ui = GTK_WIDGET(create_group_window);
     gtk_window_set_title(GTK_WINDOW(create_group_window), "Create Group");
     gtk_window_set_default_size(GTK_WINDOW(create_group_window), 400, 200);
     gtk_window_set_position(GTK_WINDOW(create_group_window), GTK_WIN_POS_CENTER);
@@ -84,7 +81,17 @@ void show_create_group_window() {
     gtk_grid_attach(GTK_GRID(grid), button_box, 0, 2, 2, 1);
 
     create_button = gtk_button_new_with_label("Create");
+    GtkWidget *btn_create_group = gtk_button_new_with_label("Tạo nhóm");
+    // Tạo dữ liệu truyền vào callback
+    CredentialForm *cg_data = g_malloc(sizeof(CredentialForm));
+    cg_data->entry_username = GTK_ENTRY(name_entry);  // Gán đúng entry hiển thị
+    cg_data->entry_password = GTK_ENTRY(pass_entry);
 
+    // Gán sự kiện:
+    g_signal_connect(create_button, "clicked", G_CALLBACK(create_group_action), cg_data);
+
+
+    // Thêm vào layout
     gtk_box_pack_start(GTK_BOX(button_box), create_button, FALSE, FALSE, 0);
 
     // (Tuỳ chọn) Thêm nút Cancel nếu muốn
@@ -92,8 +99,9 @@ void show_create_group_window() {
     // gtk_box_pack_start(GTK_BOX(button_box), cancel_button, FALSE, FALSE, 0);
 
     gtk_widget_show_all(create_group_window);
+
 }
 gboolean g_on_show_create_window(gpointer data) {
-   show_create_group_window();
-    return false;
+   create_group_ui();
+return false;
 }

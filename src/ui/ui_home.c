@@ -269,11 +269,7 @@ void remove_contact(int id) {
 void update_or_create_contact(int id, const char *title, const char *message, long time, bool isGroup) {
     if (!title || !message) return;
 
-    // Xử lý ID cho trường hợp group
-    int map_id = id;
-    if (isGroup && id > 0) {
-        map_id = -id;
-    }
+    int map_id = isGroup && id > 0 ? -id : id;
 
     // Tạo chuỗi thời gian
     time_t t = (time_t)time;
@@ -285,7 +281,6 @@ void update_or_create_contact(int id, const char *title, const char *message, lo
         strncpy(buffer, "--:--", sizeof(buffer));
     }
 
-    // Kiểm tra xem contact đã tồn tại chưa
     GtkWidget *existing_widget = g_hash_table_lookup(contact_map, GINT_TO_POINTER(map_id));
 
     if (existing_widget != NULL) {
@@ -295,10 +290,9 @@ void update_or_create_contact(int id, const char *title, const char *message, lo
         GtkWidget *msg_label = get_label_from_vbox(vbox, 1);
         GtkWidget *time_label = get_time_label_from_event_box(existing_widget);
 
-        // Cập nhật nội dung các label
         gtk_label_set_text(GTK_LABEL(title_label), title);
 
-        // Rút gọn tin nhắn nếu cần
+        // Rút gọn nội dung tin nhắn
         char short_msg[64];
         if (strlen(message) > 20) {
             snprintf(short_msg, sizeof(short_msg), "%.20s...", message);
@@ -307,18 +301,21 @@ void update_or_create_contact(int id, const char *title, const char *message, lo
         }
         gtk_label_set_text(GTK_LABEL(msg_label), short_msg);
 
-        // Cập nhật time
         gtk_label_set_text(GTK_LABEL(time_label), buffer);
+
+        // 👉 Đưa lên đầu danh sách
+        gtk_container_remove(GTK_CONTAINER(contacts_box), existing_widget);
+        gtk_box_pack_start(GTK_BOX(contacts_box), existing_widget, FALSE, FALSE, 2);
     } else {
-        // Contact chưa tồn tại, tạo mới
+        // Tạo contact mới và đưa lên đầu
         GtkWidget *widget = create_contact_item_with_click(map_id, title, message, buffer);
         gtk_box_pack_start(GTK_BOX(contacts_box), widget, FALSE, FALSE, 2);
         g_hash_table_insert(contact_map, GINT_TO_POINTER(map_id), widget);
     }
 
-    // Hiển thị các thay đổi
     gtk_widget_show_all(contacts_box);
 }
+
 
 // Hàm cập nhật tin nhắn mới khi server gửi về
 void on_receive_new_message(int id, const char* message, bool isGroup)

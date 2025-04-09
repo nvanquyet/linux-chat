@@ -1,6 +1,8 @@
 #include <log.h>
 #include <ui_controller.h>
 #include <gtk/gtk.h>
+extern Session* main_session;
+extern GtkWidget* current_ui;
 GtkWidget *join_group_window = NULL;
 gboolean g_on_show_join_window(gpointer data) ;
 void join_group_action(GtkAction *action, gpointer data) {
@@ -31,7 +33,7 @@ void join_group_action(GtkAction *action, gpointer data) {
 
      g_free(jg_data);
 }
-void show_join_group_window() {
+void create_join_group_ui() {
     GtkWidget *grid;
     GtkWidget *group_name_label, *group_pass_label;
     GtkWidget *group_name_entry, *group_pass_entry;
@@ -89,6 +91,6 @@ void show_join_group_window() {
 }
 
 gboolean g_on_show_join_window(gpointer data) {
-    show_join_group_window();
+    create_join_group_ui();
     return false;
 }

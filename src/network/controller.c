@@ -684,7 +684,25 @@ void create_group(Controller *controller, Message *msg) {
     if (result) {
         int group_id = (int)message_read_int(msg);
         //log_message(INFO, "Group created successfully with ID: %d", group_id);
-        show_notification_window(INFO, "Group created successfully with ID: %d", group_id);
+
+
+        ChatMessage *m = malloc(sizeof(ChatMessage));
+        if (m)
+        {
+            m->sender_id = group_id;
+            char group_name[1024];
+            if (!message_read_string(msg, group_name, 1024))
+            {
+                log_message(WARN, "Failed to read group_name");
+            }
+            m->sender_name = strdup(group_name);
+            m->target_name = strdup(group_name);
+            show_notification_window(INFO, "Group created successfully: %s", m->target_name);
+            m->content = "Tin nhan moi ...";
+            m->timestamp = (long) message_read_long(msg);
+            m->is_group_message = true;
+            on_update_history_contact(m);
+        }
         //printf("Group created successfully. Group ID: %d\n", group_id);
     } else {
         char *error_message = malloc(1024);
@@ -700,19 +718,6 @@ void create_group(Controller *controller, Message *msg) {
         }
 
         show_notification_window(ERROR, "Failed to create group: %s", error_message);
-
-        ChatMessage *m = malloc(sizeof(ChatMessage));
-        if (m)
-        {
-            m->sender_id = (int)message_read_int(msg);
-            char group_name[1024];
-            message_read_string(msg, group_name, 1024);
-            m->sender_name = strdup(group_name);
-            m->content = "Tin nhan moi ...";
-            m->timestamp = (long) message_read_long(msg);
-            m->is_group_message = true;
-            on_update_history_contact(m);
-        }
         free(error_message);
     }
 
