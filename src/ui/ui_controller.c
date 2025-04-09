@@ -20,7 +20,7 @@ void on_show_ui(MAIN_UI_LEVEL level)
             }
         case HOME:
             {
-                show_chat_window();
+                show_home_window();
                 break;
             }
         default:
@@ -60,27 +60,28 @@ void set_current_ui(GtkWidget *widget) {
     current_ui = widget;
 }
 
-void show_home_window1()
+void show_home_window()
 {
     g_idle_add((GSourceFunc)g_on_show_home_window, NULL);
 }
-void show_login_window1()
+void show_login_window()
 {
     g_idle_add((GSourceFunc)g_on_show_login_window, NULL);
 
 }
-void show_create_group_window1()
+void show_create_group_window()
 {
     g_idle_add((GSourceFunc)g_on_show_create_window, NULL);
 
 }
-void show_join_group_window1()
+void show_join_group_window()
 {
     g_idle_add((GSourceFunc)g_on_show_join_window, NULL);
 }
-void show_register_window1()
+void show_register_window()
 {
     g_idle_add((GSourceFunc)g_on_show_register_window, NULL);
+
 }
 void show_notification_window(LogLevel level, const char *content, ...)
 {

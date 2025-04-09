@@ -10,8 +10,10 @@
 #define CONTACT_MAX_LENGTH 64
 
 // Main window reference
-GtkWidget *current_ui;
-Session *main_session;
+ GtkWidget *current_ui;
+ Session *main_session;
+
+
 
 typedef enum {
     LOGIN,
@@ -26,6 +28,7 @@ typedef struct {
 typedef struct {
     GtkEntry *entry_username;
     GtkEntry *entry_password;
+    GtkEntry *entry_confirm;
 } CredentialForm;
 
 typedef struct {
@@ -62,10 +65,9 @@ gboolean g_on_receive_message(gpointer data);
 
 // Function declarations for UI operations
 //show ui
-void show_chat_window();
+void show_home_window();
 void init(Session *session);
 void set_current_ui(GtkWidget *widget);
-void show_home_window();
 void show_login_window();
 void show_create_group_window();
 void show_join_group_window();

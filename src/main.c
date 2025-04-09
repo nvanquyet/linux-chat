@@ -11,8 +11,8 @@
 int main(int argc, char *argv[]) {
     // Initialize session
     gtk_init(&argc, &argv);
-    Session *session = createSession();
-    if (session == NULL) {
+     main_session = createSession();
+    if (main_session == NULL) {
         log_message(ERROR, "Failed to create session");
         return 1;
     }
@@ -35,21 +35,21 @@ int main(int argc, char *argv[]) {
     }
 
     printf("Connecting to server %s:%d...\n", server_address, server_port);
-    session->connect(session, server_address, server_port);
+    main_session->connect(main_session, server_address, server_port);
 
-    if (!session->connected) {
+    if (!main_session->connected) {
         log_message(ERROR, "Connection failed, exiting");
-        destroySession(session);
+        destroySession(main_session);
         return 1;
     }
 
     log_message(INFO, "Connected to server successfully");
-    init(session);
+    init(main_session);
     on_show_ui(LOGIN);
     gtk_main();
     // Clean up and exit
-    session->close(session);
-    destroySession(session);
+    main_session->close(main_session);
+    destroySession(main_session);
 
     log_message(INFO, "Application exiting");
     return 0;
