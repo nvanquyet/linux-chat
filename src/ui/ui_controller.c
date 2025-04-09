@@ -34,8 +34,8 @@ void on_show_ui(MAIN_UI_LEVEL level)
 
 
 void set_current_ui(GtkWidget *widget) {
-    if (widget == NULL) return;
 
+    if (widget == NULL) return;
     if (current_ui != NULL) {
         // Option 1: Hide
         gtk_widget_hide(current_ui);

@@ -78,14 +78,14 @@ void controller_on_message(Controller *self, Message *message)
   uint8_t command = message->command;
   switch (command)
   {
-  case CMD_SERVER_MESSAGE:
+  case SERVER_MESSAGE:
     if(self->service != NULL) {
       self->service->server_message(self->service, message);
     } else {
       log_message(ERROR, "Service is NULL");
     }
     break;
-  case CMD_GET_USERS:
+  case GET_USERS:
     if(self->service != NULL) {
       get_all_users(self, message);
       //get_online_users(self, message);
@@ -93,49 +93,49 @@ void controller_on_message(Controller *self, Message *message)
       log_message(ERROR, "Service is NULL");
     }
     break;
-  case CMD_LOGIN:
+  case LOGIN:
       handle_login(self, message);
     break;
-  case CMD_LOGOUT:
+  case LOGOUT:
     handle_logout(self, message);
     break;
   case REGISTER:
     handle_register(self, message);
     break;
-  case CMD_GET_JOINED_GROUPS:
+  case GET_JOINED_GROUPS:
     get_joined_groups(self, message);
     break;
-  case CMD_CREATE_GROUP:
+  case CREATE_GROUP:
     create_group(self, message);
     break;
-  case CMD_LEAVE_GROUP:
+  case LEAVE_GROUP:
     leave_group(self, message);
     break;
-  case CMD_DELETE_GROUP:
+  case DELETE_GROUP:
     delete_group(self, message);
     break;
-  case CMD_JOIN_GROUP:
+  case JOIN_GROUP:
     handle_join_group(self, message);
     break;
-  case CMD_USER_MESSAGE:
+  case USER_MESSAGE:
     receive_user_message(self, message);
     break;
-  case CMD_GROUP_MESSAGE:
+  case GROUP_MESSAGE:
     receive_group_message(self, message);
     break;
-  case CMD_GET_CHAT_HISTORY:
+  case GET_CHAT_HISTORY:
     get_chat_connected(self,message);
     break;
-  case CMD_GET_USERS_MESSAGE:
+  case GET_USERS_MESSAGE:
     get_user_message(self,message);
     break;
-  case CMD_GET_GROUPS_MESSAGE:
+  case GET_GROUPS_MESSAGE:
     get_group_message(self,message);
     break;
-  case CMD_GROUP_NOTIFICATION:
+  case GROUP_NOTIFICATION:
     handle_group_noti(self, message);
     break;
-  case CMD_SEARCH_USERS:
+  case SEARCH_USERS:
     handle_search_users(self, message);
     break;
   default:
@@ -262,7 +262,7 @@ void handle_login(Controller *self, Message *msg) {
         user->session = session;
         session->user = user;
 
-        on_show_ui(HOME);
+        on_show_ui(MAIN_UI_LEVEL_HOME);
     } else {
         char *error = read_error_message(msg);
         if (error) {
@@ -589,7 +589,7 @@ void handle_join_group(Controller *controller, Message *message) {
 
     if (joined) {
         int id = (int)message_read_int(message);
-        char group_name[1024];
+        char *group_name = malloc(1024);
         char *last_message = malloc(1024);
         char *sender_name = malloc(1024);
         if (!group_name || !last_message || !sender_name)
@@ -627,7 +627,7 @@ void handle_join_group(Controller *controller, Message *message) {
         m->target_name = strdup(group_name);
         m->sender_id = id;
         m-> is_group_message = true;
-        on_update_history_contact(group_name);
+        on_update_history_contact(m);
 
     } else {
         char response_msg[256] = {0};

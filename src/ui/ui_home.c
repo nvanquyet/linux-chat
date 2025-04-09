@@ -612,10 +612,7 @@ void show_chat_window() {
 
 gboolean g_on_show_home_window(gpointer data)
 {
-    if (home_widget == NULL)
-    {
-        show_chat_window();
-    }
+    show_chat_window();
     init_contact_map();
     //Reset contact columns
     get_history();

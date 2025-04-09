@@ -77,28 +77,24 @@ static void on_registration_window_destroy(GtkWidget *widget, gpointer user_data
     CredentialForm *reg_data = (CredentialForm *)user_data;
     g_free(reg_data);
 }
-
-// Tạo và hiển thị cửa sổ đăng ký
 void create_registration_ui() {
-
     GtkWidget *window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-    current_ui = GTK_WIDGET(window);
     gtk_window_set_title(GTK_WINDOW(window), "Đăng ký");
     gtk_window_set_default_size(GTK_WINDOW(window), 300, 250);
+    gtk_container_set_border_width(GTK_CONTAINER(window), 10);
 
+    // Cấp phát dữ liệu cho form
     CredentialForm *reg_data = g_malloc(sizeof(CredentialForm));
-   // reg_data->window = window;
     reg_data->entry_username = GTK_ENTRY(gtk_entry_new());
     reg_data->entry_password = GTK_ENTRY(gtk_entry_new());
     reg_data->entry_confirm = GTK_ENTRY(gtk_entry_new());
-
 
     // Ẩn mật khẩu
     gtk_entry_set_visibility(reg_data->entry_password, FALSE);
     gtk_entry_set_visibility(reg_data->entry_confirm, FALSE);
 
-    // Layout
-    GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
+    // Layout chính
+    GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 8);
     gtk_container_add(GTK_CONTAINER(window), vbox);
 
     gtk_box_pack_start(GTK_BOX(vbox), gtk_label_new("Username:"), FALSE, FALSE, 0);
@@ -110,21 +106,26 @@ void create_registration_ui() {
     gtk_box_pack_start(GTK_BOX(vbox), gtk_label_new("Confirm Password:"), FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox), GTK_WIDGET(reg_data->entry_confirm), FALSE, FALSE, 0);
 
-    // Nút Register
+    // Nút "Đăng ký"
     GtkWidget *btn_register = gtk_button_new_with_label("Register");
     g_signal_connect(btn_register, "clicked", G_CALLBACK(on_register_button_clicked), reg_data);
     gtk_box_pack_start(GTK_BOX(vbox), btn_register, FALSE, FALSE, 0);
 
-    // Nút Quay lại
+    // Nút "Quay lại"
     GtkWidget *btn_back = gtk_button_new_with_label("Quay lại đăng nhập");
     g_signal_connect(btn_back, "clicked", G_CALLBACK(on_back_button_clicked), reg_data);
     gtk_box_pack_start(GTK_BOX(vbox), btn_back, FALSE, FALSE, 0);
 
-    // Đóng cửa sổ
+    // Xử lý khi đóng cửa sổ
     g_signal_connect(window, "destroy", G_CALLBACK(on_registration_window_destroy), reg_data);
 
+    // Hiển thị toàn bộ
     gtk_widget_show_all(window);
+
+    set_current_ui(window); // Nếu bạn có một hàm quản lý giao diện hiện tại
+
 }
+
 gboolean g_on_show_register_window(gpointer data) {
     create_registration_ui();
     return false;

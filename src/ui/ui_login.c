@@ -71,8 +71,6 @@ void on_login_window_destroy(GtkWidget *widget, gpointer data) {
 
 // Tạo và hiển thị cửa sổ đăng nhập
 void create_login_ui() {
-    Session *main_session = NULL;
-    current_ui = NULL;
     GtkWidget *window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_title(GTK_WINDOW(window), "Đăng nhập");
     gtk_window_set_default_size(GTK_WINDOW(window), 300, 200);
@@ -107,6 +105,7 @@ void create_login_ui() {
     g_signal_connect(window, "destroy", G_CALLBACK(on_login_window_destroy), login_data);
 
     gtk_widget_show_all(window);
+    set_current_ui(window);
 
 }
 
