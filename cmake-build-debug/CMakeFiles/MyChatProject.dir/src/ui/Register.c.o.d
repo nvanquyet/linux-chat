@@ -730,6 +730,7 @@ CMakeFiles/MyChatProject.dir/src/ui/Register.c.o: \
  /home/vawnwuyest/Documents/linux/linux-chat/include/service.h \
  /home/vawnwuyest/Documents/linux/linux-chat/include/message.h \
  /home/vawnwuyest/Documents/linux/linux-chat/include/chat_common.h \
+ /home/vawnwuyest/Documents/linux/linux-chat/include/chat_message.h \
  /home/vawnwuyest/Documents/linux/linux-chat/include/log.h \
  /home/vawnwuyest/Documents/linux/linux-chat/include/log.h \
  /home/vawnwuyest/Documents/linux/linux-chat/include/user.h

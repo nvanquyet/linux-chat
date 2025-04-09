@@ -64,7 +64,7 @@ add_executable(MyChatProject ${SOURCE_FILES}
         src/manager/request_manager.c
         include/json_utils.h
         src/utils/json_utils.c
-        include/mess_form.h
+        src/models/mess_form.c
         src/ui/join_group.c
         include/chat_message.h
 )

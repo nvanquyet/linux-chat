@@ -5,6 +5,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/MyChatProject.dir/src/manager/request_manager.c.o.d"
   "CMakeFiles/MyChatProject.dir/src/models/group.c.o"
   "CMakeFiles/MyChatProject.dir/src/models/group.c.o.d"
+  "CMakeFiles/MyChatProject.dir/src/models/mess_form.c.o"
+  "CMakeFiles/MyChatProject.dir/src/models/mess_form.c.o.d"
   "CMakeFiles/MyChatProject.dir/src/models/user.c.o"
   "CMakeFiles/MyChatProject.dir/src/models/user.c.o.d"
   "CMakeFiles/MyChatProject.dir/src/network/controller.c.o"

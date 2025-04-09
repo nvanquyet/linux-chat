@@ -289,6 +289,8 @@ void service_get_history_message(Service* service,  User* user, int target_id)
         log_message(ERROR, "Failed to create message");
         return;
     }
+    log_message(INFO, "Get History between %d and %d", user->id, target_id);
+
     message_write_int(m, user->id);
     message_write_int(m, target_id);
     session_send_message(service->session, m);

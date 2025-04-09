@@ -11,6 +11,7 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/vawnwuyest/Documents/linux/linux-chat/src/main.c" "CMakeFiles/MyChatProject.dir/src/main.c.o" "gcc" "CMakeFiles/MyChatProject.dir/src/main.c.o.d"
   "/home/vawnwuyest/Documents/linux/linux-chat/src/manager/request_manager.c" "CMakeFiles/MyChatProject.dir/src/manager/request_manager.c.o" "gcc" "CMakeFiles/MyChatProject.dir/src/manager/request_manager.c.o.d"
   "/home/vawnwuyest/Documents/linux/linux-chat/src/models/group.c" "CMakeFiles/MyChatProject.dir/src/models/group.c.o" "gcc" "CMakeFiles/MyChatProject.dir/src/models/group.c.o.d"
+  "/home/vawnwuyest/Documents/linux/linux-chat/src/models/mess_form.c" "CMakeFiles/MyChatProject.dir/src/models/mess_form.c.o" "gcc" "CMakeFiles/MyChatProject.dir/src/models/mess_form.c.o.d"
   "/home/vawnwuyest/Documents/linux/linux-chat/src/models/user.c" "CMakeFiles/MyChatProject.dir/src/models/user.c.o" "gcc" "CMakeFiles/MyChatProject.dir/src/models/user.c.o.d"
   "/home/vawnwuyest/Documents/linux/linux-chat/src/network/controller.c" "CMakeFiles/MyChatProject.dir/src/network/controller.c.o" "gcc" "CMakeFiles/MyChatProject.dir/src/network/controller.c.o.d"
   "/home/vawnwuyest/Documents/linux/linux-chat/src/network/message.c" "CMakeFiles/MyChatProject.dir/src/network/message.c.o" "gcc" "CMakeFiles/MyChatProject.dir/src/network/message.c.o.d"

@@ -729,6 +729,7 @@ CMakeFiles/MyChatProject.dir/src/network/controller.c.o: \
  /usr/include/gtk-3.0/gtk/deprecated/gtkvseparator.h \
  /usr/include/gtk-3.0/gtk/gtk-autocleanups.h \
  /home/vawnwuyest/Documents/linux/linux-chat/include/chat_common.h \
+ /home/vawnwuyest/Documents/linux/linux-chat/include/chat_message.h \
  /home/vawnwuyest/Documents/linux/linux-chat/include/log.h \
  /home/vawnwuyest/Documents/linux/linux-chat/include/cmd.h \
  /home/vawnwuyest/Documents/linux/linux-chat/include/log.h \
@@ -736,5 +737,4 @@ CMakeFiles/MyChatProject.dir/src/network/controller.c.o: \
  /home/vawnwuyest/Documents/linux/linux-chat/include/service.h \
  /home/vawnwuyest/Documents/linux/linux-chat/include/session.h \
  /home/vawnwuyest/Documents/linux/linux-chat/include/user.h \
- /home/vawnwuyest/Documents/linux/linux-chat/include/group.h \
- /home/vawnwuyest/Documents/linux/linux-chat/include/mess_form.h
+ /home/vawnwuyest/Documents/linux/linux-chat/include/group.h

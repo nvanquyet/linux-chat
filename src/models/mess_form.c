@@ -1,6 +1,6 @@
-#ifndef MESS_FORM_H
-#define MESS_FORM_H
 
+#include <gtk/gtk.h>
+#include <../include/chat_common.h>
 // Hàm hiển thị thông báo lỗi trong form
 void show_message_form(const gchar *message, gboolean success) {
     GtkWidget *dialog = gtk_message_dialog_new(
@@ -17,4 +17,3 @@ void show_message_form(const gchar *message, gboolean success) {
     gtk_widget_show_all(dialog);
 }
 
-#endif //MESS_FORM_H

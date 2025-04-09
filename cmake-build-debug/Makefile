@@ -201,6 +201,30 @@ src/models/group.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyChatProject.dir/build.make CMakeFiles/MyChatProject.dir/src/models/group.c.s
 .PHONY : src/models/group.c.s
 
+src/models/mess_form.o: src/models/mess_form.c.o
+.PHONY : src/models/mess_form.o
+
+# target to build an object file
+src/models/mess_form.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyChatProject.dir/build.make CMakeFiles/MyChatProject.dir/src/models/mess_form.c.o
+.PHONY : src/models/mess_form.c.o
+
+src/models/mess_form.i: src/models/mess_form.c.i
+.PHONY : src/models/mess_form.i
+
+# target to preprocess a source file
+src/models/mess_form.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyChatProject.dir/build.make CMakeFiles/MyChatProject.dir/src/models/mess_form.c.i
+.PHONY : src/models/mess_form.c.i
+
+src/models/mess_form.s: src/models/mess_form.c.s
+.PHONY : src/models/mess_form.s
+
+# target to generate assembly for a file
+src/models/mess_form.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyChatProject.dir/build.make CMakeFiles/MyChatProject.dir/src/models/mess_form.c.s
+.PHONY : src/models/mess_form.c.s
+
 src/models/user.o: src/models/user.c.o
 .PHONY : src/models/user.o
 
@@ -555,6 +579,9 @@ help:
 	@echo "... src/models/group.o"
 	@echo "... src/models/group.i"
 	@echo "... src/models/group.s"
+	@echo "... src/models/mess_form.o"
+	@echo "... src/models/mess_form.i"
+	@echo "... src/models/mess_form.s"
 	@echo "... src/models/user.o"
 	@echo "... src/models/user.i"
 	@echo "... src/models/user.s"

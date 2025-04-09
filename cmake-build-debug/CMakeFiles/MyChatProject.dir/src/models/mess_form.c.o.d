@@ -1,5 +1,5 @@
-CMakeFiles/MyChatProject.dir/src/ui/Login.c.o: \
- /home/vawnwuyest/Documents/linux/linux-chat/src/ui/Login.c \
+CMakeFiles/MyChatProject.dir/src/models/mess_form.c.o: \
+ /home/vawnwuyest/Documents/linux/linux-chat/src/models/mess_form.c \
  /usr/include/stdc-predef.h /usr/include/gtk-3.0/gtk/gtk.h \
  /usr/include/gtk-3.0/gdk/gdk.h /usr/include/gtk-3.0/gdk/gdkconfig.h \
  /usr/include/glib-2.0/glib.h /usr/include/glib-2.0/glib/galloca.h \
@@ -722,15 +722,12 @@ CMakeFiles/MyChatProject.dir/src/ui/Login.c.o: \
  /usr/include/gtk-3.0/gtk/deprecated/gtkvscrollbar.h \
  /usr/include/gtk-3.0/gtk/deprecated/gtkvseparator.h \
  /usr/include/gtk-3.0/gtk/gtk-autocleanups.h \
- /home/vawnwuyest/Documents/linux/linux-chat/include/session.h \
- /home/vawnwuyest/Documents/linux/linux-chat/include/controller.h \
- /home/vawnwuyest/Documents/linux/linux-chat/include/session.h \
- /home/vawnwuyest/Documents/linux/linux-chat/include/user.h \
+ /home/vawnwuyest/Documents/linux/linux-chat/include/../include/chat_common.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/stdbool.h \
- /home/vawnwuyest/Documents/linux/linux-chat/include/service.h \
- /home/vawnwuyest/Documents/linux/linux-chat/include/message.h \
- /home/vawnwuyest/Documents/linux/linux-chat/include/chat_common.h \
- /home/vawnwuyest/Documents/linux/linux-chat/include/chat_message.h \
- /home/vawnwuyest/Documents/linux/linux-chat/include/log.h \
- /home/vawnwuyest/Documents/linux/linux-chat/include/log.h \
- /home/vawnwuyest/Documents/linux/linux-chat/include/user.h
+ /home/vawnwuyest/Documents/linux/linux-chat/include/../include/session.h \
+ /home/vawnwuyest/Documents/linux/linux-chat/include/../include/controller.h \
+ /home/vawnwuyest/Documents/linux/linux-chat/include/../include/user.h \
+ /home/vawnwuyest/Documents/linux/linux-chat/include/../include/service.h \
+ /home/vawnwuyest/Documents/linux/linux-chat/include/../include/message.h \
+ /home/vawnwuyest/Documents/linux/linux-chat/include/../include/chat_message.h \
+ /home/vawnwuyest/Documents/linux/linux-chat/include/../include/log.h

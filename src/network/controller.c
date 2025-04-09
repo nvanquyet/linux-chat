@@ -10,9 +10,7 @@
 #include "user.h"
 #include <stdlib.h>
 #include <string.h>
-
 #include "group.h"
-#include "mess_form.h"
 void controller_on_message(Controller *self, Message *message);
 void controller_on_connection_fail(Controller *self);
 void controller_on_disconnected(Controller *self);
@@ -225,6 +223,7 @@ void handle_login(Controller *self, Message *msg) {
 
   if (loginOk) {
     int user_id = (int)message_read_int(msg);
+    if (user_id <= 0) return;
     char username[256] = {0};
 
     if (!message_read_string(msg, username, sizeof(username))) {
@@ -234,7 +233,6 @@ void handle_login(Controller *self, Message *msg) {
     }
 
     log_message(INFO, "Logged in as: %s (ID: %d)", username, user_id);
-
     // Create user object
     User *user = createUser(NULL, session, username, "");
     if (user == NULL) {
@@ -470,8 +468,6 @@ void get_all_users(Controller *controller, Message *message) {
   //g_string_free(user_list, TRUE);
 }
 
-
-
 void get_joined_groups(Controller *controller, Message *message) {
   if (!controller || !message) {
     log_message(ERROR, "Invalid controller or message");
@@ -543,7 +539,6 @@ void get_joined_groups(Controller *controller, Message *message) {
   }
   free(groups);
 }
-
 void get_chat_history(Controller *controller, Message *message) {
   if (!controller || !message) {
     log_message(ERROR, "Invalid controller or message");
@@ -578,14 +573,15 @@ void get_chat_history(Controller *controller, Message *message) {
     if (!message_read_string(message, sender_name, 1024)) {
       log_message(WARN, "NULL sender_name");
     }
-    // Hiển thị
-    printf("===================\n");
-    printf("Chat #%d:\n", id);
-    printf("Sender: %s (ID: %d)\n", sender_name, sender_id);
-    printf("Name: %s\n", chat_with);
-    printf("Thời gian cuối: %ld\n", last_time);
-    printf("Tin nhắn cuối: %s\n", last_message);
-    printf("===================\n");
+    ChatMessage *m = (ChatMessage*) malloc(sizeof(ChatMessage));
+    m->sender_id = id < 0 ? -id : id;
+    m->sender_name = strdup(sender_name);
+    m->target_name = strdup(chat_with);
+    m->content = strdup(last_message);
+    m->timestamp = last_time;
+    m->is_group_message = id < 0;
+
+    g_idle_add((GSourceFunc)update_history, m);
 
     free(chat_with);
     free(last_message);
@@ -690,9 +686,24 @@ void handle_search_users(Controller *controller, Message *message)
     return;
   }
   int count = (int)message_read_int(message);
-  User *results = NULL;
+  User *results = malloc(sizeof(User) * count);
+  for (int i = 0; i < count; i++) {
+    results[i].id = (int) message_read_int(message);
+
+    char username[256];
+    if (message_read_string(message, username, sizeof(username))) {
+      results[i].username = strdup(username);
+    } else {
+      results[i].username = NULL;
+    }
+  }
   //loop to create data
-  update_search_user_results(results, count);
+  SearchUserData *data = malloc(sizeof(SearchUserData));
+  data->count = count;
+  data->users = results;
+
+  // Sau đó truyền vào g_idle_add
+  g_idle_add((GSourceFunc)update_search_user, data);
 }
 void handle_group_noti(Controller *controller, Message *message) {
   if (message == NULL) {
@@ -763,30 +774,39 @@ void get_user_message(Controller *controller, Message* msg) {
   int count = (int) message_read_int(msg);
   log_message(INFO, "Received %d messages", count);
 
-  // Đọc và xử lý từng tin nhắn
+  ChatMessage *history = malloc(sizeof(ChatMessage) * count);
+
   for (int i = 0; i < count; i++) {
-    int sender_id = (int) message_read_int(msg);  // ID người gửi
+    int sender_id = (int) message_read_int(msg);
+
     char* sender_name = (char*)malloc(1024);
     char* content = (char*)malloc(1024);
+
     if (!message_read_string(msg, sender_name, 1024)) {
       log_message(WARN, "NULL Message");
     }
     if (!message_read_string(msg, content, 1024)) {
       log_message(WARN, "NULL Message");
-    }  // Nội dung tin nhắn
-    long timestamp = (long) message_read_long(msg); // Thời gian gửi
+    }
 
-    // Hiển thị thông tin tin nhắn
-    printf("Message #%d\n", i + 1);
-    printf("Sender ID: %d\n", sender_id);
-    printf("Sender Name: %s\n", sender_name);
-    printf("Content: %s\n", content);
-    printf("Timestamp: %ld\n", timestamp);
+    long timestamp = (long) message_read_long(msg);
 
-    // Giải phóng bộ nhớ cho tên người gửi và nội dung tin nhắn nếu cần
+    history[i].sender_id = sender_id;
+    history[i].sender_name = strdup(sender_name);
+    history[i].content = strdup(content);
+    history[i].timestamp = timestamp;
+    history[i].is_group_message = false;
+
     free(sender_name);
     free(content);
   }
+
+  // ✅ Cấp phát đúng struct
+  ChatMessageList *data = malloc(sizeof(ChatMessageList));
+  data->history = history;
+  data->count = count;
+
+  g_idle_add((GSourceFunc)load_history_message, data);
   free(msg);
 }
 void get_group_message(Controller *controller, Message* msg) {
