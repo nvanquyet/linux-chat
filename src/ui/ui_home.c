@@ -7,6 +7,9 @@
 
 #define MAX_PREVIEW_LEN 20 // Số ký tự tối đa cho preview tin nhắn
 /* Hàm trợ giúp cắt chuỗi nếu quá dài */
+
+GtkWidget *home_widget = NULL;
+
 static char* truncate_message(const char *msg) {
     if (strlen(msg) > MAX_PREVIEW_LEN) {
         char *short_msg = g_malloc(MAX_PREVIEW_LEN + 4); // Dự phòng thêm dấu "..."
@@ -20,29 +23,22 @@ static char* truncate_message(const char *msg) {
 int select_target_id = 0;
 
 void on_join_group_clicked(GtkWidget *widget, gpointer data) {
-    ChatApp *chat_app = (ChatApp *)data;
-    Session *session = chat_app->session;
-    if (session == NULL) {
-        log_message(ERROR, "Session pointer is NULL!");
-        return;
-    }
-
-    log_message(INFO, "Create Group button clicked");
-    // Gọi hàm hiển thị form tạo nhóm
-    show_join_group_window(main_session);
+    show_join_group_window();
 }
 
 // "Create Group" button callback
 static void on_create_group_clicked(GtkWidget *widget, gpointer data) {
-    const ChatApp *chat_app = (ChatApp *)data;
-    Session *session = chat_app->session;
-    if (session == NULL) {
-        log_message(ERROR, "Session pointer is NULL!");
+    show_create_group_window();
+}
+
+static void on_leave_group_clicked(GtkWidget *widget, gpointer data) {
+    if (select_target_id >0)
+    {
+        show_notification_window(INFO, "Please select group to leave");
         return;
     }
-
-    log_message(INFO, "Create Group button clicked");
-    show_create_group_window(session);
+    Service *self = main_session->service;
+    self->leave_group(self, main_session->user, select_target_id);
 }
 
 static void on_log_out_clicked(GtkWidget *widget, gpointer data) {
@@ -251,14 +247,34 @@ GtkWidget* create_contact_item_with_click(int id,
     return event_box;
 }
 
-void on_load_history(int id, const char *title, const char *message, long time, bool isGroup)
-{
+// Hàm xóa một contact dựa trên ID
+void remove_contact(int id) {
+    // Tìm widget tương ứng với ID trong hash table
+    GtkWidget *widget = g_hash_table_lookup(contact_map, GINT_TO_POINTER(id));
+
+    if (widget != NULL) {
+        // Xóa widget khỏi contacts_box
+        gtk_container_remove(GTK_CONTAINER(contacts_box), widget);
+
+        // Xóa entry khỏi hash table
+        g_hash_table_remove(contact_map, GINT_TO_POINTER(id));
+
+        // Cập nhật giao diện
+        gtk_widget_show_all(contacts_box);
+    }
+}
+
+// Hàm cập nhật hoặc tạo mới contact
+void update_or_create_contact(int id, const char *title, const char *message, long time, bool isGroup) {
     if (!title || !message) return;
 
-    // Nếu là group, dùng id âm (nhưng tránh id = 0 gây trùng key)
-    if (isGroup && id > 0)
-        id = -id;
+    // Xử lý ID cho trường hợp group
+    int map_id = id;
+    if (isGroup && id > 0) {
+        map_id = -id;
+    }
 
+    // Tạo chuỗi thời gian
     time_t t = (time_t)time;
     struct tm *tm_info = localtime(&t);
     char buffer[16];
@@ -268,12 +284,40 @@ void on_load_history(int id, const char *title, const char *message, long time, 
         strncpy(buffer, "--:--", sizeof(buffer));
     }
 
-    GtkWidget *widget = create_contact_item_with_click(id, title, message, buffer);
-    gtk_box_pack_start(GTK_BOX(contacts_box), widget, FALSE, FALSE, 2);
-    g_hash_table_insert(contact_map, GINT_TO_POINTER(id), widget);
+    // Kiểm tra xem contact đã tồn tại chưa
+    GtkWidget *existing_widget = g_hash_table_lookup(contact_map, GINT_TO_POINTER(map_id));
+
+    if (existing_widget != NULL) {
+        // Contact đã tồn tại, cập nhật thông tin
+        GtkWidget *vbox = get_vbox_from_event_box(existing_widget);
+        GtkWidget *title_label = get_label_from_vbox(vbox, 0);
+        GtkWidget *msg_label = get_label_from_vbox(vbox, 1);
+        GtkWidget *time_label = get_time_label_from_event_box(existing_widget);
+
+        // Cập nhật nội dung các label
+        gtk_label_set_text(GTK_LABEL(title_label), title);
+
+        // Rút gọn tin nhắn nếu cần
+        char short_msg[64];
+        if (strlen(message) > 20) {
+            snprintf(short_msg, sizeof(short_msg), "%.20s...", message);
+        } else {
+            snprintf(short_msg, sizeof(short_msg), "%s", message);
+        }
+        gtk_label_set_text(GTK_LABEL(msg_label), short_msg);
+
+        // Cập nhật time
+        gtk_label_set_text(GTK_LABEL(time_label), buffer);
+    } else {
+        // Contact chưa tồn tại, tạo mới
+        GtkWidget *widget = create_contact_item_with_click(map_id, title, message, buffer);
+        gtk_box_pack_start(GTK_BOX(contacts_box), widget, FALSE, FALSE, 2);
+        g_hash_table_insert(contact_map, GINT_TO_POINTER(map_id), widget);
+    }
+
+    // Hiển thị các thay đổi
     gtk_widget_show_all(contacts_box);
 }
-
 
 // Hàm cập nhật tin nhắn mới khi server gửi về
 void on_receive_message(int id, const char* message, bool isGroup)
@@ -512,7 +556,6 @@ void show_chat_window() {
 
     contacts_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
     gtk_container_add(GTK_CONTAINER(contacts_scroll), contacts_box);
-    init_contact_map();
 
 
     //Column 2
@@ -554,18 +597,27 @@ void show_chat_window() {
     g_signal_connect(join_group_button, "clicked", G_CALLBACK(on_join_group_clicked), NULL);
     gtk_box_pack_start(GTK_BOX(func_box), join_group_button, FALSE, FALSE, 0);
 
+    GtkWidget *leave_group_button = gtk_button_new_with_label("Leave Group");
+    g_signal_connect(leave_group_button, "clicked", G_CALLBACK(on_leave_group_clicked), NULL);
+    gtk_box_pack_start(GTK_BOX(func_box), leave_group_button, FALSE, FALSE, 0);
+
     GtkWidget *logout_button = gtk_button_new_with_label("Log Out");
     g_signal_connect(logout_button, "clicked", G_CALLBACK(on_log_out_clicked), NULL);
     gtk_box_pack_start(GTK_BOX(func_box), logout_button, FALSE, FALSE, 0);
 
     // Hiển thị tất cả widget
     gtk_widget_show_all(widget);
-    get_history();
 }
 
 gboolean g_on_show_home_window(gpointer data)
 {
-    show_chat_window();
+    if (home_widget == NULL)
+    {
+        show_chat_window();
+    }
+    init_contact_map();
+    //Reset contact columns
+    get_history();
     return FALSE;
 }
 
@@ -587,14 +639,14 @@ gboolean g_on_update_history_contact(const gpointer user_data) {
     ChatMessage *data = (ChatMessage *)user_data;
     if (data)
     {
-        on_load_history(data->sender_id, data->target_name, data->content, data->timestamp, data->is_group_message);
+        update_or_create_contact(data->sender_id, data->target_name, data->content, data->timestamp, data->is_group_message);
         free(data);
     }
 
     return FALSE; // trả FALSE để chỉ chạy 1 lần
 }
 
-gboolean g_on_load_history_message(gpointer data)
+gboolean g_on_load_history_message(const gpointer data)
 {
     ChatMessageList *list = (ChatMessageList *)data;
     if (list && list->history)
@@ -604,6 +656,17 @@ gboolean g_on_load_history_message(gpointer data)
     }
     return false;
 }
+
+gboolean g_on_remove_history_contact(const gpointer data)
+{
+    int id = GPOINTER_TO_INT(data);
+    if (id < 0)
+    {
+        remove_contact(id);
+    }
+    return false;
+}
+
 
 
 

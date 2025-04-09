@@ -133,6 +133,7 @@ void service_create_group(Service* service, User* user, const char* group_name, 
     //Send to server
     session_send_message(service->session, message);
 }
+
 void service_join_group(Service* service, User* user, const char* group_name, const char * group_password) {
     if (service == NULL) {
         log_message(ERROR, "Service is NULL");
@@ -234,6 +235,7 @@ void service_send_group_message(Service* service,  User* user, int group_id, con
     //write anything for passing the encryption
     message_write_int(m, user->id);
     message_write_int(m, group_id);
+    message_write_string(m, user->username);
     message_write_string(m, message);
     if(!service->session) {
         log_message(ERROR, "Session is NULL");
@@ -242,7 +244,6 @@ void service_send_group_message(Service* service,  User* user, int group_id, con
     session_send_message(service->session, m);
     log_message(INFO, "Sending message %s", message);
 }
-
 
 // Messaging
 void service_send_user_message(Service* service,  User* user, int user_id, const char* message) {
@@ -256,6 +257,7 @@ void service_send_user_message(Service* service,  User* user, int user_id, const
     //write anything for passing the encryption
     message_write_int(m, user->id);
     message_write_int(m, user_id);
+    message_write_string(m, user->username);
     message_write_string(m, message);
     if(!service->session) {
         log_message(ERROR, "Session is NULL");

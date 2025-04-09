@@ -48,6 +48,7 @@ gboolean g_on_show_join_window(gpointer data);
 
 gboolean g_on_update_search_user(gpointer data);
 gboolean g_on_update_history_contact(gpointer data);
+gboolean g_on_remove_history_contact(gpointer data);
 gboolean g_on_load_history_message(gpointer data);
 gboolean g_on_receive_message(gpointer data);
 
@@ -68,6 +69,7 @@ void show_notification_window(LogLevel level, const char *content, ...);
 void on_receive_message();
 void on_load_history_message(ChatMessageList *data);
 void on_update_history_contact(ChatMessage *data);
+void on_remove_contact(int id);
 void on_update_search_user(UserListData *data);
 
 

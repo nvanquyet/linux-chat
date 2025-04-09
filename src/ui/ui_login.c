@@ -65,12 +65,10 @@ static void on_register_button_clicked(GtkWidget *button, gpointer user_data) {
 // Giải phóng bộ nhớ khi đóng cửa sổ
 // Hàm callback khi cửa sổ bị đóng
 void on_login_window_destroy(GtkWidget *widget, gpointer data) {
-    LoginData *login_data = (LoginData *)data;
     if (login_data) {
         // Giải phóng data cấp phát bằng g_malloc
         g_free(login_data);
     }
-
 
     log_message(INFO, "Login window destroyed and memory cleaned");
 }

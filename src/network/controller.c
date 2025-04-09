@@ -198,613 +198,877 @@ void controller_new_message(Controller *self, Message *ms)
     return;
   }
 }
+// Common utility function to validate controller and message
+static bool validate_controller_and_message(Controller *controller, Message *msg, const char *function_name) {
+    if (controller == NULL || controller->client == NULL) {
+        log_message(WARN, "Invalid controller or client in %s", function_name);
+        return false;
+    }
 
+    if (msg == NULL) {
+        log_message(WARN, "Invalid message in %s", function_name);
+        return false;
+    }
 
-int  current_user_id;
+    // Reset message position to read from beginning
+    msg->position = 0;
+    return true;
+}
+
+// Common function to read error message
+static char* read_error_message(Message *msg) {
+    char *error_msg = malloc(256);
+    if (error_msg == NULL) {
+        log_message(ERROR, "Failed to allocate memory for error message");
+        return NULL;
+    }
+
+    if (!message_read_string(msg, error_msg, 256)) {
+        strcpy(error_msg, "Unknown error");
+    }
+
+    return error_msg;
+}
+
 void handle_login(Controller *self, Message *msg) {
-  // Validate pointers first
-  if (self == NULL || self->client == NULL) {
-    log_message(WARN, "Invalid controller or client in handle_login");
-    return;
-  }
-
-  Session *session = (Session *)self->client;
-
-  if (msg == NULL) {
-    log_message(WARN, "Invalid controller or client is NULL");
-    return;
-  }
-
-  // Reset message position to read from beginning
-  msg->position = 0;
-  bool loginOk = message_read_bool(msg);
-  log_message(INFO, "Login result: %s", loginOk ? "success" : "failed");
-
-  if (loginOk) {
-    int user_id = (int)message_read_int(msg);
-    if (user_id <= 0) return;
-    char username[256] = {0};
-
-    if (!message_read_string(msg, username, sizeof(username))) {
-      show_notification_window(ERROR, "Invalid username data");
-      return;
+    if (!validate_controller_and_message(self, msg, __func__)) {
+        return;
     }
 
-    log_message(INFO, "Logged in as: %s (ID: %d)", username, user_id);
-    // Create user object
-    User *user = createUser(NULL, session, username, "");
-    if (user == NULL) {
-      show_notification_window(ERROR, "Internal error: Failed to create user");
-      return;
+    Session *session = (Session *)self->client;
+    bool login_ok = message_read_bool(msg);
+    log_message(INFO, "Login result: %s", login_ok ? "success" : "failed");
+
+    if (login_ok) {
+        int user_id = (int)message_read_int(msg);
+        if (user_id <= 0) {
+            log_message(WARN, "Invalid user ID: %d", user_id);
+            return;
+        }
+
+        char username[256] = {0};
+        if (!message_read_string(msg, username, sizeof(username))) {
+            show_notification_window(ERROR, "Invalid username data");
+            return;
+        }
+
+        log_message(INFO, "Logged in as: %s (ID: %d)", username, user_id);
+
+        // Create user object
+        User *user = createUser(NULL, session, username, "");
+        if (user == NULL) {
+            show_notification_window(ERROR, "Internal error: Failed to create user");
+            return;
+        }
+
+        // Update user and session properties
+        user->id = user_id;
+        user->isOnline = true;
+        user->session = session;
+        session->user = user;
+
+        on_show_ui(HOME);
+    } else {
+        char *error = read_error_message(msg);
+        if (error) {
+            show_notification_window(ERROR, error);
+            free(error);
+        } else {
+            show_notification_window(ERROR, "Unknown login error");
+        }
     }
-
-    // Update user and session properties
-    user->id = user_id;
-    user->isOnline = true;
-    user->session = session;
-
-    // Update session properties
-    session->user = user;
-
-    on_show_ui(HOME);
-  } else {
-    // Handle login failure
-    char error[256] = {0};
-    if (!message_read_string(msg, error, sizeof(error))) {
-      strcpy(error, "Unknown login error");
-    }
-    show_notification_window(ERROR, error);
-  }
 }
 
 void handle_logout(Controller *self, Message *msg) {
-  log_message(INFO, "handle_logout invoked");
-  Session *session = (Session *)self;
-
-  if (self == NULL || self->client == NULL) {
-    log_message(WARN, "Invalid controller or client in handle_logout");
-    return;
-  }
-  if (msg == NULL) {
-    log_message(WARN, "Logout message null", FALSE);
-    return;
-  }
-
-  msg->position = 0;
-  bool logoutOk = message_read_bool(msg);
-  if (logoutOk) {
-    // Nếu có thông tin user, giải phóng nó (và tránh truy cập sau khi free)
-    if (session->user != NULL) {
-      log_message(INFO, "User %s (ID: %d) logged out", session->user->username, session->user->id);
-      free(session->user);
-      session->user = NULL;
+    if (!validate_controller_and_message(self, msg, __func__)) {
+        return;
     }
-    session->isLogin = FALSE;
-    // Hiển thị thông báo logout thành công và hiện lại cửa sổ login
-    show_notification_window(INFO, "Logout success");
-  } else {
-    show_notification_window(INFO, "Logout success");
-  }
 
-  // Giải phóng message nếu cần (sử dụng hàm message_free nếu có)
-  free(msg);
+    Session *session = (Session *)self->client;
+    bool logout_ok = message_read_bool(msg);
+
+    if (logout_ok) {
+        // Free user if exists and prevent access after free
+        if (session->user != NULL) {
+            log_message(INFO, "User %s (ID: %d) logged out",
+                       session->user->username, session->user->id);
+            free(session->user);
+            session->user = NULL;
+        }
+
+        session->isLogin = false;
+        show_notification_window(INFO, "Logout success");
+    } else {
+        // Even though the server said logout failed, we still show success
+        // This seems to be the intention in the original code
+        show_notification_window(INFO, "Logout success");
+    }
+
+    free(msg);  // Free the message
 }
 
 void handle_register(Controller *self, Message *msg) {
-  if (msg == NULL) {
-    log_message(ERROR, "Register response message is NULL");
-    return;
-  }
-
-  msg->position = 0;
-
-  bool isSuccess = message_read_bool(msg);
-
-  if (isSuccess) {
-    printf("Register successful! You can now log in.\n");
-  } else {
-    char errorMsg[256] = {0};
-    if (message_read_string(msg, errorMsg, sizeof(errorMsg))) {
-      printf("Register failed: %s\n", errorMsg);
-    } else {
-      printf("Register failed: Unknown error\n");
+    if (!validate_controller_and_message(self, msg, __func__)) {
+        return;
     }
-  }
+
+    bool is_success = message_read_bool(msg);
+
+    if (is_success) {
+        printf("Register successful! You can now log in.\n");
+    } else {
+        char *error_msg = read_error_message(msg);
+        if (error_msg) {
+            printf("Register failed: %s\n", error_msg);
+            free(error_msg);
+        } else {
+            printf("Register failed: Unknown error\n");
+        }
+    }
 }
 
-char **get_online_users(Controller *controller, Message *message)
-{
-  if (controller == NULL || message == NULL)
-  {
-    return NULL;
-  }
-
-  uint8_t count = message_read_int(message);
-  char **users = (char **)malloc(sizeof(char *) * count);
-  if (users == NULL)
-  {
-    return NULL;
-  }
-
-  for (int i = 0; i < count; i++)
-  {
-    char *username = (char *)malloc(sizeof(char) * 32);
-    if (username == NULL)
-    {
-      return NULL;
+char **get_online_users(Controller *controller, Message *message) {
+    if (!validate_controller_and_message(controller, message, __func__)) {
+        return NULL;
     }
-    message_read_string(message, username, 32);
-    users[i] = username;
-  }
 
-  for(int i = 0; i < count; i++) {
-    log_message(INFO, "User %d: %s", i, users[i]);
-  }
-  return users;
+    uint8_t count = message_read_int(message);
+    char **users = calloc(count, sizeof(char *));
+    if (users == NULL) {
+        log_message(ERROR, "Failed to allocate memory for users array");
+        return NULL;
+    }
+
+    bool allocation_error = false;
+    for (int i = 0; i < count; i++) {
+        users[i] = malloc(32 * sizeof(char));
+        if (users[i] == NULL) {
+            allocation_error = true;
+            break;
+        }
+
+        if (!message_read_string(message, users[i], 32)) {
+            log_message(WARN, "Failed to read username at index %d", i);
+        }
+    }
+
+    // Clean up on allocation failure
+    if (allocation_error) {
+        for (int i = 0; i < count; i++) {
+            free(users[i]);
+        }
+        free(users);
+        return NULL;
+    }
+
+    for (int i = 0; i < count; i++) {
+        log_message(INFO, "User %d: %s", i, users[i]);
+    }
+
+    return users;
 }
 
 void get_all_users(Controller *controller, Message *message) {
-  if (!controller || !message) {
-    log_message(ERROR, "Invalid controller or message");
-    return;
-  }
-
-  // Check if the session is valid before proceeding
-  if (!controller->client || !controller->client->connected) {
-    log_message(ERROR, "Invalid session or connection");
-    return;
-  }
-
-  message->position = 0;
-
-  // Đọc số lượng người dùng từ tin nhắn
-  int count = (int) message_read_int(message);
-  log_message(INFO, "Received %d users", count);
-
-  // Create a dynamic string to store user list
-  GString *user_list = g_string_new(NULL);
-
-  // Get current user ID for comparison
-  int current_user_id = controller->client->user->id;
-  log_message(INFO, "Current user ID: %d", current_user_id);
-
-  // Process list of users
-  int friends_added = 0;
-  for (int i = 0; i < count; i++) {
-    int user_id = (int) message_read_int(message);
-    char username[2024];
-    if (!message_read_string(message, username, sizeof(username))) {
-      log_message(WARN, "Failed to read username at index %d", i);
-      continue;
+    if (!validate_controller_and_message(controller, message, __func__)) {
+        return;
     }
 
-    bool isOnline = message_read_bool(message);
-
-    // Skip the current user - don't add them to the friend list
-    if (user_id == current_user_id) {
-      log_message(INFO, "Skipping current user: %s (ID: %d)", username, user_id);
-      continue;
+    // Check if the session is valid before proceeding
+    if (!controller->client->connected) {
+        log_message(ERROR, "Invalid connection");
+        return;
     }
 
-    if (friends_added > 0) {
-      g_string_append(user_list, ", ");
+    // Read number of users from message
+    int count = (int)message_read_int(message);
+    log_message(INFO, "Received %d users", count);
+
+    // Create a dynamic string to store user list
+    GString *user_list = g_string_new(NULL);
+    if (user_list == NULL) {
+        log_message(ERROR, "Failed to create string buffer");
+        return;
     }
 
-    g_string_append_printf(user_list, "%s/%d", username, user_id);
-    friends_added++;
-  }
+    // Get current user ID for comparison
+    int current_user_id = controller->client->user->id;
+    log_message(INFO, "Current user ID: %d", current_user_id);
 
-  // Prepare data for UI update
-  FriendListContext *fl_data = g_malloc(sizeof(FriendListContext));
+    // Process list of users
+    int friends_added = 0;
+    for (int i = 0; i < count; i++) {
+        int user_id = (int)message_read_int(message);
+        char username[256] = {0};
 
-  if (!fl_data) {
-    log_message(ERROR, "Failed to allocate memory for friend list data");
+        if (!message_read_string(message, username, sizeof(username))) {
+            log_message(WARN, "Failed to read username at index %d", i);
+            continue;
+        }
+
+        bool is_online = message_read_bool(message);
+
+        // Skip the current user - don't add them to the friend list
+        if (user_id == current_user_id) {
+            log_message(INFO, "Skipping current user: %s (ID: %d)", username, user_id);
+            continue;
+        }
+
+        if (friends_added > 0) {
+            g_string_append(user_list, ", ");
+        }
+
+        g_string_append_printf(user_list, "%s/%d", username, user_id);
+        friends_added++;
+    }
+
+    // Prepare data for UI update
+    FriendListContext *fl_data = g_malloc(sizeof(FriendListContext));
+    if (!fl_data) {
+        log_message(ERROR, "Failed to allocate memory for friend list data");
+        g_string_free(user_list, TRUE);
+        return;
+    }
+
+    fl_data->friend_list = g_strdup(user_list->str);
+    fl_data->session = controller->client;
+
+    // Note: The commented code below was in the original but not connected
+    // g_idle_add((GSourceFunc)update_friend_list, fl_data);
     g_string_free(user_list, TRUE);
-    return;
-  }
-
-  fl_data->friend_list = g_strdup(user_list->str);
-  fl_data->session = controller->client;
-
-  // Update UI in the main thread
-  //g_idle_add((GSourceFunc)update_friend_list, fl_data);
-  //g_string_free(user_list, TRUE);
 }
 
 void get_joined_groups(Controller *controller, Message *message) {
-  if (!controller || !message) {
-    log_message(ERROR, "Invalid controller or message");
-    return;
-  }
-
-  bool has_groups = message_read_bool(message);
-  if (!has_groups) {
-    log_message(INFO, "User không tham gia nhóm nào");
-    return;
-  }
-
-  int group_count = (int) message_read_int(message);
-  log_message(INFO, "User tham gia %d nhóm", group_count);
-
-  Group **groups = (Group **)malloc(sizeof(Group *) * group_count);
-  if (!groups) {
-    log_message(ERROR, "Không thể cấp phát bộ nhớ cho danh sách nhóm");
-    return;
-  }
-
-  for (int i = 0; i < group_count; i++) {
-    groups[i] = (Group *)malloc(sizeof(Group));  // Cấp phát bộ nhớ cho từng nhóm
-    if (!groups[i]) {
-      log_message(ERROR, "Không thể cấp phát bộ nhớ cho nhóm %d", i);
-      continue;
-    }
-    // Đọc thông tin nhóm
-    groups[i]->id = (int)message_read_int(message);
-    if (!message_read_string(message, groups[i]->name, sizeof(groups[i]->name))) {
-      log_message(ERROR, "Invalid name group");
+    if (!validate_controller_and_message(controller, message, __func__)) {
+        return;
     }
 
-    groups[i]->created_at = (long)message_read_long(message);
-    // Đọc owner id và name
-    int owner_id = (int)message_read_int(message);
-    char owner_name[256];
-
-    if (!message_read_string(message, owner_name, sizeof(owner_name))) {
-      log_message(ERROR, "Invalid owner");
-    }
-    // Nếu owner_id hợp lệ, cấp phát bộ nhớ cho created_by
-    if (owner_id != -1) {
-      groups[i]->created_by = (User *)malloc(sizeof(User));
-      if (groups[i]->created_by == NULL) {
-        log_message(ERROR, "Memory allocation failed for created_by.");
-        continue;
-      }
-      groups[i]->created_by->id = owner_id;
-      groups[i]->created_by->username = owner_name;
-      groups[i]->created_by->username[sizeof(groups[i]->created_by->username) - 1] = '\0';
-
-    } else {
-      groups[i]->created_by = NULL;
+    bool has_groups = message_read_bool(message);
+    if (!has_groups) {
+        log_message(INFO, "User is not a member of any groups");
+        return;
     }
 
-    log_message(INFO, "Nhóm %d: %s, Created by %s (%d) at %ld",
-                groups[i]->id, groups[i]->name,
-                groups[i]->created_by ? groups[i]->created_by->username : "Unknown",
-                owner_id, groups[i]->created_at);
-  }
+    int group_count = (int)message_read_int(message);
+    log_message(INFO, "User is a member of %d groups", group_count);
 
-  // Giải phóng bộ nhớ cho mỗi nhóm
-  for (int i = 0; i < group_count; i++) {
-    if (groups[i]->created_by != NULL) {
-      free(groups[i]->created_by);
+    Group **groups = calloc(group_count, sizeof(Group *));
+    if (!groups) {
+        log_message(ERROR, "Failed to allocate memory for group list");
+        return;
     }
-    free(groups[i]);
-  }
-  free(groups);
+
+    for (int i = 0; i < group_count; i++) {
+        groups[i] = malloc(sizeof(Group));
+        if (!groups[i]) {
+            log_message(ERROR, "Failed to allocate memory for group %d", i);
+            continue;
+        }
+
+        // Read group info
+        groups[i]->id = (int)message_read_int(message);
+        if (!message_read_string(message, groups[i]->name, sizeof(groups[i]->name))) {
+            log_message(ERROR, "Invalid group name");
+        }
+
+        groups[i]->created_at = (long)message_read_long(message);
+
+        // Read owner id and name
+        int owner_id = (int)message_read_int(message);
+        char owner_name[256] = {0};
+
+        if (!message_read_string(message, owner_name, sizeof(owner_name))) {
+            log_message(ERROR, "Invalid owner name");
+        }
+
+        // If owner_id is valid, allocate memory for created_by
+        if (owner_id != -1) {
+            groups[i]->created_by = malloc(sizeof(User));
+            if (groups[i]->created_by == NULL) {
+                log_message(ERROR, "Memory allocation failed for created_by");
+                continue;
+            }
+
+            groups[i]->created_by->id = owner_id;
+            strncpy(groups[i]->created_by->username, owner_name,
+                   sizeof(groups[i]->created_by->username) - 1);
+            groups[i]->created_by->username[sizeof(groups[i]->created_by->username) - 1] = '\0';
+        } else {
+            groups[i]->created_by = NULL;
+        }
+
+        log_message(INFO, "Group %d: %s, Created by %s (%d) at %ld",
+                   groups[i]->id, groups[i]->name,
+                   groups[i]->created_by ? groups[i]->created_by->username : "Unknown",
+                   owner_id, groups[i]->created_at);
+    }
+
+    // Free memory for each group
+    for (int i = 0; i < group_count; i++) {
+        if (groups[i]) {
+            free(groups[i]->created_by);
+            free(groups[i]);
+        }
+    }
+    free(groups);
 }
 
 void get_chat_connected(Controller *controller, Message *message) {
-  if (!controller || !message) {
-    log_message(ERROR, "Invalid controller or message");
-    return;
-  }
-  message->position = 0;
-  bool success = message_read_bool(message);
-
-  if (!success) {
-    printf("Không có lịch sử chat nào\n");
-    return;
-  }
-
-  int count = (int) message_read_int(message);
-  printf("Tìm thấy %d lịch sử chat:\n", count);
-
-  for (int i = 0; i < count; i++) {
-    int id = (int) message_read_int(message);
-
-    char* chat_with = (char*)malloc(1024);
-    char* last_message = (char*)malloc(1024);
-    char* sender_name = (char*)malloc(1024);
-
-    if (!message_read_string(message, chat_with, 1024)) {
-      log_message(WARN, "NULL Message");
+    if (!validate_controller_and_message(controller, message, __func__)) {
+        return;
     }
-    long last_time = (long) message_read_long(message);
-    if (!message_read_string(message, last_message, 1024)) {
-      log_message(WARN, "NULL Message");
-    }
-    int sender_id = (int) message_read_int(message);  // Thêm trường sender_id
-    if (!message_read_string(message, sender_name, 1024)) {
-      log_message(WARN, "NULL sender_name");
-    }
-    ChatMessage *m = (ChatMessage*) malloc(sizeof(ChatMessage));
-    m->sender_id = id < 0 ? -id : id;
-    m->sender_name = strdup(sender_name);
-    m->target_name = strdup(chat_with);
-    m->content = strdup(last_message);
-    m->timestamp = last_time;
-    m->is_group_message = id < 0;
 
-    on_update_history_contact(m);
+    bool success = message_read_bool(message);
+    if (!success) {
+        printf("No chat history found\n");
+        free(message);
+        return;
+    }
 
-    free(chat_with);
-    free(last_message);
-  }
-  free(message);
+    int count = (int)message_read_int(message);
+    printf("Found %d chat histories:\n", count);
+
+    for (int i = 0; i < count; i++) {
+        int id = (int)message_read_int(message);
+
+        char *chat_with = malloc(1024);
+        char *last_message = malloc(1024);
+        char *sender_name = malloc(1024);
+
+        if (!chat_with || !last_message || !sender_name) {
+            log_message(ERROR, "Memory allocation failed for chat history");
+            free(chat_with);
+            free(last_message);
+            free(sender_name);
+            continue;
+        }
+
+        if (!message_read_string(message, chat_with, 1024)) {
+            log_message(WARN, "Failed to read chat_with");
+        }
+
+        long last_time = (long)message_read_long(message);
+
+        if (!message_read_string(message, last_message, 1024)) {
+            log_message(WARN, "Failed to read last_message");
+        }
+
+        int sender_id = (int)message_read_int(message);
+
+        if (!message_read_string(message, sender_name, 1024)) {
+            log_message(WARN, "Failed to read sender_name");
+        }
+
+        ChatMessage *m = malloc(sizeof(ChatMessage));
+        if (!m) {
+            log_message(ERROR, "Memory allocation failed for ChatMessage");
+            free(chat_with);
+            free(last_message);
+            free(sender_name);
+            continue;
+        }
+
+        m->sender_id = id < 0 ? -id : id;
+        m->sender_name = strdup(sender_name);
+        m->target_name = strdup(chat_with);
+        m->content = strdup(last_message);
+        m->timestamp = last_time;
+        m->is_group_message = id < 0;
+
+        on_update_history_contact(m);
+
+        free(chat_with);
+        free(last_message);
+        free(sender_name);
+    }
+    free(message);
 }
 
 void handle_join_group(Controller *controller, Message *message) {
-    if (!message) return;
-
-    message->position = 0;
+    if (!validate_controller_and_message(controller, message, __func__)) {
+        if (message) free(message);
+        return;
+    }
 
     bool joined = message_read_bool(message);
 
-    char response_msg[256] = {0};
-    if (!message_read_string(message, response_msg, sizeof(response_msg))) {
-      log_message(ERROR, "Failed to read response message");
-      return;
-    }
 
     if (joined) {
-      log_message(INFO, "Join group success: %s", response_msg);
+        int id = (int)message_read_int(message);
+        char group_name[1024];
+        char *last_message = malloc(1024);
+        char *sender_name = malloc(1024);
+        if (!group_name || !last_message || !sender_name)
+        {
+            log_message(ERROR, "Memory allocation failed for join_group");
+            free(group_name);
+            free(last_message);
+            free(sender_name);
+            return;
+        }
+        if (!message_read_string(message, group_name, 1024))
+        {
+            log_message(WARN, "Failed to read group_name");
+            return;
+        }
+        if (!message_read_string(message, sender_name, 1024))
+        {
+            log_message(WARN, "Failed to read sender_name");
+            return;
+        }
+        if (!message_read_string(message, last_message, 1024))
+        {
+            log_message(WARN, "Failed to read last_message");
+            return;
+        }
+        ChatMessage *m = malloc(sizeof(ChatMessage));
+        if (!m)
+        {
+            log_message(ERROR, "Memory allocation failed for join_group");
+            return;
+        }
+        show_notification_window(INFO, "Join Group: %s Sucess", group_name);
+        m->content = strdup(last_message);
+        m->sender_name = strdup(sender_name);
+        m->target_name = strdup(group_name);
+        m->sender_id = id;
+        m-> is_group_message = true;
+        on_update_history_contact(group_name);
+
     } else {
-      log_message(WARN, "Join group failed: %s", response_msg);
+        char response_msg[256] = {0};
+        if (!message_read_string(message, response_msg, sizeof(response_msg))) {
+            log_message(ERROR, "Failed to read response message");
+            free(message);
+            return;
+        }
+        log_message(WARN, "Join group failed: %s", response_msg);
     }
-  free(message);
+
+    free(message);
 }
 
 void delete_group(Controller *controller, Message *message) {
-  if (message == NULL) {
-    log_message(ERROR, "Invalid message received");
-    return;
-  }
-
-  // Đọc kết quả thành công hay thất bại từ server
-  bool result = message_read_bool(message);
-
-  if (result) {
-    // Nếu thành công, hiển thị thông báo thành công
-    log_message(INFO, "Group deleted successfully.");
-    printf("Group deleted successfully.\n");
-  } else {
-    // Nếu thất bại, đọc thông báo lỗi từ server
-    char* error_message = (char*)malloc(1024);
-    if (!message_read_string(message, error_message, 1024)) {
-      log_message(WARN, "NULL Message");
+    if (!validate_controller_and_message(controller, message, __func__)) {
+        if (message) free(message);
+        return;
     }
-    log_message(INFO, "Failed to delete group: %s", error_message);
-    printf("Failed to delete group: %s\n", error_message);
-  }
-  free(message);
+
+    bool result = message_read_bool(message);
+
+    if (result) {
+        log_message(INFO, "Group deleted successfully");
+        printf("Group deleted successfully.\n");
+    } else {
+        char *error_message = malloc(1024);
+        if (!error_message) {
+            log_message(ERROR, "Memory allocation failed for error message");
+            free(message);
+            return;
+        }
+
+        if (!message_read_string(message, error_message, 1024)) {
+            log_message(WARN, "Failed to read error message");
+            strcpy(error_message, "Unknown error");
+        }
+
+        log_message(INFO, "Failed to delete group: %s", error_message);
+        printf("Failed to delete group: %s\n", error_message);
+        free(error_message);
+    }
+
+    free(message);
 }
 
 void create_group(Controller *controller, Message *msg) {
-  if (msg == NULL) {
-    log_message(ERROR, "Invalid message received");
-    return;
-  }
+    if (!validate_controller_and_message(controller, msg, __func__)) {
+        if (msg) free(msg);
+        return;
+    }
 
-  bool result = message_read_bool(msg);
-  if (result) {
-    int group_id = (int) message_read_int(msg);
-    log_message(INFO, "Group created successfully with ID: %d", group_id);
-    printf("Group created successfully. Group ID: %d\n", group_id);
-  } else {
-    log_message(INFO, "Failed to create group");
-    printf("Failed to create group.\n");
-  }
-  free(msg);
+    bool result = message_read_bool(msg);
+    if (result) {
+        int group_id = (int)message_read_int(msg);
+        //log_message(INFO, "Group created successfully with ID: %d", group_id);
+        show_notification_window(INFO, "Group created successfully with ID: %d", group_id);
+        //printf("Group created successfully. Group ID: %d\n", group_id);
+    } else {
+        char *error_message = malloc(1024);
+        if (!error_message) {
+            log_message(ERROR, "Memory allocation failed for error message");
+            free(msg);
+            return;
+        }
+
+        if (!message_read_string(msg, error_message, 1024)) {
+            log_message(WARN, "Failed to read error message");
+            strcpy(error_message, "Unknown error");
+        }
+
+        show_notification_window(ERROR, "Failed to create group: %s", error_message);
+
+        ChatMessage *m = malloc(sizeof(ChatMessage));
+        if (m)
+        {
+            m->sender_id = (int)message_read_int(msg);
+            char group_name[1024];
+            message_read_string(msg, group_name, 1024);
+            m->sender_name = strdup(group_name);
+            m->content = "Tin nhan moi ...";
+            m->timestamp = (long) message_read_long(msg);
+            m->is_group_message = true;
+            on_update_history_contact(m);
+        }
+        free(error_message);
+    }
+
+    free(msg);
 }
 
 void leave_group(Controller *controller, Message *message) {
-  if (message == NULL) {
-    log_message(ERROR, "Invalid message received");
-    return;
-  }
-
-  // Đọc kết quả từ server (bool: thành công hay thất bại)
-  bool result = message_read_bool(message);
-  if (!result) {
-    // Nếu không thành công, đọc thông báo lỗi
-    char* error_message = (char*)malloc(1024);
-    if (!message_read_string(message, error_message, 1024)) {
-      log_message(WARN, "NULL Message");
+    if (!validate_controller_and_message(controller, message, __func__)) {
+        if (message) free(message);
+        return;
     }
-    printf("Error: %s\n", error_message);
-    free(error_message);
-  } else {
-    log_message(INFO, "Successfully left the group");
-    printf("You have successfully left the group.\n");
-  }
-  free(message);
+
+    bool result = message_read_bool(message);
+    if (!result) {
+        char *error_message = malloc(1024);
+        if (!error_message) {
+            log_message(ERROR, "Memory allocation failed for error message");
+            free(message);
+            return;
+        }
+
+        if (!message_read_string(message, error_message, 1024)) {
+            log_message(WARN, "Failed to read error message");
+            strcpy(error_message, "Unknown error");
+        }
+
+        show_notification_window(ERROR, "Error: %s", error_message);
+        free(error_message);
+    } else {
+        int id = (int) message_read_int(message);
+        on_remove_contact(id < 0 ? id : -id);
+    }
+
+    free(message);
 }
 
-void handle_search_users(Controller *controller, Message *message)
-{
-  if (message == NULL) {
-    log_message(ERROR, "Invalid message received");
-    return;
-  }
-  message->position = 0;
-  bool result = message_read_bool(message);
-  if (!result)
-  {
-    char* error_message = (char*)malloc(1024);
-    if (!message_read_string(message, error_message, 1024))
-    {
-      log_message(WARN, "NULL Message");
+void handle_search_users(Controller *controller, Message *message) {
+    if (!validate_controller_and_message(controller, message, __func__)) {
+        if (message) free(message);
+        return;
     }
-    return;
-  }
-  int count = (int)message_read_int(message);
-  User *results = (User*)malloc(sizeof(User) * count);
-  for (int i = 0; i < count; i++) {
-    results[i].id = (int) message_read_int(message);
 
-    char username[256];
-    if (message_read_string(message, username, sizeof(username))) {
-      results[i].username = strdup(username);
-    } else {
-      results[i].username = NULL;
+    bool result = message_read_bool(message);
+    if (!result) {
+        char *error_message = malloc(1024);
+        if (!error_message) {
+            log_message(ERROR, "Memory allocation failed for error message");
+            free(message);
+            return;
+        }
+
+        if (!message_read_string(message, error_message, 1024)) {
+            log_message(WARN, "Failed to read error message");
+        }
+
+        free(error_message);
+        free(message);
+        return;
     }
-  }
-  //loop to create data
-  UserListData *data = malloc(sizeof(UserListData));
-  data->count = count;
-  data->users = results;
-  on_update_search_user(data);
-  free(message);
+
+    int count = (int)message_read_int(message);
+    User *results = calloc(count, sizeof(User));
+    if (!results) {
+        log_message(ERROR, "Memory allocation failed for search results");
+        free(message);
+        return;
+    }
+
+    for (int i = 0; i < count; i++) {
+        results[i].id = (int)message_read_int(message);
+
+        char username[256];
+        if (message_read_string(message, username, sizeof(username))) {
+            results[i].username = strdup(username);
+        } else {
+            results[i].username = NULL;
+        }
+    }
+
+    UserListData *data = malloc(sizeof(UserListData));
+    if (!data) {
+        log_message(ERROR, "Memory allocation failed for user list data");
+        for (int i = 0; i < count; i++) {
+            free(results[i].username);
+        }
+        free(results);
+        free(message);
+        return;
+    }
+
+    data->count = count;
+    data->users = results;
+    on_update_search_user(data);
+
+    free(message);
 }
 
 void handle_group_noti(Controller *controller, Message *message) {
-  if (message == NULL) {
-    log_message(ERROR, "Invalid message received");
-    return;
-  }
-  message->position = 0;
-  int group_id = (int) message_read_int(message);
-  int user_id = (int) message_read_int(message);
-  char* noti_message = (char*)malloc(1024);
-  char* user_name = (char*)malloc(1024);
-  char* group_name = (char*)malloc(1024);
-  if (!message_read_string(message, user_name, 1024)) {
-    log_message(WARN, "NULL User");
-  }
-  if (!message_read_string(message, noti_message, 1024)) {
-    log_message(WARN, "NULL Message");
-  }
-  if (!message_read_string(message, group_name, 1024)) {
-    log_message(WARN, "NULL Group");
-  }
-  log_message(INFO, "User %d Group id: %d %s %s %s", user_id, group_id, user_name,noti_message, user_name);
-  free(noti_message);
-  free(message);
+    if (!validate_controller_and_message(controller, message, __func__)) {
+        if (message) free(message);
+        return;
+    }
+
+    int group_id = (int)message_read_int(message);
+    int user_id = (int)message_read_int(message);
+
+    char *user_name = malloc(1024);
+    char *noti_message = malloc(1024);
+    char *group_name = malloc(1024);
+
+    if (!user_name || !noti_message || !group_name) {
+        log_message(ERROR, "Memory allocation failed");
+        free(user_name);
+        free(noti_message);
+        free(group_name);
+        free(message);
+        return;
+    }
+
+    if (!message_read_string(message, user_name, 1024)) {
+        log_message(WARN, "Failed to read user name");
+    }
+
+    if (!message_read_string(message, noti_message, 1024)) {
+        log_message(WARN, "Failed to read notification message");
+    }
+
+    if (!message_read_string(message, group_name, 1024)) {
+        log_message(WARN, "Failed to read group name");
+    }
+
+    show_notification_window(INFO, "User %d Group id: %d %s %s %s",
+               user_id, group_id, user_name, noti_message, group_name);
+
+    free(user_name);
+    free(noti_message);
+    free(group_name);
+    free(message);
 }
 
 void receive_user_message(Controller *controller, Message *message) {
-  message->position = 0;
-  int sender_id = (int) message_read_int(message);
-  int user_id = (int) message_read_int(message);
-  char content[1024];
-  if (!message_read_string(message, content, sizeof(content))) {
-    log_message(ERROR, "Failed to read data");
-    return;
-  }
-  log_message(INFO, "Received User ID: %d, Content: %s", user_id, content);
-  free(message);
+    if (!validate_controller_and_message(controller, message, __func__)) {
+        if (message) free(message);
+        return;
+    }
+
+    int sender_id = (int)message_read_int(message);
+    int user_id = (int)message_read_int(message);
+
+    char content[1024] = {0};
+    char user_name[1024] = {0};
+    if (!message_read_string(message, user_name, sizeof(user_name))) {
+        log_message(ERROR, "Failed to read username");
+        free(message);
+        return;
+    }
+    if (!message_read_string(message, content, sizeof(content))) {
+        log_message(ERROR, "Failed to read message content");
+        free(message);
+        return;
+    }
+    ChatMessage *m = malloc(sizeof(ChatMessage));
+    if (!m)
+    {
+        log_message(ERROR, "Memory allocation failed");
+        free(message);
+        return;
+    }
+    m->content = strdup(content);
+    m->sender_id = sender_id;
+    m->sender_name = strdup(user_name);
+    m->target_name = strdup(user_name);
+    m->timestamp = time(NULL);
+    m->is_group_message = false;
+    on_update_history_contact(m);
+    log_message(INFO, "Received User ID: %d, Content: %s", user_id, content);
+    free(message);
 }
 
 void receive_group_message(Controller *controller, Message *message) {
-  log_message(INFO, "receive_group_message");
-  message->position = 0;
-  int sender_id = (int) message_read_int(message);
-  int group_id = (int) message_read_int(message);
-  char content[1024];
-  if (!message_read_string(message, content, sizeof(content))) {
-    log_message(ERROR, "Failed to read data");
-    return;
-  }
-  log_message(INFO, "Received Group ID: %d, Content: %s", group_id, content);
-  free(message);
+    if (!validate_controller_and_message(controller, message, __func__)) {
+        if (message) free(message);
+        return;
+    }
+
+    int sender_id = (int)message_read_int(message);
+    int group_id = (int)message_read_int(message);
+
+    char content[1024] = {0};
+    char group_name[1024] = {0};
+    char sender_name[1024] = {0};
+    if (!message_read_string(message, group_name, sizeof(group_name))) {
+        log_message(ERROR, "Failed to read group name");
+        free(message);
+        return;
+    }
+    if (!message_read_string(message, sender_name, sizeof(sender_name))) {
+        log_message(ERROR, "Failed to read sender name");
+        free(message);
+        return;
+    }
+    if (!message_read_string(message, content, sizeof(content))) {
+        log_message(ERROR, "Failed to read message content");
+        free(message);
+        return;
+    }
+    ChatMessage *m = malloc(sizeof(ChatMessage));
+    if (!m)
+    {
+        log_message(ERROR, "Memory allocation failed");
+        free(message);
+        return;
+    }
+    m->content = strdup(content);
+    m->sender_id = group_id;
+    m->sender_name = strdup(sender_name);
+    m->target_name = strdup(group_name);
+    m->timestamp = time(NULL);
+    m->is_group_message = true;
+    on_update_history_contact(m);
+    log_message(INFO, "Received Group ID: %d, Content: %s", group_id, content);
+    free(message);
 }
 
-void get_user_message(Controller *controller, Message* msg) {
-  log_message(INFO, "Get history user message");
-  if (msg == NULL) {
-    log_message(ERROR, "Invalid message received from server");
-    return;
-  }
-
-  msg->position = 0;
-
-  bool has_messages = message_read_bool(msg);
-  if (!has_messages) {
-    log_message(INFO, "No messages found");
-    return;
-  }
-
-  // Đọc số lượng tin nhắn
-  int count = (int) message_read_int(msg);
-  log_message(INFO, "Received %d messages", count);
-
-  ChatMessage *history = (ChatMessage *)malloc(sizeof(ChatMessage) * count);
-
-  for (int i = 0; i < count; i++) {
-    int sender_id = (int) message_read_int(msg);
-
-    char* sender_name = (char*)malloc(1024);
-    char* content = (char*)malloc(1024);
-
-    if (!message_read_string(msg, sender_name, 1024)) {
-      log_message(WARN, "NULL Message");
-    }
-    if (!message_read_string(msg, content, 1024)) {
-      log_message(WARN, "NULL Message");
+void get_user_message(Controller *controller, Message *msg) {
+    if (!validate_controller_and_message(controller, msg, __func__)) {
+        if (msg) free(msg);
+        return;
     }
 
-    long timestamp = (long) message_read_long(msg);
+    log_message(INFO, "Get history user message");
 
-    history[i].sender_id = sender_id;
-    history[i].sender_name = strdup(sender_name);
-    history[i].content = strdup(content);
-    history[i].timestamp = timestamp;
-    history[i].is_group_message = false;
+    bool has_messages = message_read_bool(msg);
+    if (!has_messages) {
+        log_message(INFO, "No messages found");
+        free(msg);
+        return;
+    }
 
-    free(sender_name);
-    free(content);
-  }
+    int count = (int)message_read_int(msg);
+    log_message(INFO, "Received %d messages", count);
 
-  // ✅ Cấp phát đúng struct
-  ChatMessageList *data = malloc(sizeof(ChatMessageList));
-  data->history = history;
-  data->count = count;
-  on_load_history_message(data);
-  free(msg);
+    ChatMessage *history = calloc(count, sizeof(ChatMessage));
+    if (!history) {
+        log_message(ERROR, "Memory allocation failed for chat history");
+        free(msg);
+        return;
+    }
+
+    for (int i = 0; i < count; i++) {
+        int sender_id = (int)message_read_int(msg);
+
+        char *sender_name = malloc(1024);
+        char *content = malloc(1024);
+
+        if (!sender_name || !content) {
+            log_message(ERROR, "Memory allocation failed for message content");
+            free(sender_name);
+            free(content);
+            continue;
+        }
+
+        if (!message_read_string(msg, sender_name, 1024)) {
+            log_message(WARN, "Failed to read sender name");
+        }
+
+        if (!message_read_string(msg, content, 1024)) {
+            log_message(WARN, "Failed to read message content");
+        }
+
+        long timestamp = (long)message_read_long(msg);
+
+        history[i].sender_id = sender_id;
+        history[i].sender_name = strdup(sender_name);
+        history[i].content = strdup(content);
+        history[i].timestamp = timestamp;
+        history[i].is_group_message = false;
+
+        free(sender_name);
+        free(content);
+    }
+
+    ChatMessageList *data = malloc(sizeof(ChatMessageList));
+    if (!data) {
+        log_message(ERROR, "Memory allocation failed for message list");
+        // Clean up history
+        for (int i = 0; i < count; i++) {
+            free(history[i].sender_name);
+            free(history[i].content);
+        }
+        free(history);
+        free(msg);
+        return;
+    }
+
+    data->history = history;
+    data->count = count;
+    on_load_history_message(data);
+
+    free(msg);
 }
 
-void get_group_message(Controller *controller, Message* msg) {
-  if (msg == NULL) {
-    log_message(ERROR, "Invalid message received from server");
-    return;
-  }
-
-  msg->position = 0;
-
-  // Kiểm tra xem có tin nhắn hay không
-  bool has_messages = message_read_bool(msg);
-  if (!has_messages) {
-    log_message(INFO, "No messages found");
-    return;
-  }
-
-  // Đọc số lượng tin nhắn
-  int count = (int) message_read_int(msg);
-  log_message(INFO, "Received %d group messages", count);
-
-  // Đọc và xử lý từng tin nhắn
-  for (int i = 0; i < count; i++) {
-    int sender_id = (int) message_read_int(msg);  // ID người gửi
-    char* sender_name = (char*)malloc(1024);
-    char* content = (char*)malloc(1024);
-    if (!message_read_string(msg, sender_name, 1024)) {
-      log_message(WARN, "NULL Message");
+void get_group_message(Controller *controller, Message *msg) {
+    if (!validate_controller_and_message(controller, msg, __func__)) {
+        if (msg) free(msg);
+        return;
     }
-    if (!message_read_string(msg, content, 1024)) {
-      log_message(WARN, "NULL Message");
-    }  // Nội dung tin nhắn
-    long timestamp = (long) message_read_long(msg); // Thời gian gửi
 
-    // Hiển thị thông tin tin nhắn
-    printf("Group Message #%d\n", i + 1);
-    printf("Sender ID: %d\n", sender_id);
-    printf("Sender Name: %s\n", sender_name);
-    printf("Content: %s\n", content);
-    printf("Timestamp: %ld\n", timestamp);
+    bool has_messages = message_read_bool(msg);
+    if (!has_messages) {
+        log_message(INFO, "No group messages found");
+        free(msg);
+        return;
+    }
 
-    // Giải phóng bộ nhớ cho tên người gửi và nội dung tin nhắn nếu cần
-    free(sender_name);
-    free(content);
-  }
-  free(msg);
+    int count = (int)message_read_int(msg);
+    log_message(INFO, "Received %d group messages", count);
+
+    // Process each message
+    for (int i = 0; i < count; i++) {
+        int sender_id = (int)message_read_int(msg);
+
+        char *sender_name = malloc(1024);
+        char *content = malloc(1024);
+
+        if (!sender_name || !content) {
+            log_message(ERROR, "Memory allocation failed for message content");
+            free(sender_name);
+            free(content);
+            continue;
+        }
+
+        if (!message_read_string(msg, sender_name, 1024)) {
+            log_message(WARN, "Failed to read sender name");
+        }
+
+        if (!message_read_string(msg, content, 1024)) {
+            log_message(WARN, "Failed to read message content");
+        }
+
+        long timestamp = (long)message_read_long(msg);
+
+        printf("Group Message #%d\n", i + 1);
+        printf("Sender ID: %d\n", sender_id);
+        printf("Sender Name: %s\n", sender_name);
+        printf("Content: %s\n", content);
+        printf("Timestamp: %ld\n", timestamp);
+
+        free(sender_name);
+        free(content);
+    }
+
+    free(msg);
 }
