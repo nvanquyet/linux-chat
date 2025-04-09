@@ -5,7 +5,8 @@
 
 #include "log.h"
 #include "user.h"
-
+extern Session* main_session;
+extern GtkWidget* current_ui;
 // Prototype các hàm
 static void show_message_dialog(GtkWindow *parent, const gchar *message, gboolean success);
 static void on_register_button_clicked(GtkWidget *button, gpointer user_data);
@@ -56,7 +57,7 @@ static void on_register_button_clicked(GtkWidget *button, gpointer user_data) {
         user->userRegister(user);
        // show_message_dialog(parent_window, "Đã gửi yêu cầu đăng ký!", TRUE);
       //  gtk_widget_hide(reg_data->window);
-        on_show_ui(LOGIN);  // Truyền lại session
+        on_show_ui(MAIN_UI_LEVEL_LOGIN);  // Truyền lại session
     } else {
         //show_message_dialog(parent_window, "Lỗi tạo người dùng!", FALSE);
     }
@@ -78,7 +79,7 @@ static void on_registration_window_destroy(GtkWidget *widget, gpointer user_data
 }
 
 // Tạo và hiển thị cửa sổ đăng ký
-void show_register_window() {
+void create_registration_ui() {
 
     GtkWidget *window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     current_ui = GTK_WIDGET(window);
@@ -125,6 +126,6 @@ void show_register_window() {
     gtk_widget_show_all(window);
 }
 gboolean g_on_show_register_window(gpointer data) {
-    show_register_window();
+    create_registration_ui();
     return false;
 }

@@ -5,7 +5,8 @@
 #include "log.h"
 #include "user.h"
 #include "session.h"
-
+extern Session* main_session;
+extern GtkWidget* current_ui;
 // Prototype các hàm
 static void show_message_dialog(GtkWindow *parent, const gchar *message, gboolean success);
 static void on_login_button_clicked(GtkWidget *button, gpointer user_data);
@@ -51,7 +52,7 @@ static void on_login_button_clicked(GtkWidget *button, gpointer user_data) {
 
 // Xử lý nút "Đăng ký"
 static void on_register_button_clicked(GtkWidget *button, gpointer user_data) {
-    on_show_ui(REGISTER);
+    on_show_ui(MAIN_UI_LEVEL_REGISTER);
 }
 
 // Giải phóng bộ nhớ khi đóng cửa sổ
@@ -69,7 +70,7 @@ void on_login_window_destroy(GtkWidget *widget, gpointer data) {
 
 
 // Tạo và hiển thị cửa sổ đăng nhập
-void show_login_window() {
+void create_login_ui() {
     Session *main_session = NULL;
     current_ui = NULL;
     GtkWidget *window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -110,6 +111,6 @@ void show_login_window() {
 }
 
 gboolean g_on_show_login_window(gpointer data) {
-    show_login_window();
+    create_login_ui();
     return false;
 }

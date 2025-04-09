@@ -10,15 +10,14 @@
 #define CONTACT_MAX_LENGTH 64
 
 // Main window reference
- GtkWidget *current_ui;
- Session *main_session;
 
-
+extern Session* main_session;
+extern GtkWidget* current_ui;
 
 typedef enum {
-    LOGIN,
-    REGISTER,
-    HOME
+    MAIN_UI_LEVEL_LOGIN,
+    MAIN_UI_LEVEL_REGISTER,
+    MAIN_UI_LEVEL_HOME
 } MAIN_UI_LEVEL;
 
 typedef struct {

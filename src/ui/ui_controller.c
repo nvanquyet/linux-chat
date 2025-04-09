@@ -4,21 +4,22 @@
 #include "../include/ui_controller.h"
 
 #include <log.h>
+
 void on_show_ui(MAIN_UI_LEVEL level)
 {
     switch (level)
     {
-        case LOGIN:
+        case MAIN_UI_LEVEL_LOGIN:
             {
                 show_login_window();
                 break;
             }
-        case REGISTER:
+        case MAIN_UI_LEVEL_REGISTER:
             {
                 show_register_window();
                 break;
             }
-        case HOME:
+        case MAIN_UI_LEVEL_HOME:
             {
                 show_home_window();
                 break;
@@ -31,15 +32,6 @@ void on_show_ui(MAIN_UI_LEVEL level)
     }
 }
 
-void init(Session *session)
-{
-    if (session == NULL)
-    {
-        log_message(ERROR, "Null Sessions");
-        return;
-    }
-    main_session = session;
-}
 
 void set_current_ui(GtkWidget *widget) {
     if (widget == NULL) return;

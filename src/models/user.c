@@ -81,7 +81,7 @@ void login(User *self)
         log_message(INFO, "User is already online");
         return;
     }
-    Message *msg = message_create(CMD_LOGIN);
+    Message *msg = message_create(LOGIN);
     if (msg == NULL)
     {
         log_message(ERROR, "Failed to allocate memory for message");
@@ -97,7 +97,7 @@ void logout(User *self)
 {
     self->isOnline = false;
     //send to server logout message
-    Message *msg = message_create(CMD_LOGOUT);
+    Message *msg = message_create(LOGOUT);
     if (msg == NULL) {
         log_message(ERROR, "Failed to allocate memory for message");
         return;
@@ -113,7 +113,7 @@ void userRegister(User *self)
         return;
     }
     log_message(INFO, "User registered");
-    Message *msg = message_create(CMD_REGISTER);
+    Message *msg = message_create(REGISTER);
     if (msg == NULL)
     {
         log_message(ERROR, "Failed to allocate memory for message");

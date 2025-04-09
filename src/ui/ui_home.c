@@ -9,7 +9,8 @@
 /* Hàm trợ giúp cắt chuỗi nếu quá dài */
 
 GtkWidget *home_widget = NULL;
-
+extern Session* main_session;
+extern GtkWidget* current_ui;
 static char* truncate_message(const char *msg) {
     if (strlen(msg) > MAX_PREVIEW_LEN) {
         char *short_msg = g_malloc(MAX_PREVIEW_LEN + 4); // Dự phòng thêm dấu "..."
@@ -320,7 +321,7 @@ void update_or_create_contact(int id, const char *title, const char *message, lo
 }
 
 // Hàm cập nhật tin nhắn mới khi server gửi về
-void on_receive_message(int id, const char* message, bool isGroup)
+void on_receive_new_message(int id, const char* message, bool isGroup)
 {
     // Tìm widget contact dựa trên id (nếu nhóm thì key là âm: -id)
     GtkWidget *widget = g_hash_table_lookup(contact_map, GINT_TO_POINTER(isGroup ? -id : id));
