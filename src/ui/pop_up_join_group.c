@@ -1,12 +1,35 @@
 #include <log.h>
 #include <gtk/gtk.h>
-#include "chat_common.h"  // Chứa khai báo: void show_main_window(void);
-
+#include "chat_common.h"
+GtkWidget *join_group_window = NULL;
 void join_group_action(GtkAction *action, gpointer data) {
+    JoinGroupData *jg_data = (JoinGroupData *)data;
+    Session *session = jg_data->session;
+    const gchar *group_name = gtk_entry_get_text(GTK_ENTRY(jg_data->name_entry));
+    if (!group_name || g_strcmp0(group_name, "") == 0) {
+        log_message(WARN, "Group name is empty");
+        return;
+    }
 
+    const gchar *group_pass = gtk_entry_get_text(GTK_ENTRY(jg_data->pass_entry));
+    if (!group_pass || g_strcmp0(group_pass, "") == 0) {
+        log_message(WARN, "Group password  is empty");
+        return;
+    }
+
+    log_message(INFO, "Join group: %s %s", group_name, group_pass);
+
+    //send to server
+    Service *self = session->service;
+    self->join_group(self, session->user, group_name, group_pass);
+    if (join_group_window) {
+        gtk_widget_destroy(join_group_window);
+        join_group_window = NULL;
+    }
+
+     g_free(jg_data);
 }
 void show_join_group_window(Session *session) {
-    GtkWidget *join_group_window;
     GtkWidget *grid;
     GtkWidget *group_name_label, *group_pass_label;
     GtkWidget *group_name_entry, *group_pass_entry;
@@ -59,7 +82,7 @@ void show_join_group_window(Session *session) {
 
     // Nút Join
     join_button = gtk_button_new_with_label("Join");
-   g_signal_connect(join_button, "clicked", G_CALLBACK(join_group_action), jg_data);
+    g_signal_connect(join_button, "clicked", G_CALLBACK(join_group_action), jg_data);
     gtk_box_pack_start(GTK_BOX(button_box), join_button, FALSE, FALSE, 0);
 
     // (Tùy chọn) Nút Cancel

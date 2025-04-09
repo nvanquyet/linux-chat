@@ -345,125 +345,149 @@ src/network/session.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyChatProject.dir/build.make CMakeFiles/MyChatProject.dir/src/network/session.c.s
 .PHONY : src/network/session.c.s
 
-src/ui/Login.o: src/ui/Login.c.o
-.PHONY : src/ui/Login.o
+src/ui/pop_up_create_group.o: src/ui/pop_up_create_group.c.o
+.PHONY : src/ui/pop_up_create_group.o
 
 # target to build an object file
-src/ui/Login.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyChatProject.dir/build.make CMakeFiles/MyChatProject.dir/src/ui/Login.c.o
-.PHONY : src/ui/Login.c.o
+src/ui/pop_up_create_group.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyChatProject.dir/build.make CMakeFiles/MyChatProject.dir/src/ui/pop_up_create_group.c.o
+.PHONY : src/ui/pop_up_create_group.c.o
 
-src/ui/Login.i: src/ui/Login.c.i
-.PHONY : src/ui/Login.i
+src/ui/pop_up_create_group.i: src/ui/pop_up_create_group.c.i
+.PHONY : src/ui/pop_up_create_group.i
 
 # target to preprocess a source file
-src/ui/Login.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyChatProject.dir/build.make CMakeFiles/MyChatProject.dir/src/ui/Login.c.i
-.PHONY : src/ui/Login.c.i
+src/ui/pop_up_create_group.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyChatProject.dir/build.make CMakeFiles/MyChatProject.dir/src/ui/pop_up_create_group.c.i
+.PHONY : src/ui/pop_up_create_group.c.i
 
-src/ui/Login.s: src/ui/Login.c.s
-.PHONY : src/ui/Login.s
+src/ui/pop_up_create_group.s: src/ui/pop_up_create_group.c.s
+.PHONY : src/ui/pop_up_create_group.s
 
 # target to generate assembly for a file
-src/ui/Login.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyChatProject.dir/build.make CMakeFiles/MyChatProject.dir/src/ui/Login.c.s
-.PHONY : src/ui/Login.c.s
+src/ui/pop_up_create_group.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyChatProject.dir/build.make CMakeFiles/MyChatProject.dir/src/ui/pop_up_create_group.c.s
+.PHONY : src/ui/pop_up_create_group.c.s
 
-src/ui/Register.o: src/ui/Register.c.o
-.PHONY : src/ui/Register.o
+src/ui/pop_up_join_group.o: src/ui/pop_up_join_group.c.o
+.PHONY : src/ui/pop_up_join_group.o
 
 # target to build an object file
-src/ui/Register.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyChatProject.dir/build.make CMakeFiles/MyChatProject.dir/src/ui/Register.c.o
-.PHONY : src/ui/Register.c.o
+src/ui/pop_up_join_group.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyChatProject.dir/build.make CMakeFiles/MyChatProject.dir/src/ui/pop_up_join_group.c.o
+.PHONY : src/ui/pop_up_join_group.c.o
 
-src/ui/Register.i: src/ui/Register.c.i
-.PHONY : src/ui/Register.i
+src/ui/pop_up_join_group.i: src/ui/pop_up_join_group.c.i
+.PHONY : src/ui/pop_up_join_group.i
 
 # target to preprocess a source file
-src/ui/Register.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyChatProject.dir/build.make CMakeFiles/MyChatProject.dir/src/ui/Register.c.i
-.PHONY : src/ui/Register.c.i
+src/ui/pop_up_join_group.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyChatProject.dir/build.make CMakeFiles/MyChatProject.dir/src/ui/pop_up_join_group.c.i
+.PHONY : src/ui/pop_up_join_group.c.i
 
-src/ui/Register.s: src/ui/Register.c.s
-.PHONY : src/ui/Register.s
+src/ui/pop_up_join_group.s: src/ui/pop_up_join_group.c.s
+.PHONY : src/ui/pop_up_join_group.s
 
 # target to generate assembly for a file
-src/ui/Register.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyChatProject.dir/build.make CMakeFiles/MyChatProject.dir/src/ui/Register.c.s
-.PHONY : src/ui/Register.c.s
+src/ui/pop_up_join_group.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyChatProject.dir/build.make CMakeFiles/MyChatProject.dir/src/ui/pop_up_join_group.c.s
+.PHONY : src/ui/pop_up_join_group.c.s
 
-src/ui/chat_app.o: src/ui/chat_app.c.o
-.PHONY : src/ui/chat_app.o
+src/ui/ui_controller.o: src/ui/ui_controller.c.o
+.PHONY : src/ui/ui_controller.o
 
 # target to build an object file
-src/ui/chat_app.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyChatProject.dir/build.make CMakeFiles/MyChatProject.dir/src/ui/chat_app.c.o
-.PHONY : src/ui/chat_app.c.o
+src/ui/ui_controller.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyChatProject.dir/build.make CMakeFiles/MyChatProject.dir/src/ui/ui_controller.c.o
+.PHONY : src/ui/ui_controller.c.o
 
-src/ui/chat_app.i: src/ui/chat_app.c.i
-.PHONY : src/ui/chat_app.i
+src/ui/ui_controller.i: src/ui/ui_controller.c.i
+.PHONY : src/ui/ui_controller.i
 
 # target to preprocess a source file
-src/ui/chat_app.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyChatProject.dir/build.make CMakeFiles/MyChatProject.dir/src/ui/chat_app.c.i
-.PHONY : src/ui/chat_app.c.i
+src/ui/ui_controller.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyChatProject.dir/build.make CMakeFiles/MyChatProject.dir/src/ui/ui_controller.c.i
+.PHONY : src/ui/ui_controller.c.i
 
-src/ui/chat_app.s: src/ui/chat_app.c.s
-.PHONY : src/ui/chat_app.s
+src/ui/ui_controller.s: src/ui/ui_controller.c.s
+.PHONY : src/ui/ui_controller.s
 
 # target to generate assembly for a file
-src/ui/chat_app.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyChatProject.dir/build.make CMakeFiles/MyChatProject.dir/src/ui/chat_app.c.s
-.PHONY : src/ui/chat_app.c.s
+src/ui/ui_controller.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyChatProject.dir/build.make CMakeFiles/MyChatProject.dir/src/ui/ui_controller.c.s
+.PHONY : src/ui/ui_controller.c.s
 
-src/ui/create_group.o: src/ui/create_group.c.o
-.PHONY : src/ui/create_group.o
+src/ui/ui_home.o: src/ui/ui_home.c.o
+.PHONY : src/ui/ui_home.o
 
 # target to build an object file
-src/ui/create_group.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyChatProject.dir/build.make CMakeFiles/MyChatProject.dir/src/ui/create_group.c.o
-.PHONY : src/ui/create_group.c.o
+src/ui/ui_home.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyChatProject.dir/build.make CMakeFiles/MyChatProject.dir/src/ui/ui_home.c.o
+.PHONY : src/ui/ui_home.c.o
 
-src/ui/create_group.i: src/ui/create_group.c.i
-.PHONY : src/ui/create_group.i
+src/ui/ui_home.i: src/ui/ui_home.c.i
+.PHONY : src/ui/ui_home.i
 
 # target to preprocess a source file
-src/ui/create_group.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyChatProject.dir/build.make CMakeFiles/MyChatProject.dir/src/ui/create_group.c.i
-.PHONY : src/ui/create_group.c.i
+src/ui/ui_home.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyChatProject.dir/build.make CMakeFiles/MyChatProject.dir/src/ui/ui_home.c.i
+.PHONY : src/ui/ui_home.c.i
 
-src/ui/create_group.s: src/ui/create_group.c.s
-.PHONY : src/ui/create_group.s
+src/ui/ui_home.s: src/ui/ui_home.c.s
+.PHONY : src/ui/ui_home.s
 
 # target to generate assembly for a file
-src/ui/create_group.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyChatProject.dir/build.make CMakeFiles/MyChatProject.dir/src/ui/create_group.c.s
-.PHONY : src/ui/create_group.c.s
+src/ui/ui_home.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyChatProject.dir/build.make CMakeFiles/MyChatProject.dir/src/ui/ui_home.c.s
+.PHONY : src/ui/ui_home.c.s
 
-src/ui/join_group.o: src/ui/join_group.c.o
-.PHONY : src/ui/join_group.o
+src/ui/ui_login.o: src/ui/ui_login.c.o
+.PHONY : src/ui/ui_login.o
 
 # target to build an object file
-src/ui/join_group.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyChatProject.dir/build.make CMakeFiles/MyChatProject.dir/src/ui/join_group.c.o
-.PHONY : src/ui/join_group.c.o
+src/ui/ui_login.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyChatProject.dir/build.make CMakeFiles/MyChatProject.dir/src/ui/ui_login.c.o
+.PHONY : src/ui/ui_login.c.o
 
-src/ui/join_group.i: src/ui/join_group.c.i
-.PHONY : src/ui/join_group.i
+src/ui/ui_login.i: src/ui/ui_login.c.i
+.PHONY : src/ui/ui_login.i
 
 # target to preprocess a source file
-src/ui/join_group.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyChatProject.dir/build.make CMakeFiles/MyChatProject.dir/src/ui/join_group.c.i
-.PHONY : src/ui/join_group.c.i
+src/ui/ui_login.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyChatProject.dir/build.make CMakeFiles/MyChatProject.dir/src/ui/ui_login.c.i
+.PHONY : src/ui/ui_login.c.i
 
-src/ui/join_group.s: src/ui/join_group.c.s
-.PHONY : src/ui/join_group.s
+src/ui/ui_login.s: src/ui/ui_login.c.s
+.PHONY : src/ui/ui_login.s
 
 # target to generate assembly for a file
-src/ui/join_group.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyChatProject.dir/build.make CMakeFiles/MyChatProject.dir/src/ui/join_group.c.s
-.PHONY : src/ui/join_group.c.s
+src/ui/ui_login.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyChatProject.dir/build.make CMakeFiles/MyChatProject.dir/src/ui/ui_login.c.s
+.PHONY : src/ui/ui_login.c.s
+
+src/ui/ui_register.o: src/ui/ui_register.c.o
+.PHONY : src/ui/ui_register.o
+
+# target to build an object file
+src/ui/ui_register.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyChatProject.dir/build.make CMakeFiles/MyChatProject.dir/src/ui/ui_register.c.o
+.PHONY : src/ui/ui_register.c.o
+
+src/ui/ui_register.i: src/ui/ui_register.c.i
+.PHONY : src/ui/ui_register.i
+
+# target to preprocess a source file
+src/ui/ui_register.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyChatProject.dir/build.make CMakeFiles/MyChatProject.dir/src/ui/ui_register.c.i
+.PHONY : src/ui/ui_register.c.i
+
+src/ui/ui_register.s: src/ui/ui_register.c.s
+.PHONY : src/ui/ui_register.s
+
+# target to generate assembly for a file
+src/ui/ui_register.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MyChatProject.dir/build.make CMakeFiles/MyChatProject.dir/src/ui/ui_register.c.s
+.PHONY : src/ui/ui_register.c.s
 
 src/utils/aes_utils.o: src/utils/aes_utils.c.o
 .PHONY : src/utils/aes_utils.o
@@ -597,21 +621,24 @@ help:
 	@echo "... src/network/session.o"
 	@echo "... src/network/session.i"
 	@echo "... src/network/session.s"
-	@echo "... src/ui/Login.o"
-	@echo "... src/ui/Login.i"
-	@echo "... src/ui/Login.s"
-	@echo "... src/ui/Register.o"
-	@echo "... src/ui/Register.i"
-	@echo "... src/ui/Register.s"
-	@echo "... src/ui/chat_app.o"
-	@echo "... src/ui/chat_app.i"
-	@echo "... src/ui/chat_app.s"
-	@echo "... src/ui/create_group.o"
-	@echo "... src/ui/create_group.i"
-	@echo "... src/ui/create_group.s"
-	@echo "... src/ui/join_group.o"
-	@echo "... src/ui/join_group.i"
-	@echo "... src/ui/join_group.s"
+	@echo "... src/ui/pop_up_create_group.o"
+	@echo "... src/ui/pop_up_create_group.i"
+	@echo "... src/ui/pop_up_create_group.s"
+	@echo "... src/ui/pop_up_join_group.o"
+	@echo "... src/ui/pop_up_join_group.i"
+	@echo "... src/ui/pop_up_join_group.s"
+	@echo "... src/ui/ui_controller.o"
+	@echo "... src/ui/ui_controller.i"
+	@echo "... src/ui/ui_controller.s"
+	@echo "... src/ui/ui_home.o"
+	@echo "... src/ui/ui_home.i"
+	@echo "... src/ui/ui_home.s"
+	@echo "... src/ui/ui_login.o"
+	@echo "... src/ui/ui_login.i"
+	@echo "... src/ui/ui_login.s"
+	@echo "... src/ui/ui_register.o"
+	@echo "... src/ui/ui_register.i"
+	@echo "... src/ui/ui_register.s"
 	@echo "... src/utils/aes_utils.o"
 	@echo "... src/utils/aes_utils.i"
 	@echo "... src/utils/aes_utils.s"

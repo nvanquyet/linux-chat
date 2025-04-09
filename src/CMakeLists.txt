@@ -5,7 +5,7 @@ file(GLOB_RECURSE SOURCES "*.c")
 
 # Create executable
 add_executable(chat_app ${SOURCES}
-        ../include/chat_common.h)
+        ../include/ui_controller.h)
 
 # Link libraries
 target_link_libraries(chat_app

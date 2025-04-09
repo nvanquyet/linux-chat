@@ -34,13 +34,13 @@
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 74,
+				"line" : 75,
 				"parent" : 0
 			},
 			{
 				"command" : 2,
 				"file" : 0,
-				"line" : 75,
+				"line" : 76,
 				"parent" : 0
 			},
 			{
@@ -52,7 +52,7 @@
 			{
 				"command" : 4,
 				"file" : 0,
-				"line" : 73,
+				"line" : 74,
 				"parent" : 0
 			}
 		]
@@ -185,7 +185,8 @@
 				14,
 				15,
 				16,
-				17
+				17,
+				18
 			]
 		}
 	],
@@ -305,17 +306,18 @@
 				14,
 				15,
 				16,
-				17
+				17,
+				18
 			]
 		},
 		{
 			"name" : "Header Files",
 			"sourceIndexes" : 
 			[
-				18,
 				19,
 				20,
-				21
+				21,
+				22
 			]
 		}
 	],
@@ -378,31 +380,37 @@
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "src/ui/Login.c",
+			"path" : "src/ui/pop_up_create_group.c",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "src/ui/Register.c",
+			"path" : "src/ui/pop_up_join_group.c",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "src/ui/chat_app.c",
+			"path" : "src/ui/ui_controller.c",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "src/ui/create_group.c",
+			"path" : "src/ui/ui_home.c",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "src/ui/join_group.c",
+			"path" : "src/ui/ui_login.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/ui/ui_register.c",
 			"sourceGroupIndex" : 0
 		},
 		{

@@ -65,8 +65,9 @@ add_executable(MyChatProject ${SOURCE_FILES}
         include/json_utils.h
         src/utils/json_utils.c
         src/models/mess_form.c
-        src/ui/join_group.c
+        src/ui/pop_up_join_group.c
         include/chat_message.h
+        src/ui/ui_controller.c
 )
 
 # Link GTK3 và các thư viện cần thiết

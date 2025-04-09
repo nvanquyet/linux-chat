@@ -1,3 +1,4 @@
+#include <ui_controller.h>
 #include <gtk/gtk.h>
 
 #include "chat_common.h"
@@ -37,7 +38,7 @@ void on_join_group_clicked(GtkWidget *widget, gpointer data) {
 
 // "Create Group" button callback
 static void on_create_group_clicked(GtkWidget *widget, gpointer data) {
-    ChatApp *chat_app = (ChatApp *)data;
+    const ChatApp *chat_app = (ChatApp *)data;
     Session *session = chat_app->session;
     if (session == NULL) {
         log_message(ERROR, "Session pointer is NULL!");
@@ -45,7 +46,6 @@ static void on_create_group_clicked(GtkWidget *widget, gpointer data) {
     }
 
     log_message(INFO, "Create Group button clicked");
-    // Gọi hàm hiển thị form tạo nhóm
     show_create_group_window(session);
 }
 
@@ -554,7 +554,7 @@ void show_chat_window(Session *session) {
     g_print("Creating main chat window...\n");
     main_session = session;
     // Tạo cửa sổ chính
-    main_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    current_ui = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_title(GTK_WINDOW(main_window), "Chat Application");
     gtk_window_set_default_size(GTK_WINDOW(main_window), 1200, 600);
     gtk_window_set_position(GTK_WINDOW(main_window), GTK_WIN_POS_CENTER);
@@ -617,9 +617,11 @@ void show_chat_window(Session *session) {
     gtk_grid_attach(GTK_GRID(grid), func_box, 3, 1, 1, 2);
 
     GtkWidget *create_group_button = gtk_button_new_with_label("Create Group");
+    g_signal_connect(create_group_button, "clicked", G_CALLBACK(on_create_group_clicked), session);
     gtk_box_pack_start(GTK_BOX(func_box), create_group_button, FALSE, FALSE, 0);
 
     GtkWidget *join_group_button = gtk_button_new_with_label("Join Group");
+    g_signal_connect(join_group_button, "clicked", G_CALLBACK(on_join_group_clicked), session);
     gtk_box_pack_start(GTK_BOX(func_box), join_group_button, FALSE, FALSE, 0);
 
     GtkWidget *logout_button = gtk_button_new_with_label("Log Out");
