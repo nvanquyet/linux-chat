@@ -395,7 +395,7 @@ void get_all_users(Controller *controller, Message *message) {
   }
 
   // Prepare data for UI update
-  FriendListData *fl_data = g_malloc(sizeof(FriendListData));
+  FriendListContext *fl_data = g_malloc(sizeof(FriendListContext));
 
   if (!fl_data) {
     log_message(ERROR, "Failed to allocate memory for friend list data");

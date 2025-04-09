@@ -1,9 +1,9 @@
 #include <log.h>
+#include <ui_controller.h>
 #include <gtk/gtk.h>
 GtkWidget *join_group_window = NULL;
 void join_group_action(GtkAction *action, gpointer data) {
     JoinGroupData *jg_data = (JoinGroupData *)data;
-    Session *session = jg_data->session;
     const gchar *group_name = gtk_entry_get_text(GTK_ENTRY(jg_data->name_entry));
     if (!group_name || g_strcmp0(group_name, "") == 0) {
         log_message(WARN, "Group name is empty");
@@ -19,8 +19,8 @@ void join_group_action(GtkAction *action, gpointer data) {
     log_message(INFO, "Join group: %s %s", group_name, group_pass);
 
     //send to server
-    Service *self = session->service;
-    self->join_group(self, session->user, group_name, group_pass);
+    Service *self = main_session->service;
+    self->join_group(self, main_session->user, group_name, group_pass);
     if (join_group_window) {
         gtk_widget_destroy(join_group_window);
         join_group_window = NULL;
@@ -28,7 +28,7 @@ void join_group_action(GtkAction *action, gpointer data) {
 
      g_free(jg_data);
 }
-void show_join_group_window(Session *session) {
+void show_join_group_window() {
     GtkWidget *grid;
     GtkWidget *group_name_label, *group_pass_label;
     GtkWidget *group_name_entry, *group_pass_entry;

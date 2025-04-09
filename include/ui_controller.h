@@ -21,38 +21,11 @@ typedef enum {
 typedef struct {
     gchar *friend_list;
     Session *session;
-} FriendListData;
-
+} FriendListContext;
 typedef struct {
-    GtkWidget *window;
     GtkEntry *entry_username;
     GtkEntry *entry_password;
-    Session *session;
-} GroupData;
-
-typedef struct {
-    GtkWidget *window;
-    Session *session;
-} ChatApp;
-
-typedef struct {
-    Session *session;
-    GtkWidget *name_entry;
-    GtkWidget *pass_entry;
-} CreateGroupData;
-
-typedef struct {
-    Session *session;
-    GtkWidget *name_entry;
-    GtkWidget *pass_entry;
-} JoinGroupData;
-
-typedef struct {
-    GtkWidget *window;
-    GtkEntry *entry_username;
-    GtkEntry *entry_password;
-    Session *session;
-} LoginData;
+} CredentialForm;
 
 typedef struct {
     int count;
@@ -72,7 +45,6 @@ gboolean g_on_show_register_window(gpointer data);
 gboolean g_on_show_home_window(gpointer data);
 gboolean g_on_show_create_window(gpointer data);
 gboolean g_on_show_join_window(gpointer data);
-gboolean g_on_show_notification(gpointer data);
 
 gboolean g_on_update_search_user(gpointer data);
 gboolean g_on_update_history_contact(gpointer data);
