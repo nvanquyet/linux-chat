@@ -8,10 +8,13 @@
 #include <ui_controller.h>
 #include <gtk/gtk.h>
 
+Session* main_session;
+GtkWidget* current_ui;
+
 int main(int argc, char *argv[]) {
     // Initialize session
     gtk_init(&argc, &argv);
-     main_session = createSession();
+    main_session = createSession();
     if (main_session == NULL) {
         log_message(ERROR, "Failed to create session");
         return 1;
@@ -44,8 +47,7 @@ int main(int argc, char *argv[]) {
     }
 
     log_message(INFO, "Connected to server successfully");
-    init(main_session);
-    on_show_ui(LOGIN);
+    on_show_ui(MAIN_UI_LEVEL_LOGIN);
     gtk_main();
     // Clean up and exit
     main_session->close(main_session);
