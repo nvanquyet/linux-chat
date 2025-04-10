@@ -243,7 +243,6 @@ void handle_login(Controller *self, Message *msg) {
 
         char username[256] = {0};
         if (!message_read_string(msg, username, sizeof(username))) {
-            show_notification_window(ERROR, "Invalid username data");
             return;
         }
 
@@ -278,19 +277,12 @@ void handle_logout(Controller *self, Message *msg) {
     if (!validate_controller_and_message(self, msg, __func__)) {
         return;
     }
-
+    log_message(INFO, "Logout Result");
     Session *session = (Session *)self->client;
+    msg->position = 0;
     bool logout_ok = message_read_bool(msg);
-
     if (logout_ok) {
         // Free user if exists and prevent access after free
-        if (session->user != NULL) {
-            log_message(INFO, "User %s (ID: %d) logged out",
-                       session->user->username, session->user->id);
-            free(session->user);
-            session->user = NULL;
-        }
-
         session->isLogin = false;
         show_notification_window(INFO, "Logout success");
     } else {

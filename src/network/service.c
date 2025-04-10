@@ -32,6 +32,7 @@ Service* createService(Session* session) {
     service->get_history = service_get_history;
     service->get_history_message = service_get_history_message;
     service->search_users = service_search_users;
+    service->service_logout = service_logout;
 
     service->send_group_message = service_send_group_message;
     service->send_user_message = service_send_user_message;
@@ -92,6 +93,12 @@ void service_search_users(Service* service, const char* text)
     session_send_message(service->session, message);
 
     log_message(INFO, "Search users %s", text);
+}
+
+
+void service_logout(User* self)
+{
+    self->logout(self);
 }
 
 // Group Handling

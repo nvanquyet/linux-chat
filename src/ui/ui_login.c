@@ -34,12 +34,15 @@ static void on_login_button_clicked(GtkWidget *button, gpointer user_data) {
     const gchar *password = gtk_entry_get_text(login_data->entry_password);
 
 
-
     if (g_strcmp0(username, "") == 0 || g_strcmp0(password, "") == 0) {
         g_on_show_notification("Khong nhap day du thong tin");
         return;
     }
-
+    if (main_session && main_session->connect)
+    {
+        log_message(INFO, "%s %s", username, password);
+    }
+    log_message(INFO, "%s %s", username, password);
     User *user = createUser(NULL, main_session, username, password);
     if (user != NULL) {
         main_session->user = user;

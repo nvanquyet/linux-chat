@@ -54,7 +54,8 @@ static void on_delete_group_clicked(GtkWidget *widget, gpointer data) {
 static void on_log_out_clicked(GtkWidget *widget, gpointer data) {
     // Don't need to add this here as the server response will trigger handle_logout
     // which will show the login window
-    log_message(INFO, "Log out");
+    main_session->service->service_logout(main_session->user);
+    on_show_ui(MAIN_UI_LEVEL_LOGIN);
 }
 
 // Main window close callback
