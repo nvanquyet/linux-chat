@@ -11,6 +11,7 @@
 GtkWidget *home_widget = NULL;
 extern Session* main_session;
 extern GtkWidget* current_ui;
+void update_or_create_contact(int id, const char *title, const char *message, long time, bool isGroup, bool bold);
 static char* truncate_message(const char *msg) {
     if (strlen(msg) > MAX_PREVIEW_LEN) {
         char *short_msg = g_malloc(MAX_PREVIEW_LEN + 4); // Dự phòng thêm dấu "..."
@@ -79,11 +80,14 @@ static void insert_message_to_buffer(GtkTextBuffer *buffer, ChatMessage *msg) {
         gtk_text_tag_table_add(table, tag);
     }
 
-    struct tm *timeinfo = localtime(&msg->timestamp);
+    struct tm *timeinfo = gmtime(&msg->timestamp);
     char time_str[10] = "[??:??]";
 
     if (timeinfo) {
         strftime(time_str, sizeof(time_str), "[%H:%M]", timeinfo);
+        char full_time_str[30];
+        strftime(full_time_str, sizeof(full_time_str), "%Y-%m-%d %H:%M:%S", timeinfo);
+        log_message(INFO, "Timestamp converted to: %s", full_time_str);
     } else {
         log_message(WARN, "Invalid timestamp from message id %d", msg->sender_id);
     }
@@ -149,11 +153,12 @@ void on_send_button_clicked(GtkButton *button, gpointer user_data) {
         msg->sender_id = main_session->user->id;
         msg->sender_name = g_strdup("Me");
         msg->content = g_strdup(content);
-        msg->timestamp = time(NULL);
+        msg->timestamp = time(NULL) + 7 * 3600;
 
         // Thêm tin nhắn mới vào chat_view
         append_chat_message(msg);
 
+        update_or_create_contact(select_target_id, "Unknown", g_strdup(content), time(NULL) + 7 * 3600, select_target_id < 0, false);
         if (select_target_id > 0)
         {
             //todo: send u-message
@@ -308,7 +313,7 @@ void remove_contact(int id) {
 void update_or_create_contact(int id, const char *title, const char *message, long time, bool isGroup, bool bold) {
     int map_id = isGroup && id > 0 ? -id : id;
     time_t t = (time_t)time;
-    struct tm *tm_info = localtime(&t);
+    struct tm *tm_info = gmtime(&t);
     char buffer[16];
     if (tm_info) {
         strftime(buffer, sizeof(buffer), "%H:%M", tm_info);

@@ -11,7 +11,7 @@ typedef struct {
     char *sender_name;
     char *target_name;
     char *content;
-    time_t timestamp;
+    long timestamp;
     bool is_group_message;
     bool noti_message;
 } ChatMessage;

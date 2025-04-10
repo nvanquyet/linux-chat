@@ -1041,7 +1041,7 @@ void get_user_message(Controller *controller, Message *msg) {
         }
 
         long timestamp = (long)message_read_long(msg);
-
+        log_message(INFO, "Timestamp %ld", timestamp);
         history[i].sender_id = sender_id;
         history[i].sender_name = strdup(sender_name);
         history[i].content = strdup(content);
