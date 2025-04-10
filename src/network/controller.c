@@ -120,7 +120,7 @@ void controller_on_message(Controller *self, Message *message)
   case USER_MESSAGE:
     receive_user_message(self, message);
     break;
-  case GROUP_MESSAGE:
+    case GROUP_MESSAGE:
     receive_group_message(self, message);
     break;
   case GET_CHAT_HISTORY:
@@ -1067,6 +1067,7 @@ void get_user_message(Controller *controller, Message *msg) {
 
     free(msg);
 }
+
 void get_group_message(Controller *controller, Message *msg) {
     if (!validate_controller_and_message(controller, msg, __func__)) {
         if (msg) free(msg);
