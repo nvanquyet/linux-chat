@@ -981,7 +981,7 @@ void receive_group_message(Controller *controller, Message *message) {
             return;
         }
         m->content = strdup(content);
-        m->sender_id = group_id;
+        m->sender_id = -group_id;
         m->sender_name = strdup(sender_name);
         m->target_name = strdup(group_name);
         m->timestamp = time(NULL);
