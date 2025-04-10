@@ -294,7 +294,7 @@ GtkWidget* create_contact_item_with_click(int id,
 }
 
 // Hàm xóa một contact dựa trên ID
-void contact(int id) {
+void remove_contact(int id) {
     //Clear chat are
     GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(chat_view));
     gtk_text_buffer_set_text(buffer, "", -1);
@@ -689,12 +689,12 @@ gboolean g_on_load_history_message(const gpointer data)
     return false;
 }
 
-gboolean g_on_history_contact(const gpointer data)
+gboolean g_on_remove_history_contact(const gpointer data)
 {
     int id = GPOINTER_TO_INT(data);
     if (id < 0)
     {
-        contact(id);
+        remove_contact(id);
     }
     return false;
 }

@@ -39,14 +39,6 @@ void set_current_ui(GtkWidget *widget) {
     if (current_ui != NULL) {
         
         gtk_widget_hide(current_ui);
-
-        
-        
-        
-        
-        
-        
-        
     }
 
     current_ui = widget;
