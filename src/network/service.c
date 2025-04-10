@@ -1,4 +1,7 @@
 #include "service.h"
+
+#include <m_utils.h>
+
 #include "session.h"
 #include "log.h"
 #include <stdlib.h>
@@ -136,7 +139,7 @@ void service_create_group(Service* service, User* user, const char* group_name, 
     }
     message_write_int(message, user->id);
     message_write_string(message, group_name);
-    message_write_string(message, group_password);
+    message_write_string(message, hash_password(group_password));
     
     session_send_message(service->session, message);
 }
@@ -162,7 +165,7 @@ void service_join_group(Service* service, User* user, const char* group_name, co
     
     message_write_int(message, user->id);
     message_write_string(message, group_name);
-    message_write_string(message, group_password);
+    message_write_string(message, hash_password(group_password));
     message_write_string(message, user->username);
 
     
