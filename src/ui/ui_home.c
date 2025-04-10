@@ -133,19 +133,6 @@ void load_chat_history(ChatMessage *history, int count) {
 
 
 void append_chat_message(ChatMessage *msg) {
-    ChatMessage *m = malloc(sizeof(ChatMessage));
-    if (m && msg)
-    {
-        m->content = strdup(msg->content);
-        m->sender_id = select_target_id;
-        m->sender_name = "Unknown";
-        m->target_name = "Unknown";
-        m->timestamp = time(NULL);
-        m->is_group_message = msg->is_group_message;
-        m->noti_message = false;
-        on_update_history_contact(m);
-
-    }
     GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(chat_view));
     insert_message_to_buffer(buffer, msg);
 }
@@ -666,6 +653,12 @@ gboolean g_on_update_history_contact(const gpointer user_data) {
     if (data)
     {
         update_or_create_contact(data->sender_id, data->target_name, data->content, data->timestamp, data->is_group_message, data->noti_message);
+        ChatMessage *msg = g_new0(ChatMessage, 1);
+        msg->sender_id = data->sender_id;
+        msg->sender_name = g_strdup(data->sender_name);
+        msg->content = g_strdup(data->content);
+        msg->timestamp = time(NULL);
+        append_chat_message(msg);
         free(data);
     }
 
