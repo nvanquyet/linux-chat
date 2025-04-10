@@ -654,7 +654,7 @@ gboolean g_on_update_history_contact(const gpointer user_data) {
     {
         update_or_create_contact(data->sender_id, data->target_name, data->content, data->timestamp, data->is_group_message, data->noti_message);
         if ((!data->is_group_message && data->sender_id == select_target_id) ||
-            (data->is_group_message && data->sender_id != -select_target_id))
+            (data->is_group_message && data->sender_id == -select_target_id))
         {
             ChatMessage *msg = g_new0(ChatMessage, 1);
             msg->sender_id = data->sender_id;
