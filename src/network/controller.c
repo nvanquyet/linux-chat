@@ -730,14 +730,10 @@ void create_group(Controller *controller, Message *msg) {
 
     free(msg);
 }
-
 void leave_group(Controller *controller, Message *message) {
-    log_message(INFO, "Leaving group Exc");
     if (!validate_controller_and_message(controller, message, __func__)) {
-        if (message) free(message);
-        return;
+        return; // Don't free message here, let the caller handle it
     }
-
     bool result = message_read_bool(message);
     if (!result) {
         char *error_message = malloc(1024);
@@ -746,12 +742,10 @@ void leave_group(Controller *controller, Message *message) {
             free(message);
             return;
         }
-
         if (!message_read_string(message, error_message, 1024)) {
             log_message(WARN, "Failed to read error message");
             strcpy(error_message, "Unknown error");
         }
-
         show_notification_window(ERROR, "Error: %s", error_message);
         free(error_message);
     } else {
@@ -760,40 +754,64 @@ void leave_group(Controller *controller, Message *message) {
         char *group_name = malloc(1024);
         char *last_message = malloc(1024);
         char *sender_name = malloc(1024);
-        if (!group_name || !last_message || !sender_name)
-        {
+        if (!group_name || !last_message || !sender_name) {
             log_message(ERROR, "Memory allocation failed for join_group");
-            free(group_name);
+            free(group_name); // These free calls are safe even if the pointers are NULL
             free(last_message);
             free(sender_name);
+            free(message);
             return;
         }
         if (!message_read_string(message, group_name, 1024) ||
             !message_read_string(message, sender_name, 1024) ||
-            !message_read_string(message, last_message, 1024))
-        {
+            !message_read_string(message, last_message, 1024)) {
             log_message(WARN, "Failed to read data");
             show_notification_window(WARN, "Failed to read data");
+            free(group_name);
+            free(last_message);
+            free(sender_name);
+            free(message);
             return;
         }
-        if (user_id == controller->user->id)
-        {
+        if (user_id == main_session->user->id) {
             on_remove_contact(group_id < 0 ? group_id : -group_id);
-        }else
-        {
+        } else {
             ChatMessage *m = malloc(sizeof(ChatMessage));
-            if (!m)
-            {
+            if (!m) {
                 log_message(ERROR, "Memory allocation failed for join_group");
+                free(group_name);
+                free(last_message);
+                free(sender_name);
+                free(message);
                 return;
             }
+            log_message(INFO,"Leaving2");
             m->content = strdup(last_message);
             m->sender_name = strdup(sender_name);
             m->target_name = strdup(group_name);
             m->sender_id = group_id;
-            m-> is_group_message = true;
+            m->is_group_message = true;
+
+            // Check if any of the strdup calls failed
+            if (!m->content || !m->sender_name || !m->target_name) {
+                log_message(ERROR, "Failed to duplicate strings");
+                free(m->content);
+                free(m->sender_name);
+                free(m->target_name);
+                free(m);
+                free(group_name);
+                free(last_message);
+                free(sender_name);
+                free(message);
+                return;
+            }
+
             on_update_history_contact(m);
         }
+
+        free(group_name);
+        free(last_message);
+        free(sender_name);
     }
 
     free(message);
@@ -984,7 +1002,7 @@ void receive_group_message(Controller *controller, Message *message) {
         m->sender_id = group_id;
         m->sender_name = strdup(sender_name);
         m->target_name = strdup(group_name);
-        m->timestamp = time(NULL);
+        m->timestamp = time(NULL) + 7 * 3600;
         m->is_group_message = true;
         m->noti_message = true;
         on_update_history_contact(m);

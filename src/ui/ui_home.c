@@ -295,6 +295,9 @@ GtkWidget* create_contact_item_with_click(int id,
 
 // Hàm xóa một contact dựa trên ID
 void remove_contact(int id) {
+    //Clear chat are
+    GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(chat_view));
+    gtk_text_buffer_set_text(buffer, "", -1);
     // Tìm widget tương ứng với ID trong hash table
     GtkWidget *widget = g_hash_table_lookup(contact_map, GINT_TO_POINTER(id));
 
