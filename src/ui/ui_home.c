@@ -225,11 +225,12 @@ gboolean on_contact_item_click(GtkWidget *widget, GdkEventButton *event, gpointe
     }
     is_click_disabled = TRUE;
     g_timeout_add(500, enable_click, NULL);
-
     GtkWidget *vbox = get_vbox_from_event_box(widget);
     GtkWidget *title_label = get_label_from_vbox(vbox, 0);
     GtkWidget *msg_label = get_label_from_vbox(vbox, 1);
     int target_id = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(widget), "id"));
+
+    if (select_target_id == target_id) return FALSE;
     // Bỏ in đậm title nếu đang dùng markup
     // const char *plain_title = gtk_label_get_text(GTK_LABEL(title_label));
     // gtk_label_set_text(GTK_LABEL(title_label), plain_title);
@@ -360,7 +361,6 @@ void update_or_create_contact(int id, const char *title, const char *message, lo
             log_message(ERROR, "create_contact_item_with_click failed");
             return;
         }
-
         gtk_box_pack_start(GTK_BOX(contacts_box), widget, FALSE, FALSE, 2);
         g_hash_table_insert(contact_map, GINT_TO_POINTER(map_id), widget);
     }

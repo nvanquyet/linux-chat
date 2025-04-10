@@ -7,8 +7,9 @@ GtkWidget *join_group_window = NULL;
 gboolean g_on_show_join_window(gpointer data) ;
 void join_group_action(GtkAction *action, gpointer data) {
     CredentialForm *jg_data = (CredentialForm *)data;
-    GtkWidget *name_entry = jg_data->entry_username;
-    GtkWidget *pass_enry = jg_data->entry_password;
+    GtkWidget *name_entry = GTK_WIDGET(jg_data->entry_username);
+    GtkWidget *pass_enry = GTK_WIDGET(jg_data->entry_password);
+
     const gchar *group_name = gtk_entry_get_text(GTK_ENTRY(name_entry));
     if (!group_name || g_strcmp0(group_name, "") == 0) {
         log_message(WARN, "Group name is empty");
@@ -17,7 +18,7 @@ void join_group_action(GtkAction *action, gpointer data) {
 
     const gchar *group_pass = gtk_entry_get_text(GTK_ENTRY(pass_enry));
     if (!group_pass || g_strcmp0(group_pass, "") == 0) {
-        log_message(WARN, "Group password  is empty");
+        log_message(WARN, "Group password is empty");
         return;
     }
 
@@ -31,8 +32,9 @@ void join_group_action(GtkAction *action, gpointer data) {
         join_group_window = NULL;
     }
 
-     g_free(jg_data);
+    g_free(jg_data);
 }
+
 void create_join_group_ui() {
     GtkWidget *grid;
     GtkWidget *group_name_label, *group_pass_label;

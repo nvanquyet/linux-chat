@@ -9,9 +9,10 @@ extern GtkWidget* current_ui;
 GtkWidget *create_group_window = NULL;
 // Hàm xử lý khi nhấn nút "Create"
 void create_group_action(GtkWidget *widget, gpointer data) {
-    CredentialForm *cg_data = (CredentialForm *)data;
-    GtkWidget *name_entry = cg_data->entry_username;
-    GtkWidget *pass_enry = cg_data->entry_password;
+    CredentialForm *cg_data = (CredentialForm *) data;
+    // Use GTK_WIDGET() cast to convert from GtkEntry* to GtkWidget*
+    GtkWidget *name_entry = GTK_WIDGET(cg_data->entry_username);
+    GtkWidget *pass_enry = GTK_WIDGET(cg_data->entry_password);
 
     const gchar *group_name = gtk_entry_get_text(GTK_ENTRY(name_entry));
     if (!group_name || g_strcmp0(group_name, "") == 0) {
@@ -21,7 +22,7 @@ void create_group_action(GtkWidget *widget, gpointer data) {
 
     const gchar *group_password = gtk_entry_get_text(GTK_ENTRY(pass_enry));
     if (!group_password || g_strcmp0(group_password, "") == 0) {
-        log_message(WARN, "Group password  is empty");
+        log_message(WARN, "Group password is empty");
         return;
     }
 
@@ -38,8 +39,6 @@ void create_group_action(GtkWidget *widget, gpointer data) {
 
     g_free(cg_data);
 }
-
-
 // Hàm tạo và hiển thị cửa sổ "Create Group"
 void create_group_ui() {
     GtkWidget *grid;
