@@ -294,7 +294,7 @@ GtkWidget* create_contact_item_with_click(int id,
 }
 
 // Hàm xóa một contact dựa trên ID
-void remove_contact(int id) {
+void contact(int id) {
     //Clear chat are
     GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(chat_view));
     gtk_text_buffer_set_text(buffer, "", -1);
@@ -557,7 +557,6 @@ void show_chat_window() {
     gtk_window_set_title(GTK_WINDOW(widget), "Chat Application");
     gtk_window_set_default_size(GTK_WINDOW(widget), 1200, 600);
     gtk_window_set_position(GTK_WINDOW(widget), GTK_WIN_POS_CENTER);
-    g_signal_connect(widget, "destroy", G_CALLBACK(gtk_main_quit), NULL);
 
     // Tạo lưới chính với 4 cột (theo yêu cầu)
     GtkWidget *grid = gtk_grid_new();
@@ -631,6 +630,8 @@ void show_chat_window() {
 
     // Hiển thị tất cả widget
     gtk_widget_show_all(widget);
+
+    g_signal_connect(widget, "destroy", G_CALLBACK(force_exit), NULL);
 }
 
 gboolean g_on_show_home_window(gpointer data)
@@ -688,12 +689,12 @@ gboolean g_on_load_history_message(const gpointer data)
     return false;
 }
 
-gboolean g_on_remove_history_contact(const gpointer data)
+gboolean g_on_history_contact(const gpointer data)
 {
     int id = GPOINTER_TO_INT(data);
     if (id < 0)
     {
-        remove_contact(id);
+        contact(id);
     }
     return false;
 }

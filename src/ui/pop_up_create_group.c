@@ -7,10 +7,10 @@
 extern Session* main_session;
 extern GtkWidget* current_ui;
 GtkWidget *create_group_window = NULL;
-// Hàm xử lý khi nhấn nút "Create"
+
 void create_group_action(GtkWidget *widget, gpointer data) {
     CredentialForm *cg_data = (CredentialForm *) data;
-    // Use GTK_WIDGET() cast to convert from GtkEntry* to GtkWidget*
+    
     GtkWidget *name_entry = GTK_WIDGET(cg_data->entry_username);
     GtkWidget *pass_enry = GTK_WIDGET(cg_data->entry_password);
 
@@ -28,7 +28,7 @@ void create_group_action(GtkWidget *widget, gpointer data) {
 
     log_message(INFO, "Create group: %s %s", group_name, group_password);
 
-    //send to server
+    
     Service *self = main_session->service;
     self->create_group(self, main_session->user, group_name, group_password);
 
@@ -39,7 +39,7 @@ void create_group_action(GtkWidget *widget, gpointer data) {
 
     g_free(cg_data);
 }
-// Hàm tạo và hiển thị cửa sổ "Create Group"
+
 void create_group_ui() {
     GtkWidget *grid;
     GtkWidget *name_label, *pass_label;
@@ -81,21 +81,21 @@ void create_group_ui() {
 
     create_button = gtk_button_new_with_label("Create");
     GtkWidget *btn_create_group = gtk_button_new_with_label("Tạo nhóm");
-    // Tạo dữ liệu truyền vào callback
+    
     CredentialForm *cg_data = g_malloc(sizeof(CredentialForm));
-    cg_data->entry_username = GTK_ENTRY(name_entry);  // Gán đúng entry hiển thị
+    cg_data->entry_username = GTK_ENTRY(name_entry);  
     cg_data->entry_password = GTK_ENTRY(pass_entry);
 
-    // Gán sự kiện:
+    
     g_signal_connect(create_button, "clicked", G_CALLBACK(create_group_action), cg_data);
 
 
-    // Thêm vào layout
+    
     gtk_box_pack_start(GTK_BOX(button_box), create_button, FALSE, FALSE, 0);
 
-    // (Tuỳ chọn) Thêm nút Cancel nếu muốn
-    // cancel_button = gtk_button_new_with_label("Cancel");
-    // gtk_box_pack_start(GTK_BOX(button_box), cancel_button, FALSE, FALSE, 0);
+    
+    
+    
 
     gtk_widget_show_all(create_group_window);
 

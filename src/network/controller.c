@@ -88,7 +88,7 @@ void controller_on_message(Controller *self, Message *message)
   case GET_USERS:
     if(self->service != NULL) {
       get_all_users(self, message);
-      //get_online_users(self, message);
+      
     } else {
       log_message(ERROR, "Service is NULL");
     }
@@ -193,7 +193,7 @@ void controller_new_message(Controller *self, Message *ms)
     return;
   }
 }
-// Common utility function to validate controller and message
+
 static bool validate_controller_and_message(Controller *controller, Message *msg, const char *function_name) {
     if (controller == NULL || controller->client == NULL) {
         log_message(WARN, "Invalid controller or client in %s", function_name);
@@ -205,12 +205,12 @@ static bool validate_controller_and_message(Controller *controller, Message *msg
         return false;
     }
 
-    // Reset message position to read from beginning
+    
     msg->position = 0;
     return true;
 }
 
-// Common function to read error message
+
 static char* read_error_message(Message *msg) {
     char *error_msg = malloc(256);
     if (error_msg == NULL) {
@@ -248,14 +248,14 @@ void handle_login(Controller *self, Message *msg) {
 
         log_message(INFO, "Logged in as: %s (ID: %d)", username, user_id);
 
-        // Create user object
+        
         User *user = createUser(NULL, session, username, "");
         if (user == NULL) {
             show_notification_window(ERROR, "Internal error: Failed to create user");
             return;
         }
 
-        // Update user and session properties
+        
         user->id = user_id;
         user->isOnline = true;
         user->session = session;
@@ -282,16 +282,16 @@ void handle_logout(Controller *self, Message *msg) {
     msg->position = 0;
     bool logout_ok = message_read_bool(msg);
     if (logout_ok) {
-        // Free user if exists and prevent access after free
+        
         session->isLogin = false;
         show_notification_window(INFO, "Logout success");
     } else {
-        // Even though the server said logout failed, we still show success
-        // This seems to be the intention in the original code
+        
+        
         show_notification_window(INFO, "Logout success");
     }
 
-    free(msg);  // Free the message
+    free(msg);  
 }
 
 void handle_register(Controller *self, Message *msg) {
@@ -339,7 +339,7 @@ char **get_online_users(Controller *controller, Message *message) {
         }
     }
 
-    // Clean up on allocation failure
+    
     if (allocation_error) {
         for (int i = 0; i < count; i++) {
             free(users[i]);
@@ -360,28 +360,28 @@ void get_all_users(Controller *controller, Message *message) {
         return;
     }
 
-    // Check if the session is valid before proceeding
+    
     if (!controller->client->connected) {
         log_message(ERROR, "Invalid connection");
         return;
     }
 
-    // Read number of users from message
+    
     int count = (int)message_read_int(message);
     log_message(INFO, "Received %d users", count);
 
-    // Create a dynamic string to store user list
+    
     GString *user_list = g_string_new(NULL);
     if (user_list == NULL) {
         log_message(ERROR, "Failed to create string buffer");
         return;
     }
 
-    // Get current user ID for comparison
+    
     int current_user_id = controller->client->user->id;
     log_message(INFO, "Current user ID: %d", current_user_id);
 
-    // Process list of users
+    
     int friends_added = 0;
     for (int i = 0; i < count; i++) {
         int user_id = (int)message_read_int(message);
@@ -394,7 +394,7 @@ void get_all_users(Controller *controller, Message *message) {
 
         bool is_online = message_read_bool(message);
 
-        // Skip the current user - don't add them to the friend list
+        
         if (user_id == current_user_id) {
             log_message(INFO, "Skipping current user: %s (ID: %d)", username, user_id);
             continue;
@@ -408,7 +408,7 @@ void get_all_users(Controller *controller, Message *message) {
         friends_added++;
     }
 
-    // Prepare data for UI update
+    
     FriendListContext *fl_data = g_malloc(sizeof(FriendListContext));
     if (!fl_data) {
         log_message(ERROR, "Failed to allocate memory for friend list data");
@@ -419,8 +419,8 @@ void get_all_users(Controller *controller, Message *message) {
     fl_data->friend_list = g_strdup(user_list->str);
     fl_data->session = controller->client;
 
-    // Note: The commented code below was in the original but not connected
-    // g_idle_add((GSourceFunc)update_friend_list, fl_data);
+    
+    
     g_string_free(user_list, TRUE);
 }
 
@@ -451,7 +451,7 @@ void get_joined_groups(Controller *controller, Message *message) {
             continue;
         }
 
-        // Read group info
+        
         groups[i]->id = (int)message_read_int(message);
         if (!message_read_string(message, groups[i]->name, sizeof(groups[i]->name))) {
             log_message(ERROR, "Invalid group name");
@@ -459,7 +459,7 @@ void get_joined_groups(Controller *controller, Message *message) {
 
         groups[i]->created_at = (long)message_read_long(message);
 
-        // Read owner id and name
+        
         int owner_id = (int)message_read_int(message);
         char owner_name[256] = {0};
 
@@ -467,7 +467,7 @@ void get_joined_groups(Controller *controller, Message *message) {
             log_message(ERROR, "Invalid owner name");
         }
 
-        // If owner_id is valid, allocate memory for created_by
+        
         if (owner_id != -1) {
             groups[i]->created_by = malloc(sizeof(User));
             if (groups[i]->created_by == NULL) {
@@ -489,7 +489,7 @@ void get_joined_groups(Controller *controller, Message *message) {
                    owner_id, groups[i]->created_at);
     }
 
-    // Free memory for each group
+    
     for (int i = 0; i < group_count; i++) {
         if (groups[i]) {
             free(groups[i]->created_by);
@@ -607,7 +607,7 @@ void handle_join_group(Controller *controller, Message *message) {
             log_message(ERROR, "Memory allocation failed for join_group");
             return;
         }
-        //show_notification_window(INFO, "Join Group: %s Sucess", group_name);
+        
         m->content = strdup(last_message);
         m->sender_name = strdup(sender_name);
         m->target_name = strdup(group_name);
@@ -732,7 +732,7 @@ void create_group(Controller *controller, Message *msg) {
 }
 void leave_group(Controller *controller, Message *message) {
     if (!validate_controller_and_message(controller, message, __func__)) {
-        return; // Don't free message here, let the caller handle it
+        return; 
     }
     bool result = message_read_bool(message);
     if (!result) {
@@ -756,7 +756,7 @@ void leave_group(Controller *controller, Message *message) {
         char *sender_name = malloc(1024);
         if (!group_name || !last_message || !sender_name) {
             log_message(ERROR, "Memory allocation failed for join_group");
-            free(group_name); // These free calls are safe even if the pointers are NULL
+            free(group_name); 
             free(last_message);
             free(sender_name);
             free(message);
@@ -792,7 +792,7 @@ void leave_group(Controller *controller, Message *message) {
             m->sender_id = group_id;
             m->is_group_message = true;
 
-            // Check if any of the strdup calls failed
+            
             if (!m->content || !m->sender_name || !m->target_name) {
                 log_message(ERROR, "Failed to duplicate strings");
                 free(m->content);
@@ -1073,7 +1073,7 @@ void get_user_message(Controller *controller, Message *msg) {
     ChatMessageList *data = malloc(sizeof(ChatMessageList));
     if (!data) {
         log_message(ERROR, "Memory allocation failed for message list");
-        // Clean up history
+        
         for (int i = 0; i < count; i++) {
             free(history[i].sender_name);
             free(history[i].content);

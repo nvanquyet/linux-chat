@@ -1,4 +1,4 @@
-// System includes first
+
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <pthread.h>
@@ -554,7 +554,6 @@ void *sender_thread(void *arg)
             {
                 
                 Message *msg = message_queue_remove(queue, 0);
-         
                 if (msg != NULL)
                 {
                     do_send_message(session, msg);
@@ -669,7 +668,7 @@ Message *session_read_message(Session *session)
         return msg;
     }
 
-    unsigned char iv[16];  // 16 bytes cho AES IV
+    unsigned char iv[16];  
     int bytes_received = recv(session->socket, iv, sizeof(iv), 0);
     if (bytes_received <= 0) {
         log_message(ERROR, "Failed to receive IV, bytes received: %d", bytes_received);

@@ -26,7 +26,7 @@ void on_show_ui(MAIN_UI_LEVEL level)
             }
         default:
             {
-                show_notification_window(ERROR, "No has windows %s", level);
+                (ERROR, "No has windows %s", level);
                 break;
             }
     }
@@ -75,7 +75,7 @@ void show_register_window()
     g_idle_add((GSourceFunc)g_on_show_register_window, NULL);
 
 }
-void show_notification_window(LogLevel level, const char *content, ...)
+void (LogLevel level, const char *content, ...)
 {
     GtkMessageType type = level == ERROR ? GTK_MESSAGE_ERROR :
                           (level == INFO ? GTK_MESSAGE_INFO :
@@ -121,4 +121,8 @@ void on_remove_contact(int id)
 void on_update_search_user(UserListData *data)
 {
     g_idle_add((GSourceFunc)g_on_update_search_user, data);
+}
+void force_exit(GtkWidget *widget, gpointer data) {
+    gtk_main_quit();  // thoát vòng lặp GTK
+    exit(0);          // kết thúc chương trình hoàn toàn
 }

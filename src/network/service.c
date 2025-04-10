@@ -19,7 +19,7 @@ Service* createService(Session* session) {
     }
     
     service->session = session;
-    // service->login_success = service_login_success;
+    
     service->server_message = server_message;
     service->get_online_users = service_get_online_users;
 
@@ -65,7 +65,7 @@ void service_get_online_users(Service* service) {
         log_message(ERROR, "Failed to create message");
         return;
     }
-    //write anything for passing the encryption
+    
     message_write_int(message, 0);
     if(!service->session) {
         log_message(ERROR, "Session is NULL");
@@ -101,7 +101,7 @@ void service_logout(User* self)
     self->logout(self);
 }
 
-// Group Handling
+
 void service_get_group_list(Service* service,  User* user) {
     if (service == NULL) return;
 
@@ -110,7 +110,7 @@ void service_get_group_list(Service* service,  User* user) {
         log_message(ERROR, "Failed to create message");
         return;
     }
-    //write anything for passing the encryption
+    
     message_write_int(message, user->id);
     if(!service->session) {
         log_message(ERROR, "Session is NULL");
@@ -137,7 +137,7 @@ void service_create_group(Service* service, User* user, const char* group_name, 
     message_write_int(message, user->id);
     message_write_string(message, group_name);
     message_write_string(message, group_password);
-    //Send to server
+    
     session_send_message(service->session, message);
 }
 
@@ -152,27 +152,27 @@ void service_join_group(Service* service, User* user, const char* group_name, co
         return;
     }
 
-    // Tạo message để gửi tới server
+    
     Message* message = message_create(JOIN_GROUP);
     if (message == NULL) {
         log_message(ERROR, "Failed to create message");
         return;
     }
 
-    // Ghi dữ liệu vào message
+    
     message_write_int(message, user->id);
     message_write_string(message, group_name);
     message_write_string(message, group_password);
     message_write_string(message, user->username);
 
-    // Kiểm tra nếu session là NULL
+    
     if (service->session == NULL) {
         log_message(ERROR, "Session is NULL");
-        free(message);  // Giải phóng bộ nhớ message để tránh rò rỉ
+        free(message);  
         return;
     }
 
-    // Gửi message đến server
+    
     session_send_message(service->session, message);
 }
 
@@ -193,13 +193,13 @@ void service_leave_group(Service* service, User* user, int group_id) {
         return;
     }
 
-    // Write anything for passing the encryption
+    
     message_write_int(message, group_id < 0 ? -group_id : group_id);
     message_write_int(message, user->id);
 
     if (!service->session) {
         log_message(ERROR, "Session is NULL");
-        free(message);  // Don't forget to free the message to avoid memory leak
+        free(message);  
         return;
     }
 
@@ -219,7 +219,7 @@ void service_delete_group(Service* service, User* user, int group_id) {
         log_message(ERROR, "Failed to create message");
         return;
     }
-    //write anything for passing the encryption
+    
     message_write_int(message, group_id > 0 ? group_id : -group_id);
     message_write_int(message, user->id);
     if(!service->session) {
@@ -231,7 +231,7 @@ void service_delete_group(Service* service, User* user, int group_id) {
     session_send_message(service->session, message);
 }
 
-// Messaging
+
 void service_send_group_message(Service* service,  User* user, int group_id, const char* message) {
     if (service == NULL) return;
 
@@ -240,7 +240,7 @@ void service_send_group_message(Service* service,  User* user, int group_id, con
         log_message(ERROR, "Failed to create message");
         return;
     }
-    //write anything for passing the encryption
+    
     message_write_int(m, user->id);
     message_write_int(m, group_id);
     message_write_string(m, user->username);
@@ -253,7 +253,7 @@ void service_send_group_message(Service* service,  User* user, int group_id, con
     log_message(INFO, "Sending message %s", message);
 }
 
-// Messaging
+
 void service_send_user_message(Service* service,  User* user, int user_id, const char* message) {
     if (service == NULL) return;
 
@@ -262,7 +262,7 @@ void service_send_user_message(Service* service,  User* user, int user_id, const
         log_message(ERROR, "Failed to create message");
         return;
     }
-    //write anything for passing the encryption
+    
     message_write_int(m, user->id);
     message_write_int(m, user_id);
     message_write_string(m, user->username);

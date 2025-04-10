@@ -81,7 +81,7 @@ void on_load_history_message(ChatMessageList *data);
 void on_update_history_contact(ChatMessage *data);
 void on_remove_contact(int id);
 void on_update_search_user(UserListData *data);
-
+void force_exit(GtkWidget *widget, gpointer data);
 
 //void on_receive_message(int id, const char* message, bool isGroup);
 #endif

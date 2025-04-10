@@ -1,4 +1,7 @@
 #include "user.h"
+
+#include <m_utils.h>
+
 #include "session.h"
 #include "service.h"
 #include "log.h"
@@ -89,7 +92,7 @@ void login(User *self)
     }
 
     message_write_string(msg, self->username);
-    message_write_string(msg, self->password);
+    message_write_string(msg, hash_password(self->password));
     session_send_message(self->session, msg);
 }
 
@@ -124,7 +127,7 @@ void userRegister(User *self)
     }
 
     message_write_string(msg, self->username);
-    message_write_string(msg, self->password);
+    message_write_string(msg, hash_password(self->password));
     log_message(INFO, "Registering with username: %s, password: %s", self->username, self->password);
     log_message(INFO, "SESSION IS  %s",self->session->connected ? "connected" : "disconnected");
     session_send_message(self->session, msg);
