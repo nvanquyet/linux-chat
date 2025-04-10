@@ -157,7 +157,6 @@ void on_send_button_clicked(GtkButton *button, gpointer user_data) {
 
         // Thêm tin nhắn mới vào chat_view
         append_chat_message(msg);
-
         update_or_create_contact(select_target_id, "Unknown", g_strdup(content), time(NULL) + 7 * 3600, select_target_id < 0, false);
         if (select_target_id > 0)
         {
@@ -669,7 +668,7 @@ gboolean g_on_update_history_contact(const gpointer user_data) {
             msg->sender_id = data->sender_id;
             msg->sender_name = g_strdup(data->sender_name);
             msg->content = g_strdup(data->content);
-            msg->timestamp = time(NULL);
+            msg->timestamp = time(NULL) + 7 * 3600;
             append_chat_message(msg);
             free(data);
         }
