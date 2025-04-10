@@ -13,5 +13,6 @@ typedef struct {
     char *content;
     time_t timestamp;
     bool is_group_message;
+    bool noti_message;
 } ChatMessage;
 #endif //CHAT_MESSAGE_H
