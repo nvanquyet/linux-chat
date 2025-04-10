@@ -949,44 +949,48 @@ void receive_group_message(Controller *controller, Message *message) {
         if (message) free(message);
         return;
     }
-
-    int sender_id = (int)message_read_int(message);
-    int group_id = (int)message_read_int(message);
-
-    char content[1024] = {0};
-    char group_name[1024] = {0};
-    char sender_name[1024] = {0};
-    if (!message_read_string(message, group_name, sizeof(group_name))) {
-        log_message(ERROR, "Failed to read group name");
-        free(message);
-        return;
-    }
-    if (!message_read_string(message, sender_name, sizeof(sender_name))) {
-        log_message(ERROR, "Failed to read sender name");
-        free(message);
-        return;
-    }
-    if (!message_read_string(message, content, sizeof(content))) {
-        log_message(ERROR, "Failed to read message content");
-        free(message);
-        return;
-    }
-    ChatMessage *m = malloc(sizeof(ChatMessage));
-    if (!m)
+    bool result = message_read_bool(message);
+    if (result)
     {
-        log_message(ERROR, "Memory allocation failed");
-        free(message);
-        return;
+        int sender_id = (int)message_read_int(message);
+        int group_id = (int)message_read_int(message);
+
+        char content[1024] = {0};
+        char group_name[1024] = {0};
+        char sender_name[1024] = {0};
+        if (!message_read_string(message, group_name, sizeof(group_name))) {
+            log_message(ERROR, "Failed to read group name");
+            free(message);
+            return;
+        }
+        if (!message_read_string(message, sender_name, sizeof(sender_name))) {
+            log_message(ERROR, "Failed to read sender name");
+            free(message);
+            return;
+        }
+        if (!message_read_string(message, content, sizeof(content))) {
+            log_message(ERROR, "Failed to read message content");
+            free(message);
+            return;
+        }
+        ChatMessage *m = malloc(sizeof(ChatMessage));
+        if (!m)
+        {
+            log_message(ERROR, "Memory allocation failed");
+            free(message);
+            return;
+        }
+        m->content = strdup(content);
+        m->sender_id = group_id;
+        m->sender_name = strdup(sender_name);
+        m->target_name = strdup(group_name);
+        m->timestamp = time(NULL);
+        m->is_group_message = true;
+        m->noti_message = true;
+        on_update_history_contact(m);
+        log_message(INFO, "Received Group ID: %d, Content: %s", group_id, content);
     }
-    m->content = strdup(content);
-    m->sender_id = group_id;
-    m->sender_name = strdup(sender_name);
-    m->target_name = strdup(group_name);
-    m->timestamp = time(NULL);
-    m->is_group_message = true;
-    m->noti_message = true;
-    on_update_history_contact(m);
-    log_message(INFO, "Received Group ID: %d, Content: %s", group_id, content);
+
     free(message);
 }
 
