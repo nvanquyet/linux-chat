@@ -653,13 +653,16 @@ gboolean g_on_update_history_contact(const gpointer user_data) {
     if (data)
     {
         update_or_create_contact(data->sender_id, data->target_name, data->content, data->timestamp, data->is_group_message, data->noti_message);
-        ChatMessage *msg = g_new0(ChatMessage, 1);
-        msg->sender_id = data->sender_id;
-        msg->sender_name = g_strdup(data->sender_name);
-        msg->content = g_strdup(data->content);
-        msg->timestamp = time(NULL);
-        append_chat_message(msg);
-        free(data);
+        if (data->sender_id == select_target_id)
+        {
+            ChatMessage *msg = g_new0(ChatMessage, 1);
+            msg->sender_id = data->sender_id;
+            msg->sender_name = g_strdup(data->sender_name);
+            msg->content = g_strdup(data->content);
+            msg->timestamp = time(NULL);
+            append_chat_message(msg);
+            free(data);
+        }
     }
 
     return FALSE; // trả FALSE để chỉ chạy 1 lần
