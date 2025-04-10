@@ -76,10 +76,12 @@ void create_join_group_ui() {
     button_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 20);
     gtk_widget_set_halign(button_box, GTK_ALIGN_CENTER);
     gtk_grid_attach(GTK_GRID(grid), button_box, 0, 2, 2, 1);
-
+    CredentialForm *cg_data = g_malloc(sizeof(CredentialForm));
+    cg_data->entry_username = GTK_ENTRY(group_name_entry);  // Gán đúng entry hiển thị
+    cg_data->entry_password = GTK_ENTRY(group_pass_entry);
     // Nút Join
     join_button = gtk_button_new_with_label("Join");
-  //  g_signal_connect(join_button, "clicked", G_CALLBACK(join_group_action), jg_data);
+    g_signal_connect(join_button, "clicked", G_CALLBACK(join_group_action), cg_data);
     gtk_box_pack_start(GTK_BOX(button_box), join_button, FALSE, FALSE, 0);
 
     // (Tùy chọn) Nút Cancel
