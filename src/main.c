@@ -24,7 +24,7 @@ int main(int argc, char *argv[]) {
     signal(SIGPIPE, SIG_IGN);
 
     // Parse command line arguments for server address
-    char *server_address = "20.92.162.4";
+    char *server_address = "52.187.131.203";
     //char *server_address = "127.0.0.1";
     int server_port = 1609;
 
