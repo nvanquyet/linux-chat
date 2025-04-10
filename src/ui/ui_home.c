@@ -33,13 +33,22 @@ static void on_create_group_clicked(GtkWidget *widget, gpointer data) {
 }
 
 static void on_leave_group_clicked(GtkWidget *widget, gpointer data) {
-    if (select_target_id >0)
+    if (select_target_id >= 0)
     {
         show_notification_window(INFO, "Please select group to leave");
         return;
     }
     Service *self = main_session->service;
     self->leave_group(self, main_session->user, select_target_id);
+}
+static void on_delete_group_clicked(GtkWidget *widget, gpointer data) {
+    if (select_target_id >= 0)
+    {
+        show_notification_window(INFO, "Please select group to leave");
+        return;
+    }
+    Service *self = main_session->service;
+    self->delete_group(self, main_session->user, select_target_id);
 }
 
 static void on_log_out_clicked(GtkWidget *widget, gpointer data) {
@@ -61,57 +70,81 @@ static void insert_message_to_buffer(GtkTextBuffer *buffer, ChatMessage *msg) {
     gtk_text_buffer_get_end_iter(buffer, &iter);
     GtkTextTagTable *table = gtk_text_buffer_get_tag_table(buffer);
 
-    // Lấy hoặc tạo tag
     GtkTextTag *tag = gtk_text_tag_table_lookup(table, msg->sender_id == main_session->user->id ? "self_user" : "other_user");
-     if (!tag) {
-         tag = gtk_text_tag_new(msg->sender_id == main_session->user->id ? "self_user" : "other_user");
-         const char *color = (msg->sender_id == main_session->user->id) ? "gray" : "blue";
-         g_object_set(tag, "foreground", color, NULL);
-         gtk_text_tag_table_add(table, tag);
-     }
-    // GtkTextTag *tag = gtk_text_tag_table_lookup(table, msg->sender_id == 2 ? "self_user" : "other_user");
-    // if (!tag) {
-    //     tag = gtk_text_tag_new(msg->sender_id == 2 ? "self_user" : "other_user");
-    //     const char *color = (msg->sender_id == 2 ? "gray" : "blue");
-    //     g_object_set(tag, "foreground", color, NULL);
-    //     gtk_text_tag_table_add(table, tag);
-    // }
-
-    // Format giờ
-    struct tm *timeinfo = localtime(&msg->timestamp);
-    char time_str[10];
-    strftime(time_str, sizeof(time_str), "[%H:%M]", timeinfo);
-
-    // Dòng đầu tiên: [HH:MM] Tên:
-    char header[256];
-    if (msg->sender_id == main_session->user->id)
-    {
-        snprintf(header, sizeof(header), "%s %s: ", time_str, "Me");
-    }else
-    {
-        snprintf(header, sizeof(header), "%s %s: ", time_str, msg->sender_name);
+    if (!tag) {
+        tag = gtk_text_tag_new(msg->sender_id == main_session->user->id ? "self_user" : "other_user");
+        const char *color = (msg->sender_id == main_session->user->id) ? "gray" : "blue";
+        g_object_set(tag, "foreground", color, NULL);
+        gtk_text_tag_table_add(table, tag);
     }
+
+    struct tm *timeinfo = localtime(&msg->timestamp);
+    char time_str[10] = "[??:??]";
+
+    if (timeinfo) {
+        strftime(time_str, sizeof(time_str), "[%H:%M]", timeinfo);
+    } else {
+        log_message(WARN, "Invalid timestamp from message id %d", msg->sender_id);
+    }
+    char header[256];
+    snprintf(header, sizeof(header), "%s %s: ", time_str,
+             msg->sender_id == main_session->user->id ? "Me" : msg->sender_name);
 
     gtk_text_buffer_insert_with_tags(buffer, &iter, header, -1, tag, NULL);
 
-    // Dòng nội dung
-    gtk_text_buffer_insert(buffer, &iter, msg->content, -1);
+    if (!msg->content || !g_utf8_validate(msg->content, -1, NULL)) {
+        log_message(ERROR, "Invalid or NULL content from sender %d", msg->sender_id);
+        gtk_text_buffer_insert(buffer, &iter, "<Invalid message>", -1);
+    } else {
+        gtk_text_buffer_insert(buffer, &iter, msg->content, -1);
+    }
+
     gtk_text_buffer_insert(buffer, &iter, "\n", -1);
 
-    // Scroll xuống
     GtkTextMark *mark = gtk_text_buffer_create_mark(buffer, NULL, &iter, FALSE);
     gtk_text_view_scroll_mark_onscreen(GTK_TEXT_VIEW(chat_view), mark);
 }
+
 void load_chat_history(ChatMessage *history, int count) {
-    GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(chat_view));
-    gtk_text_buffer_set_text(buffer, "", -1); // Clear cũ
-    log_message(INFO, "Loading history... %d", count);
-    for (int i = 0; i < count; ++i) {;
-        insert_message_to_buffer(buffer, &history[i]);
+    if (history == NULL || count <= 0) {
+        log_message(WARN, "No chat history to load.");
+        return;
     }
+
+    GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(chat_view));
+    gtk_text_buffer_set_text(buffer, "", -1);  // Clear nội dung cũ
+
+    log_message(INFO, "Loading chat history: %d message(s)", count);
+
+    for (int i = 0; i < count; ++i) {
+        ChatMessage *msg = &history[i];
+
+        if (msg == NULL || msg->content == NULL) {
+            log_message(WARN, "Message at index %d is NULL or has NULL content", i);
+            continue;
+        }
+
+        // Bọc thử-catch kiểu C (manual check)
+        insert_message_to_buffer(buffer, msg);
+    }
+
 }
 
+
 void append_chat_message(ChatMessage *msg) {
+    ChatMessage *m = malloc(sizeof(ChatMessage));
+    if (m && msg)
+    {
+        m->content = strdup(msg->content);
+        m->sender_id = select_target_id;
+        m->sender_name = "Unknown";
+        m->target_name = "Unknown";
+        m->timestamp = time(NULL);
+        m->is_group_message = msg->is_group_message;
+        m->noti_message = false;
+        on_update_history_contact(m);
+
+    }
     GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(chat_view));
     insert_message_to_buffer(buffer, msg);
 }
@@ -191,14 +224,31 @@ static GtkWidget* get_time_label_from_event_box(GtkWidget *event_box) {
     g_list_free(children);
     return time_label;
 }
+static gboolean is_click_disabled = FALSE;
 
+gboolean enable_click(gpointer data) {
+    is_click_disabled = FALSE;
+    return G_SOURCE_REMOVE; // Chạy 1 lần rồi tự huỷ
+}
 gboolean on_contact_item_click(GtkWidget *widget, GdkEventButton *event, gpointer user_data) {
+    if (is_click_disabled)
+    {
+        return false;
+    }
+    is_click_disabled = TRUE;
+    g_timeout_add(500, enable_click, NULL);
+
     GtkWidget *vbox = get_vbox_from_event_box(widget);
     GtkWidget *title_label = get_label_from_vbox(vbox, 0);
+    GtkWidget *msg_label = get_label_from_vbox(vbox, 1);
     int target_id = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(widget), "id"));
+    // Bỏ in đậm title nếu đang dùng markup
+    // const char *plain_title = gtk_label_get_text(GTK_LABEL(title_label));
+    // gtk_label_set_text(GTK_LABEL(title_label), plain_title);
 
-    const char *plain_title = gtk_label_get_text(GTK_LABEL(title_label));
-    gtk_label_set_text(GTK_LABEL(title_label), plain_title);
+    // Bỏ in đậm message nếu đang in đậm
+    const char *plain_msg = gtk_label_get_text(GTK_LABEL(msg_label));
+    gtk_label_set_text(GTK_LABEL(msg_label), plain_msg);
 
     g_print("Clicked : %d\n", target_id);
     select_target_id = target_id;
@@ -206,45 +256,46 @@ gboolean on_contact_item_click(GtkWidget *widget, GdkEventButton *event, gpointe
     return FALSE;
 }
 
-// Tạo widget contact item với khả năng click và lưu thêm dữ liệu
 GtkWidget* create_contact_item_with_click(int id,
-                                            const char *title,
-                                            const char *message,
-                                            const char *time_str)
+                                          const char *title,
+                                          const char *message,
+                                          const char *time_str)
 {
-    // Tạo event box để bắt sự kiện click và lưu thông tin id, isGroup
     GtkWidget *event_box = gtk_event_box_new();
     g_object_set_data(G_OBJECT(event_box), "id", GINT_TO_POINTER(id));
 
-    // Tạo layout: hbox chứa vbox (title và message) và time_label
     GtkWidget *hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
     GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 2);
 
-    // Tạo title label (ban đầu không in đậm)
-    GtkWidget *title_label = gtk_label_new(title);
+    // Title
+    GtkWidget *title_label = gtk_label_new(NULL);
     gtk_label_set_xalign(GTK_LABEL(title_label), 0.0);
+    gtk_label_set_markup(GTK_LABEL(title_label), g_markup_printf_escaped("<b>%s</b>", title));
 
-    // Tạo message label với văn bản rút gọn nếu dài
+    // Message
     char short_msg[64];
     if (strlen(message) > 20) {
         snprintf(short_msg, sizeof(short_msg), "%.20s...", message);
     } else {
         snprintf(short_msg, sizeof(short_msg), "%s", message);
     }
+
     GtkWidget *msg_label = gtk_label_new(short_msg);
     gtk_label_set_xalign(GTK_LABEL(msg_label), 0.0);
 
-    // Tạo time label
+    // Time
     GtkWidget *time_label = gtk_label_new(time_str);
 
-    // Sắp xếp layout
+    // Pack layout
     gtk_box_pack_start(GTK_BOX(vbox), title_label, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox), msg_label, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(hbox), vbox, TRUE, TRUE, 0);
     gtk_box_pack_end(GTK_BOX(hbox), time_label, FALSE, FALSE, 0);
+
     gtk_container_add(GTK_CONTAINER(event_box), hbox);
     g_signal_connect(event_box, "button-press-event", G_CALLBACK(on_contact_item_click), NULL);
-    gtk_widget_show(event_box);
+    gtk_widget_show_all(event_box);
+
     return event_box;
 }
 
@@ -265,13 +316,8 @@ void remove_contact(int id) {
     }
 }
 
-// Hàm cập nhật hoặc tạo mới contact
-void update_or_create_contact(int id, const char *title, const char *message, long time, bool isGroup) {
-    if (!title || !message) return;
-
+void update_or_create_contact(int id, const char *title, const char *message, long time, bool isGroup, bool bold) {
     int map_id = isGroup && id > 0 ? -id : id;
-
-    // Tạo chuỗi thời gian
     time_t t = (time_t)time;
     struct tm *tm_info = localtime(&t);
     char buffer[16];
@@ -284,31 +330,49 @@ void update_or_create_contact(int id, const char *title, const char *message, lo
     GtkWidget *existing_widget = g_hash_table_lookup(contact_map, GINT_TO_POINTER(map_id));
 
     if (existing_widget != NULL) {
-        // Contact đã tồn tại, cập nhật thông tin
+        // Đã có rồi → chỉ cần update message + time + đưa lên đầu
         GtkWidget *vbox = get_vbox_from_event_box(existing_widget);
         GtkWidget *title_label = get_label_from_vbox(vbox, 0);
         GtkWidget *msg_label = get_label_from_vbox(vbox, 1);
         GtkWidget *time_label = get_time_label_from_event_box(existing_widget);
 
-        gtk_label_set_text(GTK_LABEL(title_label), title);
-
-        // Rút gọn nội dung tin nhắn
+        // Rút gọn message
         char short_msg[64];
-        if (strlen(message) > 20) {
+        if (message && strlen(message) > 20) {
             snprintf(short_msg, sizeof(short_msg), "%.20s...", message);
         } else {
-            snprintf(short_msg, sizeof(short_msg), "%s", message);
+            snprintf(short_msg, sizeof(short_msg), "%s", message ? message : "");
         }
-        gtk_label_set_text(GTK_LABEL(msg_label), short_msg);
-
+        if (bold) {
+            gtk_label_set_markup(GTK_LABEL(msg_label), g_markup_printf_escaped("<b>%s</b>", short_msg));
+        } else {
+            gtk_label_set_text(GTK_LABEL(msg_label), short_msg);
+        }
         gtk_label_set_text(GTK_LABEL(time_label), buffer);
 
-        // 👉 Đưa lên đầu danh sách
-        gtk_container_remove(GTK_CONTAINER(contacts_box), existing_widget);
-        gtk_box_pack_start(GTK_BOX(contacts_box), existing_widget, FALSE, FALSE, 2);
+
+        log_message(INFO, "INFO update message %d %s", select_target_id, message);
+        // Đưa lên đầu danh sách
+        if (GTK_IS_WIDGET(existing_widget) && gtk_widget_get_parent(existing_widget) == contacts_box) {
+            gtk_box_reorder_child(GTK_BOX(contacts_box), existing_widget, 0);
+        } else {
+            log_message(ERROR, "Widget is not valid or not in contacts_box");
+        }
+
     } else {
-        // Tạo contact mới và đưa lên đầu
+        // Mới hoàn toàn — cần title để tạo widget
+        if (!title) {
+            log_message(ERROR, "Cannot create new contact: title is NULL");
+            return;
+        }
+
         GtkWidget *widget = create_contact_item_with_click(map_id, title, message, buffer);
+
+        if (!widget) {
+            log_message(ERROR, "create_contact_item_with_click failed");
+            return;
+        }
+
         gtk_box_pack_start(GTK_BOX(contacts_box), widget, FALSE, FALSE, 2);
         g_hash_table_insert(contact_map, GINT_TO_POINTER(map_id), widget);
     }
@@ -316,44 +380,6 @@ void update_or_create_contact(int id, const char *title, const char *message, lo
     gtk_widget_show_all(contacts_box);
 }
 
-
-// Hàm cập nhật tin nhắn mới khi server gửi về
-void on_receive_new_message(int id, const char* message, bool isGroup)
-{
-    // Tìm widget contact dựa trên id (nếu nhóm thì key là âm: -id)
-    GtkWidget *widget = g_hash_table_lookup(contact_map, GINT_TO_POINTER(isGroup ? -id : id));
-    if (!widget)
-        return;
-
-    // Cập nhật message: Lấy vbox chứa các label (title, message)
-    GtkWidget *vbox = get_vbox_from_event_box(widget);
-    GtkWidget *msg_label = get_label_from_vbox(vbox, 1);  // label thứ 2 là message
-    char short_msg[64];
-    if (strlen(message) > 20) {
-        snprintf(short_msg, sizeof(short_msg), "%.20s...", message);
-    } else {
-        snprintf(short_msg, sizeof(short_msg), "%s", message);
-    }
-    gtk_label_set_text(GTK_LABEL(msg_label), short_msg);
-
-    // Cập nhật thời gian với thời gian hiện tại
-    time_t now = time(NULL);
-    struct tm *now_tm = localtime(&now);
-    char time_buf[16];
-    strftime(time_buf, sizeof(time_buf), "%H:%M", now_tm);
-    GtkWidget *time_label = get_time_label_from_event_box(widget);
-    gtk_label_set_text(GTK_LABEL(time_label), time_buf);
-
-    // Cập nhật title: đặt in đậm để highlight tin mới
-    GtkWidget *title_label = get_label_from_vbox(vbox, 0);
-    const char *plain_title = gtk_label_get_text(GTK_LABEL(title_label));
-    char markup_title[128];
-    snprintf(markup_title, sizeof(markup_title), "<b>%s</b>", plain_title);
-    gtk_label_set_markup(GTK_LABEL(title_label), markup_title);
-
-    // Đẩy widget lên đầu danh sách (nếu cần)
-    gtk_box_reorder_child(GTK_BOX(contacts_box), widget, 0);
-}
 
 // Hàm khởi tạo bảng băm contact_map (gọi một lần khi start)
 void init_contact_map() {
@@ -428,7 +454,7 @@ static gboolean on_search_item_clicked(GtkWidget *event_box, GdkEventButton *eve
 
         // Set giá trị adjustment để scroll tới widget
         gtk_adjustment_set_value(adj, allocation.y);
-
+        log_message(INFO, "ITEM Click");
         on_contact_item_click(contact_widget, NULL, NULL);
     } else {
         // Sử dụng username từ search item thay vì tạo title mới
@@ -447,6 +473,7 @@ static gboolean on_search_item_clicked(GtkWidget *event_box, GdkEventButton *eve
         gtk_widget_show_all(new_contact);
 
         // Kích hoạt contact mới
+        log_message(INFO, "ITEM Click");
         on_contact_item_click(new_contact, NULL, NULL);
     }
 
@@ -598,6 +625,9 @@ void show_chat_window() {
     GtkWidget *leave_group_button = gtk_button_new_with_label("Leave Group");
     g_signal_connect(leave_group_button, "clicked", G_CALLBACK(on_leave_group_clicked), NULL);
     gtk_box_pack_start(GTK_BOX(func_box), leave_group_button, FALSE, FALSE, 0);
+    GtkWidget *delete_group_button = gtk_button_new_with_label("Delete Group");
+    g_signal_connect(delete_group_button, "clicked", G_CALLBACK(on_delete_group_clicked), NULL);
+    gtk_box_pack_start(GTK_BOX(func_box), delete_group_button, FALSE, FALSE, 0);
 
     GtkWidget *logout_button = gtk_button_new_with_label("Log Out");
     g_signal_connect(logout_button, "clicked", G_CALLBACK(on_log_out_clicked), NULL);
@@ -634,7 +664,7 @@ gboolean g_on_update_history_contact(const gpointer user_data) {
     ChatMessage *data = (ChatMessage *)user_data;
     if (data)
     {
-        update_or_create_contact(data->sender_id, data->target_name, data->content, data->timestamp, data->is_group_message);
+        update_or_create_contact(data->sender_id, data->target_name, data->content, data->timestamp, data->is_group_message, data->noti_message);
         free(data);
     }
 

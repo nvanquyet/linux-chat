@@ -586,9 +586,9 @@ void handle_join_group(Controller *controller, Message *message) {
 
     bool joined = message_read_bool(message);
 
-
     if (joined) {
-        int id = (int)message_read_int(message);
+        int group_id = (int)message_read_int(message);
+        int user_id = (int)message_read_int(message);
         char *group_name = malloc(1024);
         char *last_message = malloc(1024);
         char *sender_name = malloc(1024);
@@ -600,42 +600,35 @@ void handle_join_group(Controller *controller, Message *message) {
             free(sender_name);
             return;
         }
-        if (!message_read_string(message, group_name, 1024))
+        if (!message_read_string(message, group_name, 1024) ||
+            !message_read_string(message, sender_name, 1024) ||
+            !message_read_string(message, last_message, 1024))
         {
-            log_message(WARN, "Failed to read group_name");
+            log_message(WARN, "Failed to read data");
+            show_notification_window(WARN, "Failed to read data");
             return;
         }
-        if (!message_read_string(message, sender_name, 1024))
-        {
-            log_message(WARN, "Failed to read sender_name");
-            return;
-        }
-        if (!message_read_string(message, last_message, 1024))
-        {
-            log_message(WARN, "Failed to read last_message");
-            return;
-        }
+
         ChatMessage *m = malloc(sizeof(ChatMessage));
         if (!m)
         {
             log_message(ERROR, "Memory allocation failed for join_group");
             return;
         }
-        show_notification_window(INFO, "Join Group: %s Sucess", group_name);
+        //show_notification_window(INFO, "Join Group: %s Sucess", group_name);
         m->content = strdup(last_message);
         m->sender_name = strdup(sender_name);
         m->target_name = strdup(group_name);
-        m->sender_id = id;
+        m->sender_id = group_id;
         m-> is_group_message = true;
         on_update_history_contact(m);
-
     } else {
         char response_msg[256] = {0};
         if (!message_read_string(message, response_msg, sizeof(response_msg))) {
-            log_message(ERROR, "Failed to read response message");
             free(message);
             return;
         }
+        show_notification_window(WARN, response_msg);
         log_message(WARN, "Join group failed: %s", response_msg);
     }
 
@@ -652,7 +645,17 @@ void delete_group(Controller *controller, Message *message) {
 
     if (result) {
         log_message(INFO, "Group deleted successfully");
-        printf("Group deleted successfully.\n");
+        int group_id = (int)message_read_int(message);
+        char *last_message = malloc(1024);
+        if (!message_read_string(message, last_message, 1024))
+        {
+            log_message(WARN, "Failed to read data");
+            show_notification_window(WARN, "Failed to read data");
+            return;
+        }
+        show_notification_window(INFO, last_message);
+        on_remove_contact(group_id < 0 ? group_id : -group_id);
+
     } else {
         char *error_message = malloc(1024);
         if (!error_message) {
@@ -667,7 +670,7 @@ void delete_group(Controller *controller, Message *message) {
         }
 
         log_message(INFO, "Failed to delete group: %s", error_message);
-        printf("Failed to delete group: %s\n", error_message);
+        show_notification_window(INFO, "Failed to delete group: %s", error_message);
         free(error_message);
     }
 
@@ -683,27 +686,39 @@ void create_group(Controller *controller, Message *msg) {
     bool result = message_read_bool(msg);
     if (result) {
         int group_id = (int)message_read_int(msg);
-        //log_message(INFO, "Group created successfully with ID: %d", group_id);
-
+        int user_id = (int)message_read_int(msg);
+        char *group_name = malloc(1024);
+        char *last_message = malloc(1024);
+        char *sender_name = malloc(1024);
+        if (!group_name || !last_message || !sender_name)
+        {
+            log_message(ERROR, "Memory allocation failed for join_group");
+            free(group_name);
+            free(last_message);
+            free(sender_name);
+            return;
+        }
+        if (!message_read_string(msg, group_name, 1024) ||
+            !message_read_string(msg, sender_name, 1024) ||
+            !message_read_string(msg, last_message, 1024))
+        {
+            log_message(WARN, "Failed to read data");
+            show_notification_window(WARN, "Failed to read data");
+            return;
+        }
 
         ChatMessage *m = malloc(sizeof(ChatMessage));
-        if (m)
+        if (!m)
         {
-            m->sender_id = group_id;
-            char group_name[1024];
-            if (!message_read_string(msg, group_name, 1024))
-            {
-                log_message(WARN, "Failed to read group_name");
-            }
-            m->sender_name = strdup(group_name);
-            m->target_name = strdup(group_name);
-            show_notification_window(INFO, "Group created successfully: %s", m->target_name);
-            m->content = "Tin nhan moi ...";
-            m->timestamp = (long) message_read_long(msg);
-            m->is_group_message = true;
-            on_update_history_contact(m);
+            log_message(ERROR, "Memory allocation failed for join_group");
+            return;
         }
-        //printf("Group created successfully. Group ID: %d\n", group_id);
+        m->content = strdup(last_message);
+        m->sender_name = strdup(sender_name);
+        m->target_name = strdup(group_name);
+        m->sender_id = group_id;
+        m-> is_group_message = true;
+        on_update_history_contact(m);
     } else {
         char *error_message = malloc(1024);
         if (!error_message) {
@@ -725,6 +740,7 @@ void create_group(Controller *controller, Message *msg) {
 }
 
 void leave_group(Controller *controller, Message *message) {
+    log_message(INFO, "Leaving group Exc");
     if (!validate_controller_and_message(controller, message, __func__)) {
         if (message) free(message);
         return;
@@ -747,8 +763,45 @@ void leave_group(Controller *controller, Message *message) {
         show_notification_window(ERROR, "Error: %s", error_message);
         free(error_message);
     } else {
-        int id = (int) message_read_int(message);
-        on_remove_contact(id < 0 ? id : -id);
+        int group_id = (int)message_read_int(message);
+        int user_id = (int)message_read_int(message);
+        char *group_name = malloc(1024);
+        char *last_message = malloc(1024);
+        char *sender_name = malloc(1024);
+        if (!group_name || !last_message || !sender_name)
+        {
+            log_message(ERROR, "Memory allocation failed for join_group");
+            free(group_name);
+            free(last_message);
+            free(sender_name);
+            return;
+        }
+        if (!message_read_string(message, group_name, 1024) ||
+            !message_read_string(message, sender_name, 1024) ||
+            !message_read_string(message, last_message, 1024))
+        {
+            log_message(WARN, "Failed to read data");
+            show_notification_window(WARN, "Failed to read data");
+            return;
+        }
+        if (user_id == controller->user->id)
+        {
+            on_remove_contact(group_id < 0 ? group_id : -group_id);
+        }else
+        {
+            ChatMessage *m = malloc(sizeof(ChatMessage));
+            if (!m)
+            {
+                log_message(ERROR, "Memory allocation failed for join_group");
+                return;
+            }
+            m->content = strdup(last_message);
+            m->sender_name = strdup(sender_name);
+            m->target_name = strdup(group_name);
+            m->sender_id = group_id;
+            m-> is_group_message = true;
+            on_update_history_contact(m);
+        }
     }
 
     free(message);
@@ -886,12 +939,14 @@ void receive_user_message(Controller *controller, Message *message) {
         free(message);
         return;
     }
-    m->content = strdup(content);
     m->sender_id = sender_id;
     m->sender_name = strdup(user_name);
     m->target_name = strdup(user_name);
+    m->content = strdup(content);
+
     m->timestamp = time(NULL);
     m->is_group_message = false;
+    m->noti_message = true;
     on_update_history_contact(m);
     log_message(INFO, "Received User ID: %d, Content: %s", user_id, content);
     free(message);
@@ -937,6 +992,7 @@ void receive_group_message(Controller *controller, Message *message) {
     m->target_name = strdup(group_name);
     m->timestamp = time(NULL);
     m->is_group_message = true;
+    m->noti_message = true;
     on_update_history_contact(m);
     log_message(INFO, "Received Group ID: %d, Content: %s", group_id, content);
     free(message);
@@ -1019,12 +1075,13 @@ void get_user_message(Controller *controller, Message *msg) {
 
     free(msg);
 }
-
 void get_group_message(Controller *controller, Message *msg) {
     if (!validate_controller_and_message(controller, msg, __func__)) {
         if (msg) free(msg);
         return;
     }
+
+    log_message(INFO, "Get history group message");
 
     bool has_messages = message_read_bool(msg);
     if (!has_messages) {
@@ -1036,7 +1093,13 @@ void get_group_message(Controller *controller, Message *msg) {
     int count = (int)message_read_int(msg);
     log_message(INFO, "Received %d group messages", count);
 
-    // Process each message
+    ChatMessage *history = calloc(count, sizeof(ChatMessage));
+    if (!history) {
+        log_message(ERROR, "Memory allocation failed for group chat history");
+        free(msg);
+        return;
+    }
+
     for (int i = 0; i < count; i++) {
         int sender_id = (int)message_read_int(msg);
 
@@ -1060,15 +1123,31 @@ void get_group_message(Controller *controller, Message *msg) {
 
         long timestamp = (long)message_read_long(msg);
 
-        printf("Group Message #%d\n", i + 1);
-        printf("Sender ID: %d\n", sender_id);
-        printf("Sender Name: %s\n", sender_name);
-        printf("Content: %s\n", content);
-        printf("Timestamp: %ld\n", timestamp);
+        history[i].sender_id = sender_id;
+        history[i].sender_name = strdup(sender_name);
+        history[i].content = strdup(content);
+        history[i].timestamp = timestamp;
+        history[i].is_group_message = true;
 
         free(sender_name);
         free(content);
     }
+
+    ChatMessageList *data = malloc(sizeof(ChatMessageList));
+    if (!data) {
+        log_message(ERROR, "Memory allocation failed for group message list");
+        for (int i = 0; i < count; i++) {
+            free(history[i].sender_name);
+            free(history[i].content);
+        }
+        free(history);
+        free(msg);
+        return;
+    }
+
+    data->history = history;
+    data->count = count;
+    on_load_history_message(data);
 
     free(msg);
 }

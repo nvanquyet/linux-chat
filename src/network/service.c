@@ -156,6 +156,7 @@ void service_join_group(Service* service, User* user, const char* group_name, co
     message_write_int(message, user->id);
     message_write_string(message, group_name);
     message_write_string(message, group_password);
+    message_write_string(message, user->username);
 
     // Kiểm tra nếu session là NULL
     if (service->session == NULL) {
@@ -186,7 +187,7 @@ void service_leave_group(Service* service, User* user, int group_id) {
     }
 
     // Write anything for passing the encryption
-    message_write_int(message, group_id);
+    message_write_int(message, group_id < 0 ? -group_id : group_id);
     message_write_int(message, user->id);
 
     if (!service->session) {
@@ -195,7 +196,7 @@ void service_leave_group(Service* service, User* user, int group_id) {
         return;
     }
 
-    log_message(INFO, "Leaving group %d", group_id);
+    log_message(INFO, "Leaving group %d", group_id < 0 ? -group_id : group_id);
     session_send_message(service->session, message);
 }
 
@@ -212,7 +213,7 @@ void service_delete_group(Service* service, User* user, int group_id) {
         return;
     }
     //write anything for passing the encryption
-    message_write_int(message, group_id);
+    message_write_int(message, group_id > 0 ? group_id : -group_id);
     message_write_int(message, user->id);
     if(!service->session) {
         log_message(ERROR, "Session is NULL");
@@ -291,9 +292,9 @@ void service_get_history_message(Service* service,  User* user, int target_id)
         log_message(ERROR, "Failed to create message");
         return;
     }
-    log_message(INFO, "Get History between %d and %d", user->id, target_id);
+    log_message(INFO, "Get History between %d and %d", user->id, target_id > 0 ? target_id : -target_id);
 
     message_write_int(m, user->id);
-    message_write_int(m, target_id);
+    message_write_int(m, target_id > 0 ? target_id : -target_id);
     session_send_message(service->session, m);
 }
