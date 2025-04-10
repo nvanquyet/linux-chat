@@ -7,12 +7,12 @@
 #include "session.h"
 extern Session* main_session;
 extern GtkWidget* current_ui;
-// Prototype các hàm
-static void (GtkWidget *button, gpointer user_data);
+
+static void on_login_button_clicked(GtkWidget *button, gpointer user_data);
 static void on_register_button_clicked(GtkWidget *button, gpointer user_data);
  void on_login_window_destroy(GtkWidget *widget, gpointer user_data);
 
-static void (GtkWidget *button, gpointer user_data) {
+static void on_login_button_clicked(GtkWidget *button, gpointer user_data) {
     CredentialForm *login_data = (CredentialForm *)user_data;
     const gchar *username = gtk_entry_get_text(login_data->entry_username);
     const gchar *password = gtk_entry_get_text(login_data->entry_password);
@@ -32,7 +32,7 @@ static void (GtkWidget *button, gpointer user_data) {
 }
 
 
-// Xử lý nút "Đăng ký"
+
 static void on_register_button_clicked(GtkWidget *button, gpointer user_data) {
     on_show_ui(MAIN_UI_LEVEL_REGISTER);
 }
@@ -40,13 +40,13 @@ static void on_register_button_clicked(GtkWidget *button, gpointer user_data) {
 void on_login_window_destroy(GtkWidget *widget, gpointer data) {
     CredentialForm *login_data = (CredentialForm *)data;
     if (login_data) {
-        // Giải phóng data cấp phát bằng g_malloc
+        
         g_free(login_data);
     }
 
 }
 
-// Create and display the login window
+
 void create_login_ui() {
     GtkWidget *window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_title(GTK_WINDOW(window), "Login");
@@ -56,10 +56,10 @@ void create_login_ui() {
     login_data->entry_username = GTK_ENTRY(gtk_entry_new());
     login_data->entry_password = GTK_ENTRY(gtk_entry_new());
 
-    // Hide password
+    
     gtk_entry_set_visibility(login_data->entry_password, FALSE);
 
-    // Layout
+    
     GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
     gtk_container_add(GTK_CONTAINER(window), vbox);
 
@@ -69,17 +69,17 @@ void create_login_ui() {
     gtk_box_pack_start(GTK_BOX(vbox), gtk_label_new("Password:"), FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox), GTK_WIDGET(login_data->entry_password), FALSE, FALSE, 0);
 
-    // Login button
+    
     GtkWidget *btn_login = gtk_button_new_with_label("Login");
-    g_signal_connect(btn_login, "clicked", G_CALLBACK(), login_data);
+    g_signal_connect(btn_login, "clicked", G_CALLBACK(on_login_button_clicked), login_data);
     gtk_box_pack_start(GTK_BOX(vbox), btn_login, FALSE, FALSE, 0);
 
-    // Register button
+    
     GtkWidget *btn_register = gtk_button_new_with_label("Register new account");
     g_signal_connect(btn_register, "clicked", G_CALLBACK(on_register_button_clicked), login_data);
     gtk_box_pack_start(GTK_BOX(vbox), btn_register, FALSE, FALSE, 0);
 
-    // Close window
+    
     g_signal_connect(window, "destroy", G_CALLBACK(force_exit), login_data);
 
     gtk_widget_show_all(window);

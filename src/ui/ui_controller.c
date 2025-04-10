@@ -1,6 +1,6 @@
-//
-// Created by vawnwuyest on 09/04/2025.
-//
+
+
+
 #include "../include/ui_controller.h"
 
 #include <log.h>
@@ -26,7 +26,7 @@ void on_show_ui(MAIN_UI_LEVEL level)
             }
         default:
             {
-                (ERROR, "No has windows %s", level);
+                show_notification_window(ERROR, "No has windows %s", level);
                 break;
             }
     }
@@ -37,16 +37,16 @@ void set_current_ui(GtkWidget *widget) {
 
     if (widget == NULL) return;
     if (current_ui != NULL) {
-        // Option 1: Hide
+        
         gtk_widget_hide(current_ui);
 
-        // // Option 2: Remove from parent's container
-        // GtkWidget *parent = gtk_widget_get_parent(current_ui);
-        // if (parent != NULL) {
-        //     gtk_container_remove(GTK_CONTAINER(parent), current_ui);
-        // }
-        //// Option 3: Destroy widget
-        //gtk_widget_destroy(current_ui);
+        
+        
+        
+        
+        
+        
+        
     }
 
     current_ui = widget;
@@ -75,20 +75,20 @@ void show_register_window()
     g_idle_add((GSourceFunc)g_on_show_register_window, NULL);
 
 }
-void (LogLevel level, const char *content, ...)
+void show_notification_window(LogLevel level, const char *content, ...)
 {
     GtkMessageType type = level == ERROR ? GTK_MESSAGE_ERROR :
                           (level == INFO ? GTK_MESSAGE_INFO :
                           (level == WARN ? GTK_MESSAGE_WARNING : GTK_MESSAGE_OTHER));
 
-    // Format nội dung vào buffer
-    char formatted[512];  // hoặc lớn hơn nếu cần
+    
+    char formatted[512];  
     va_list args;
     va_start(args, content);
     vsnprintf(formatted, sizeof(formatted), content, args);
     va_end(args);
 
-    // Hiển thị dialog
+    
     GtkWidget *dialog = gtk_message_dialog_new(
         NULL,
         GTK_DIALOG_MODAL,
@@ -102,10 +102,10 @@ void (LogLevel level, const char *content, ...)
 }
 
 
-// void on_receive_message()
-// {
-//
-// }
+
+
+
+
 void on_load_history_message(ChatMessageList *data)
 {
     g_idle_add((GSourceFunc)g_on_load_history_message, data);
@@ -123,6 +123,6 @@ void on_update_search_user(UserListData *data)
     g_idle_add((GSourceFunc)g_on_update_search_user, data);
 }
 void force_exit(GtkWidget *widget, gpointer data) {
-    gtk_main_quit();  // thoát vòng lặp GTK
-    exit(0);          // kết thúc chương trình hoàn toàn
+    gtk_main_quit();  
+    exit(0);          
 }
