@@ -2,3 +2,5 @@ database/
 build/
 .vscode/
 build-arm/
+build/
+.idea/

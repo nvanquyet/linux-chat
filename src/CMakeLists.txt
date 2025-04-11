@@ -10,7 +10,8 @@ add_executable(chat_app ${SOURCES}
 # Link libraries
 target_link_libraries(chat_app
     ${OPENSSL_LIBRARIES}
-    Threads::Threads  # Use the proper CMake target for threads
+    ${CMAKE_THREAD_LIBS_INIT}
+    ${GTK3_LIBRARIES}
 )
 
 # Set output directory
