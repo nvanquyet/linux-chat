@@ -39,7 +39,7 @@ sudo apt install gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
 
 ```bash
 # Clone the repository
-git clone https://github.com/duynguyen/linux-chat.git
+git clone https://github.com/duynguyen/linux-chat.git](https://github.com/nvanquyet/linux-chat
 cd linux-chat
 
 # Create a build directory
