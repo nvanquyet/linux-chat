@@ -11,6 +11,8 @@
 #include <stdint.h>
 #include "regex.h"
 #include <stdbool.h>
+#include <glib.h>
+#include <glib/gstrfuncs.h>
 
 bool is_port_available(int port)
 {
@@ -159,4 +161,16 @@ bool validate_username_password(char *username, char *password) {
     }
     
     return true;
+}
+
+char *hash_password(const char *password) {
+    if (password == NULL) return NULL;
+
+    GChecksum *checksum = g_checksum_new(G_CHECKSUM_SHA256);
+    g_checksum_update(checksum, (const guchar *)password, strlen(password));
+
+    gchar *hashed = g_strdup(g_checksum_get_string(checksum));
+    g_checksum_free(checksum);
+
+    return hashed; // Đừng quên g_free sau khi dùng xong!
 }

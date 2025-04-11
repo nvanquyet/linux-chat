@@ -1,4 +1,4 @@
-// System includes first
+
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <pthread.h>
@@ -316,7 +316,9 @@ void session_send_message(Session *session, Message *message)
         return;
     }
 
+
     SessionPrivate *private = (SessionPrivate *)session->_private;
+
     if (session->connected && private->sender != NULL && private->sender->running)
     {
         message_queue_add(private->sender->queue, message);
@@ -552,7 +554,6 @@ void *sender_thread(void *arg)
             {
                 
                 Message *msg = message_queue_remove(queue, 0);
-         
                 if (msg != NULL)
                 {
                     do_send_message(session, msg);
@@ -667,13 +668,13 @@ Message *session_read_message(Session *session)
         return msg;
     }
 
-
-    unsigned char iv[16];
-    if (recv(session->socket, iv, sizeof(iv), 0) <= 0)
-    {
-        log_message(ERROR, "Failed to receive IV");
+    unsigned char iv[16];  
+    int bytes_received = recv(session->socket, iv, sizeof(iv), 0);
+    if (bytes_received <= 0) {
+        log_message(ERROR, "Failed to receive IV, bytes received: %d", bytes_received);
         return NULL;
     }
+
 
     uint32_t original_size;
     if (recv(session->socket, &original_size, sizeof(original_size), 0) <= 0)
@@ -874,7 +875,6 @@ void message_queue_add(MessageQueue *queue, Message *message)
     {
         return;
     }
-
     pthread_mutex_lock(&queue->mutex);
 
     if (queue->size >= queue->capacity)
@@ -893,6 +893,7 @@ void message_queue_add(MessageQueue *queue, Message *message)
     queue->messages[queue->size++] = message;
 
     pthread_mutex_unlock(&queue->mutex);
+
 }
 
 Message *message_queue_get(MessageQueue *queue, int index)
@@ -960,6 +961,5 @@ void session_process_message(Session *self, Message *msg)
     {
         return;
     }
-
     self->onMessage(self, msg);
 }

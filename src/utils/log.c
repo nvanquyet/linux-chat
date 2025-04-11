@@ -16,7 +16,7 @@ void log_message(LogLevel level, const char* format, ...) {
     
     const char* level_str;
     switch (level) {
-        case DEBUG:   level_str = "DEBUG"; break;
+        case LOG_DEBUG:   level_str = "DEBUG"; break;
         case INFO:    level_str = "INFO"; break;
         case WARN: level_str = "WARN"; break;
         case ERROR:   level_str = "ERROR"; break;

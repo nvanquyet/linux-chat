@@ -5,12 +5,13 @@ file(GLOB_RECURSE SOURCES "*.c")
 
 # Create executable
 add_executable(chat_app ${SOURCES}
-        ../include/chat_common.h)
+        ../include/ui_controller.h)
 
 # Link libraries
 target_link_libraries(chat_app
     ${OPENSSL_LIBRARIES}
-    Threads::Threads  # Use the proper CMake target for threads
+    ${CMAKE_THREAD_LIBS_INIT}
+    ${GTK3_LIBRARIES}
 )
 
 # Set output directory

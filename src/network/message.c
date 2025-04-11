@@ -189,7 +189,8 @@ bool message_read_string(Message *msg, char *buffer, size_t buffer_size)
         return false;
     }
 
-    if (length >= buffer_size)
+    // Nếu length vượt quá buffer_size, trả về false
+    if (length > buffer_size)
     {
         return false;
     }
@@ -199,10 +200,11 @@ bool message_read_string(Message *msg, char *buffer, size_t buffer_size)
         return false;
     }
 
-    buffer[length] = '\0';
+    buffer[length] = '\0';  // Đảm bảo chuỗi kết thúc đúng cách
 
     return true;
 }
+
 
 /**
  * Gets the raw data buffer from the message.
@@ -234,7 +236,6 @@ bool message_encrypt(Message *msg, const unsigned char *key, const unsigned char
     {
         return false;
     }
-
     size_t max_ciphertext_len = msg->position + EVP_MAX_BLOCK_LENGTH;
     unsigned char *ciphertext = (unsigned char *)malloc(max_ciphertext_len);
     if (ciphertext == NULL)
@@ -242,8 +243,8 @@ bool message_encrypt(Message *msg, const unsigned char *key, const unsigned char
         return false;
     }
 
-    size_t ciphertext_len = 0;
 
+    size_t ciphertext_len = 0;
     aes_encrypt(msg->buffer, msg->position, (unsigned char *)key, (unsigned char *)iv,
                 ciphertext, &ciphertext_len);
 
@@ -251,7 +252,6 @@ bool message_encrypt(Message *msg, const unsigned char *key, const unsigned char
     msg->buffer = ciphertext;
     msg->size = max_ciphertext_len;
     msg->position = ciphertext_len;
-
     return true;
 }
 

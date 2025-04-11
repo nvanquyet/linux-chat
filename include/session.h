@@ -5,7 +5,7 @@
 #include "message.h"
 #include "service.h"
 #include <stdbool.h>
-
+#include <gtk/gtk.h>
 // Forward declarations
 typedef struct User User;
 typedef struct Session Session;

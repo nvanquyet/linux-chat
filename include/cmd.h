@@ -9,7 +9,6 @@
 
 
 #define LOGIN 0x04
-#define LOGIN_SUCCESS 0x05
 #define REGISTER 0x06
 #define LOGOUT 0x07
 
@@ -28,7 +27,11 @@
 #define GET_CHAT_HISTORY 0x11
 #define GROUP_MESSAGE 0x12
 #define USER_MESSAGE 0x13
+
 #define GET_USERS_MESSAGE 0x14
 #define GET_GROUPS_MESSAGE 0x15
 
+#define GROUP_NOTIFICATION 0x16
+
+#define SEARCH_USERS 0x17
 #endif
