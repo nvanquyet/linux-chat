@@ -127,5 +127,7 @@ Please follow the project's coding style and guidelines if available.
 
 For questions, feedback, or bug reports, feel free to reach out:
 
-- 📧 Email: nguyenducduypc160903@gmail.com
-- 🐙 GitHub: [@duynguyen](https://github.com/N-D-Duy)
+- 📧 Email:   nguyenducduypc160903@gmail.com
+              nvanquyet810@gmail.com
+- 🐙 GitHub:  [@duynguyen](https://github.com/N-D-Duy)
+              [@vawnwuyest](https://github.com/nvanquyet) 
